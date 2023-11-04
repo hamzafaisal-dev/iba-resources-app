@@ -17,16 +17,16 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -49,20 +49,20 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBaqYbfYgCepEo1r-wTpIb7rQmtKva4moo',
+    appId: '1:941818076114:web:9c093133ce85f2ac44060b',
+    messagingSenderId: '941818076114',
+    projectId: 'iba-resources-app',
+    authDomain: 'iba-resources-app.firebaseapp.com',
+    storageBucket: 'iba-resources-app.appspot.com',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCi60VAL9_H1YHUKeKi-XvvpzUsxu3G7gM',
     appId: '1:941818076114:android:fde49b96b8fe177b44060b',
     messagingSenderId: '941818076114',
     projectId: 'iba-resources-app',
     storageBucket: 'iba-resources-app.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDqSY-u2Ww7sIsf7Dl_FT40YXFODgj5rCI',
-    appId: '1:941818076114:ios:9276f37856b31a3d44060b',
-    messagingSenderId: '941818076114',
-    projectId: 'iba-resources-app',
-    storageBucket: 'iba-resources-app.appspot.com',
-    iosBundleId: 'com.example.ibaResourcesApp',
   );
 }
