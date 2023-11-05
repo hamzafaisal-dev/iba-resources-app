@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iba_resources_app/screens/sign_up_screen.dart';
+
+final _firebase = FirebaseAuth.instance;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,15 +13,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _isLoggingIn = false;
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   final _loginFormKey = GlobalKey<FormState>();
 
-  void handleLogin() {
+  void handleLogin() async {
     if (_loginFormKey.currentState!.validate()) {
-      print(_emailController.text);
-      print(_passwordController.text);
+      _isLoggingIn = true;
+
+      final userCredentials = await _firebase.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      _isLoggingIn = false;
 
       _emailController.clear();
       _passwordController.clear();
@@ -95,7 +107,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         ElevatedButton(
                           onPressed: handleLogin,
-                          child: const Text('Login'),
+                          child: _isLoggingIn
+                              ? const SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircularProgressIndicator(),
+                                )
+                              : const Text('Login'),
                         ),
                       ],
                     )

@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iba_resources_app/screens/login_screen.dart';
+
+final _firebase = FirebaseAuth.instance;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -9,21 +13,38 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  bool _isSigningUp = false;
+
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   final _loginFormKey = GlobalKey<FormState>();
 
-  void handleSignUp() {
+  void handleSignUp() async {
     if (_loginFormKey.currentState!.validate()) {
-      print(_nameController.text);
-      print(_emailController.text);
-      print(_passwordController.text);
+      _isSigningUp = true;
 
-      _nameController.clear();
-      _emailController.clear();
-      _passwordController.clear();
+      final newUserCredentials = await _firebase.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(newUserCredentials.user!.uid)
+          .set(
+        {
+          "name": _nameController.text,
+          "email": _emailController.text,
+        },
+      );
+
+      _isSigningUp = false;
+
+      // _nameController.clear();
+      // _emailController.clear();
+      // _passwordController.clear();
     }
   }
 
@@ -114,7 +135,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         ElevatedButton(
                           onPressed: handleSignUp,
-                          child: const Text('Sign Up'),
+                          child: _isSigningUp
+                              ? const SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircularProgressIndicator(),
+                                )
+                              : const Text('Sign Up'),
                         ),
                       ],
                     )
