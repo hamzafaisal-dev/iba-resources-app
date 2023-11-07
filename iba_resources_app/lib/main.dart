@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
             side: MaterialStateProperty.all<BorderSide>(
               const BorderSide(color: Colors.black),
             ),
+            splashFactory: NoSplash.splashFactory,
           ),
         ),
         filledButtonTheme: FilledButtonThemeData(
@@ -38,6 +39,9 @@ class MyApp extends StatelessWidget {
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
             backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
           ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.black,
         ),
       ),
       home: const LandingScreen(),

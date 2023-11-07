@@ -18,69 +18,69 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color.fromARGB(255, 253, 127, 118),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            // const Spacer(),
-            Container(
-              child: Lottie.asset('assets/AuthAnimation.json', repeat: false),
-            ),
+      backgroundColor: const Color.fromARGB(255, 253, 127, 118),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          //
+          Lottie.asset(
+            'assets/AuthAnimation.json',
+            repeat: false,
+            frameRate: FrameRate(420),
+          ),
 
-            const SizedBox(height: 30),
+          const SizedBox(height: 30),
 
-            const Text(
-              'Welcome to IBARA',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
+          const Text(
+            'Welcome to IBARA',
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
 
-            const Text(
-              'Find all IBA study resources in one place!',
-              style: TextStyle(fontSize: 19, fontWeight: FontWeight.normal),
-              textAlign: TextAlign.center,
-            ),
+          const Text(
+            'Find all IBA study resources in one place!',
+            style: TextStyle(fontSize: 19, fontWeight: FontWeight.normal),
+            textAlign: TextAlign.center,
+          ),
 
-            const SizedBox(height: 40),
+          const SizedBox(height: 40),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      style: customButtonStyle,
-                      child: const Text(
-                        'Log In',
-                        style: TextStyle(fontSize: 18),
-                      ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2.5,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    style: customButtonStyle,
+                    child: const Text(
+                      'Log In',
+                      style: TextStyle(fontSize: 18),
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    child: FilledButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      style: customButtonStyle,
-                      child: const Text(
-                        'Sign Up',
-                        style: TextStyle(fontSize: 18),
-                      ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2.5,
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/signup');
+                    },
+                    style: customButtonStyle,
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(fontSize: 18),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
+          ),
 
-            const SizedBox(height: 50),
-          ],
-        ),
+          const SizedBox(height: 50),
+        ],
       ),
     );
   }

@@ -1,9 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:iba_resources_app/screens/sign_up_screen.dart';
 
 final _firebase = FirebaseAuth.instance;
+
+final ButtonStyle customButtonStyle = ButtonStyle(
+  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+    RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(6.0),
+    ),
+  ),
+  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+    const EdgeInsets.symmetric(vertical: 18.0),
+  ),
+);
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +26,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoggingIn = false;
+  bool _passwordHidden = true;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -21,19 +34,74 @@ class _LoginScreenState extends State<LoginScreen> {
   final _loginFormKey = GlobalKey<FormState>();
 
   void handleLogin() async {
-    if (_loginFormKey.currentState!.validate()) {
-      _isLoggingIn = true;
+    try {
+      if (_loginFormKey.currentState!.validate()) {
+        _isLoggingIn = true;
 
-      final userCredentials = await _firebase.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+        final userCredentials = await _firebase.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
 
+        _isLoggingIn = false;
+
+        _emailController.clear();
+        _passwordController.clear();
+      }
+    } on FirebaseAuthException catch (e) {
       _isLoggingIn = false;
-
-      _emailController.clear();
-      _passwordController.clear();
+      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        print('INVALID_LOGIN_CREDENTIALS');
+      } else if (e.code == 'invalid-email') {
+        print('Invalid email');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password');
+      } else {
+        print('Error: ${e.message}');
+      }
+    } catch (error) {
+      _isLoggingIn = false;
+      print('Error: $error');
     }
+  }
+
+  InputDecoration textFormFieldDecoration(
+    String labelText,
+    Widget prefixIcon,
+    Widget? suffixIcon,
+  ) {
+    return InputDecoration(
+      enabledBorder: const OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1.5,
+          color: Colors.grey,
+        ),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1.5,
+          color: Colors.black,
+        ),
+      ),
+      errorBorder: const OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1.5,
+          color: Colors.red,
+        ),
+      ),
+      focusedErrorBorder: const OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1.5,
+          color: Colors.red,
+        ),
+      ),
+      floatingLabelStyle: const TextStyle(
+        color: Colors.black,
+      ),
+      prefixIcon: prefixIcon,
+      labelText: labelText,
+      suffixIcon: suffixIcon,
+    );
   }
 
   @override
@@ -48,77 +116,203 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: ListView(
+          padding: const EdgeInsets.all(24),
           children: [
+            //
+            const SizedBox(height: 160),
+
+            const Text(
+              'Welcome Back,',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+
+            const Text(
+              'Parhoge likhoge, banoge nawaab - Jinnah',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+            ),
+
+            const SizedBox(height: 20),
+
+            // login form
             Form(
               key: _loginFormKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 10,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Enter email',
+              child: Column(
+                children: [
+                  // email input
+                  TextFormField(
+                    decoration: textFormFieldDecoration(
+                      'Enter email address',
+                      const Icon(
+                        Icons.person_outline_sharp,
                       ),
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _emailController,
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            !value.contains('@khi.iba.edu.pk') ||
-                            value.trim().length < 20) {
-                          return 'Enter a valid IBA email address';
-                        }
-
-                        return null;
-                      },
+                      null,
                     ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Enter password',
+                    cursorColor: Colors.black,
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          !value.contains('@khi.iba.edu.pk') ||
+                          value.trim().length < 20) {
+                        return 'Enter a valid IBA email address';
+                      }
+
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // password input
+                  TextFormField(
+                    decoration: textFormFieldDecoration(
+                      "Enter password",
+                      const Icon(
+                        Icons.fingerprint_rounded,
                       ),
-                      obscureText: true,
-                      controller: _passwordController,
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().length < 6) {
-                          return 'Password should contain at least 6 characters ';
-                        }
-
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => const SignUpScreen(),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _passwordHidden = !_passwordHidden;
+                          });
+                        },
+                        icon: _passwordHidden
+                            ? const Icon(
+                                Icons.visibility_off,
+                              )
+                            : const Icon(
+                                Icons.visibility,
                               ),
-                            );
-                          },
-                          child: const Text('Don\'t have an account? Sign Up'),
+                      ),
+                    ),
+                    cursorColor: Colors.black,
+                    obscureText: _passwordHidden,
+                    controller: _passwordController,
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim().length < 6) {
+                        return 'Password should contain at least 6 characters ';
+                      }
+
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  //login button
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: FilledButton(
+                      onPressed: handleLogin,
+                      style: customButtonStyle,
+                      child: _isLoggingIn
+                          ? const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(),
+                            )
+                          : const Text(
+                              'LOGIN',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  //divider
+                  const Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey,
+                          height: 1,
                         ),
-                        ElevatedButton(
-                          onPressed: handleLogin,
-                          child: _isLoggingIn
-                              ? const SizedBox(
-                                  height: 18,
-                                  width: 18,
-                                  child: CircularProgressIndicator(),
-                                )
-                              : const Text('Login'),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18),
+                        child: Text(
+                          'OR',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey,
+                          height: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // google sign in btn
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      style: customButtonStyle,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/google-logo.png',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text(
+                            'Sign-In with Google',
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 26),
+
+                  // buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: 'Don\'t have an account? ',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.black),
+                            ),
+                            TextSpan(
+                              text: 'Sign Up!',
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.blue),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(context, '/signup');
+                                },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             )
           ],
