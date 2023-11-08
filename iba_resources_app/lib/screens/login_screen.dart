@@ -33,6 +33,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _loginFormKey = GlobalKey<FormState>();
 
+  void showSnackbar(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        showCloseIcon: true,
+        backgroundColor: const Color.fromARGB(255, 253, 127, 118),
+      ),
+    );
+  }
+
   void handleLogin() async {
     try {
       if (_loginFormKey.currentState!.validate()) {
@@ -51,17 +62,17 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       _isLoggingIn = false;
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        print('INVALID_LOGIN_CREDENTIALS');
+        showSnackbar('Invalid login credentials');
       } else if (e.code == 'invalid-email') {
-        print('Invalid email');
+        showSnackbar('Invalid email');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password');
+        showSnackbar('Wrong password');
       } else {
-        print('Error: ${e.message}');
+        showSnackbar('Error: ${e.message}');
       }
     } catch (error) {
       _isLoggingIn = false;
-      print('Error: $error');
+      showSnackbar('Error: $error');
     }
   }
 
@@ -169,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: textFormFieldDecoration(
                       "Enter password",
                       const Icon(
-                        Icons.fingerprint_rounded,
+                        Icons.lock_outline,
                       ),
                       IconButton(
                         onPressed: () {
