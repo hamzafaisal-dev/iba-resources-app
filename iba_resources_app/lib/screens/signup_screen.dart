@@ -21,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final _loginFormKey = GlobalKey<FormState>();
+  final _signUpFormKey = GlobalKey<FormState>();
 
   void showSnackbar(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -36,8 +36,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void handleSignUp() async {
     try {
-      if (_loginFormKey.currentState!.validate()) {
-        _isSigningUp = true;
+      if (_signUpFormKey.currentState!.validate()) {
+        setState(() {
+          _isSigningUp = true;
+        });
 
         final newUserCredentials =
             await _firebase.createUserWithEmailAndPassword(
@@ -55,14 +57,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           },
         );
 
-        _isSigningUp = false;
-
         _nameController.clear();
         _emailController.clear();
         _passwordController.clear();
       }
     } on FirebaseAuthException catch (e) {
-      _isSigningUp = false;
+      setState(() {
+        _isSigningUp = false;
+      });
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
         showSnackbar('INVALID_LOGIN_CREDENTIALS');
       } else if (e.code == 'invalid-email') {
@@ -150,7 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const SizedBox(height: 20),
 
             Form(
-              key: _loginFormKey,
+              key: _signUpFormKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

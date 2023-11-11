@@ -66,7 +66,7 @@ class LandingScreen extends StatelessWidget {
                   width: MediaQuery.of(context).size.width / 2.5,
                   child: FilledButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/signup');
+                      Navigator.pushReplacementNamed(context, '/signup');
                     },
                     style: customButtonStyle,
                     child: const Text(

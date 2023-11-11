@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:iba_resources_app/screens/sign_up_screen.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -47,20 +45,30 @@ class _LoginScreenState extends State<LoginScreen> {
   void handleLogin() async {
     try {
       if (_loginFormKey.currentState!.validate()) {
-        _isLoggingIn = true;
+        setState(() {
+          _isLoggingIn = true;
+        });
 
         final userCredentials = await _firebase.signInWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
         );
 
-        _isLoggingIn = false;
+        if (userCredentials.user != null) {
+          setState(() {
+            _isLoggingIn = false;
+          });
+
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
 
         _emailController.clear();
         _passwordController.clear();
       }
     } on FirebaseAuthException catch (e) {
-      _isLoggingIn = false;
+      setState(() {
+        _isLoggingIn = false;
+      });
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
         showSnackbar('Invalid login credentials');
       } else if (e.code == 'invalid-email') {
@@ -133,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 160),
 
             const Text(
-              'Welcome Back,',
+              'Welcome Back',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
 
@@ -154,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: textFormFieldDecoration(
                       'Enter email address',
                       const Icon(
-                        Icons.person_outline_sharp,
+                        Icons.email_outlined,
                       ),
                       null,
                     ),
@@ -303,9 +311,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   TextStyle(fontSize: 15, color: Colors.black),
                             ),
                             TextSpan(
-                              text: 'Sign Up!',
+                              text: 'Sign Up',
                               style: const TextStyle(
-                                  fontSize: 15, color: Colors.blue),
+                                fontSize: 15,
+                                color: Colors.blue,
+                              ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   Navigator.pushNamed(context, '/signup');
@@ -314,11 +324,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-                      const Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
+                      InkWell(
+                        onTap: () =>
+                            Navigator.of(context).pushNamed("/resetpass"),
+                        child: const Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
                     ],

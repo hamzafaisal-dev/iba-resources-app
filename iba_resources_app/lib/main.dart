@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iba_resources_app/firebase_options.dart';
+import 'package:iba_resources_app/screens/home_screen.dart';
 import 'package:iba_resources_app/screens/landing_screen.dart';
 import 'package:iba_resources_app/screens/login_screen.dart';
-import 'package:iba_resources_app/screens/sign_up_screen.dart';
+import 'package:iba_resources_app/screens/otp_screen.dart';
+import 'package:iba_resources_app/screens/reset_password_screen.dart';
+import 'package:iba_resources_app/screens/signup_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,8 +49,11 @@ class MyApp extends StatelessWidget {
       ),
       home: const LandingScreen(),
       routes: {
+        "/home": (context) => const HomeScreen(),
         "/login": (context) => const LoginScreen(),
         "/signup": (context) => const SignUpScreen(),
+        "/resetpass": (context) => const ResetPasswordScreen(),
+        "/otp": (context) => const OTPScreen(),
       },
     );
   }
