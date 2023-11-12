@@ -19,6 +19,8 @@ dependencies:
   lottie: ^2.7.0
   fluttertoast: ^8.2.3
   flutter_otp_text_field: ^1.1.1
+  google_sign_in: ^6.1.6
+  flutter_facebook_auth: ^6.0.2
 
 dev_dependencies:
   flutter_test:

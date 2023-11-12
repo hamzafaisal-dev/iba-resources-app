@@ -34,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void handleSignUp() async {
+  Future<void> handleSignUp() async {
     try {
       if (_signUpFormKey.currentState!.validate()) {
         setState(() {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_name">IBARA</string>
+<string name="facebook_app_id">1486633902179930</string>
+<string name="fb_login_protocol_scheme">fb1486633902179930</string>
+<string name="facebook_client_token">5a4c3929ef01d54c60f3b058d9de0798</string>
+
+</resources>
