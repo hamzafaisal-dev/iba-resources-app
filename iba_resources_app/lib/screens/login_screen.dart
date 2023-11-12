@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(24),
           children: [
             //
-            const SizedBox(height: 160),
+            const SizedBox(height: 90),
 
             const Text(
               'Welcome Back',
@@ -275,20 +275,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   // google sign in btn
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    child: OutlinedButton(
+                    child: FilledButton(
                       onPressed: () {},
-                      style: customButtonStyle,
+                      style: customButtonStyle.copyWith(
+                        elevation: MaterialStateProperty.all(4),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.black),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
                             'assets/google-logo.png',
-                            width: 20,
-                            height: 20,
+                            width: 25,
+                            height: 25,
                           ),
                           const SizedBox(width: 10),
                           const Text(
-                            'Sign-In with Google',
+                            'Sign in with Google',
                             style: TextStyle(fontSize: 17),
                           ),
                         ],
@@ -296,7 +302,69 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 26),
+                  const SizedBox(height: 10),
+
+                  // facebook sign in btn
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: FilledButton(
+                      onPressed: () {},
+                      style: customButtonStyle.copyWith(
+                        elevation: MaterialStateProperty.all(4),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color(0XFF448AFF),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/facebook-logo.png',
+                            width: 26.5,
+                            height: 26.5,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text(
+                            'Sign in with FaceBook',
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // twitter sign in btn
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: FilledButton(
+                      onPressed: () {},
+                      style: customButtonStyle.copyWith(
+                        elevation: MaterialStateProperty.all(4),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color(0XFF42464C),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/twitter-logo.png',
+                            width: 26.5,
+                            height: 26.5,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text(
+                            'Sign in with X',
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
 
                   // buttons
                   Row(
