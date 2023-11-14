@@ -61,7 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
             _isLoggingIn = false;
           });
 
-          Navigator.of(context).pushReplacementNamed('/home');
+          showSnackbar(userCredentials.user!.email.toString());
+
+          Navigator.of(context).pushReplacementNamed('/layout');
         }
 
         _emailController.clear();
@@ -81,7 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
         showSnackbar('Error: ${e.message}');
       }
     } catch (error) {
-      _isLoggingIn = false;
+      setState(() {
+        _isLoggingIn = false;
+      });
       showSnackbar('Error: $error');
     }
   }
@@ -263,7 +267,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? const SizedBox(
                               height: 18,
                               width: 18,
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                color: Color.fromARGB(255, 253, 127, 118),
+                              ),
                             )
                           : const Text(
                               'LOGIN',

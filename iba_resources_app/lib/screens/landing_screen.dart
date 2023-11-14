@@ -44,16 +44,18 @@ class LandingScreen extends StatelessWidget {
 
           const SizedBox(height: 40),
 
+          // buttons
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // login button
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 2.5,
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/login');
+                      Navigator.pushReplacementNamed(context, '/login');
                     },
                     style: customButtonStyle,
                     child: const Text(
@@ -62,6 +64,8 @@ class LandingScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                // signup button
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 2.5,
                   child: FilledButton(
