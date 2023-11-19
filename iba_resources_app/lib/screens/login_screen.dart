@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       SnackBar(
         content: Text(message),
         showCloseIcon: true,
-        backgroundColor: const Color.fromARGB(255, 253, 127, 118),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
             _isLoggingIn = false;
           });
 
-          showSnackbar(userCredentials.user!.email.toString());
+          // showSnackbar(userCredentials.user!.email.toString());
 
           Navigator.of(context).pushReplacementNamed('/layout');
         }
@@ -264,11 +264,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: handleLogin,
                       style: customButtonStyle,
                       child: _isLoggingIn
-                          ? const SizedBox(
+                          ? SizedBox(
                               height: 18,
                               width: 18,
                               child: CircularProgressIndicator(
-                                color: Color.fromARGB(255, 253, 127, 118),
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             )
                           : const Text(

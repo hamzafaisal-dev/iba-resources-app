@@ -71,7 +71,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       SnackBar(
         content: Text(message),
         showCloseIcon: true,
-        backgroundColor: const Color.fromARGB(255, 253, 127, 118),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }

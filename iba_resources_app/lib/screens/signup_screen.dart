@@ -29,7 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       SnackBar(
         content: Text(message),
         showCloseIcon: true,
-        backgroundColor: const Color.fromARGB(255, 253, 127, 118),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -55,11 +55,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
             "name": _nameController.text,
             "email": _emailController.text,
           },
-        );
+        ).then((value) {
+          setState(() {
+            _isSigningUp = false;
+          });
 
-        _nameController.clear();
-        _emailController.clear();
-        _passwordController.clear();
+          Navigator.of(context).pushReplacementNamed('/home');
+        });
+
+        // _nameController.clear();
+        // _emailController.clear();
+        // _passwordController.clear();
       }
     } on FirebaseAuthException catch (e) {
       setState(() {

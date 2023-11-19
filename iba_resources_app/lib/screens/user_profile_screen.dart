@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
-import 'package:iba_resources_app/widgets/profile_action_tile.dart';
-import 'package:iba_resources_app/widgets/profile_stat.dart';
+import 'package:iba_resources_app/widgets/buttons/custom_filled_button.dart';
+import 'package:iba_resources_app/widgets/profile/profile_action_tile.dart';
+import 'package:iba_resources_app/widgets/profile/profile_stat.dart';
 
 final _firebaseAuth = FirebaseAuth.instance;
 
@@ -22,13 +23,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
 
     _firebaseAuth.signOut().then(
-          (value) => {
-            setState(() {
-              loading = false;
-            }),
-            Navigator.of(context).pushReplacementNamed('/login'),
-          },
-        );
+      (value) {
+        setState(() {
+          loading = false;
+        });
+        Navigator.of(context).pushReplacementNamed('/login');
+      },
+    );
   }
 
   @override
@@ -37,60 +38,95 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       children: [
         // profile details
         Container(
-          height: MediaQuery.of(context).size.height / 2.2,
+          height: MediaQuery.of(context).size.height / 2.52,
           width: MediaQuery.of(context).size.width,
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 253, 127, 118),
-            image: DecorationImage(
-              image: AssetImage(
-                'assets/bank-note.png',
-              ),
-              opacity: 0.06,
-              repeat: ImageRepeat.repeat,
-            ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               //
-              const SizedBox(height: 25),
-
-              // user pfp
-              CircleAvatar(
-                radius: 65,
-                backgroundColor: const Color.fromARGB(255, 240, 99, 89),
-                child: Icon(
-                  Icons.person,
-                  size: 90,
-                  color: Colors.grey[200],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // user name
-              Text(
-                'Farhan Mushi',
-                style: TextStyle(
-                  fontSize: 28,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  shadows: [
-                    Shadow(
-                      offset: const Offset(
-                        2.0,
-                        2.5,
-                      ),
-                      blurRadius: 2.0,
-                      color: Colors.black.withOpacity(
-                        0.2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
               const SizedBox(height: 18),
+
+              // pfp + name
+              Row(
+                children: [
+                  const SizedBox(width: 32),
+
+                  // user pfp
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: const Color.fromARGB(255, 240, 99, 89),
+                    child: Icon(
+                      Icons.person,
+                      size: 90,
+                      color: Colors.grey[200],
+                    ),
+                  ),
+
+                  const SizedBox(width: 35),
+
+                  // user name + contributions button
+                  SizedBox(
+                    child: Column(
+                      children: [
+                        // user name
+                        Text(
+                          'Farhan Mushi',
+                          style: TextStyle(
+                            fontSize: 28,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            shadows: [
+                              Shadow(
+                                offset: const Offset(
+                                  2.0,
+                                  2.5,
+                                ),
+                                blurRadius: 2.0,
+                                color: Colors.black.withOpacity(
+                                  0.2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 5),
+
+                        // my contributions button
+                        CustomFilledButton(
+                          buttonLabel: 'My Contributions',
+                          fontSize: 18,
+                          borderRadius: 10,
+                          paddingX: 20,
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromARGB(255, 240, 99, 89),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed('/contributions');
+                          },
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+
+              // divider
+              Container(
+                height: 25,
+                margin: const EdgeInsets.fromLTRB(0, 17, 0, 13),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  image: const DecorationImage(
+                    image: AssetImage('assets/bank-note.png'),
+                    repeat: ImageRepeat.repeat,
+                    opacity: 0.1,
+                  ),
+                ),
+              ),
 
               // profile stats
               Row(
@@ -133,36 +169,37 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
 
         // profile actions
-        Container(
-          // color: Colors.yellow,
-          // 116 is the sum of the default height of the botnavbar + the icon thing ig
+        SizedBox(
+          // 116 is the sum of the default height of the botnavbar + the icon ig
           height: MediaQuery.of(context).size.height / 2 - 116,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 //
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 // edit profile action
-                ProfileActionTile(
+                const ProfileActionTile(
                   actionTitle: 'Edit Profile',
                   actionIcon: Icon(Icons.edit),
                 ),
 
                 // settings action
-                ProfileActionTile(
+                const ProfileActionTile(
                   actionTitle: 'Settings',
                   actionIcon: Icon(Icons.settings),
                 ),
 
-                Divider(),
+                const Divider(),
 
                 // log out action
                 ProfileActionTile(
                   actionTitle: 'Log Out',
-                  actionIcon: Icon(Icons.logout),
+                  actionIcon: const Icon(Icons.logout),
+                  tilePressed: logOut,
                 ),
               ],
             ),

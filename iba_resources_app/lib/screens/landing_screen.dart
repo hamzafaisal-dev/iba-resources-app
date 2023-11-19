@@ -18,13 +18,13 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(255, 253, 127, 118),
+      // backgroundColor: const Theme.of(context).colorScheme.primary,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color.fromARGB(255, 253, 127, 118), Colors.white],
+            colors: [Theme.of(context).colorScheme.primary, Colors.white],
           ),
         ),
         child: Column(

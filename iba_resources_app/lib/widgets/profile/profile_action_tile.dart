@@ -5,10 +5,12 @@ class ProfileActionTile extends StatelessWidget {
     super.key,
     required this.actionTitle,
     required this.actionIcon,
+    this.tilePressed,
   });
 
   final String actionTitle;
   final Icon actionIcon;
+  final dynamic Function()? tilePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class ProfileActionTile extends StatelessWidget {
             color: Colors.grey[600],
           ),
         ),
-        onTap: () {},
+        onTap: tilePressed,
       ),
     );
   }

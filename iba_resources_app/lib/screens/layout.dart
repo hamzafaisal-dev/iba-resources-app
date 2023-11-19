@@ -7,6 +7,7 @@ import 'package:iba_resources_app/screens/notifications_screen.dart';
 import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/screens/user_profile_screen.dart';
 import 'package:iba_resources_app/constants/constants.dart' as constants;
+import 'package:iba_resources_app/screens/user_screen.dart';
 
 class Layout extends StatefulWidget {
   const Layout({super.key});
@@ -74,25 +75,26 @@ class _LayoutState extends State<Layout> {
           ),
         ),
         centerTitle: true,
-        // backgroundColor: const Color.fromARGB(255, 253, 127, 118),
+        // backgroundColor: const Theme.of(context).colorScheme.primary,
       );
     }
 
     return Scaffold(
+      backgroundColor: const Color(0XFFF3F3F3),
       appBar: getAppbar(),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const UserAccountsDrawerHeader(
+            UserAccountsDrawerHeader(
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 253, 127, 118),
+                color: Theme.of(context).colorScheme.primary,
               ),
-              accountName: Text(
+              accountName: const Text(
                 "Farhan Mushi",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              accountEmail: Text(
+              accountEmail: const Text(
                 "f.mushi.22971@khi.iba.edu.pk",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
@@ -101,7 +103,7 @@ class _LayoutState extends State<Layout> {
                 child: Icon(
                   Icons.person,
                   size: 50,
-                  color: Color.fromARGB(255, 253, 127, 118),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
@@ -124,8 +126,8 @@ class _LayoutState extends State<Layout> {
         ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        color: const Color.fromARGB(255, 253, 127, 118),
-        backgroundColor: Colors.white,
+        color: Theme.of(context).colorScheme.primary,
+        backgroundColor: const Color(0XFFF3F3F3),
         animationDuration: const Duration(milliseconds: 300),
         index: currentIndex,
         onTap: (selectedIndex) {

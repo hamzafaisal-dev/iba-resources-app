@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iba_resources_app/firebase_options.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
+import 'package:iba_resources_app/screens/contributions_screen.dart';
 import 'package:iba_resources_app/screens/error_screen.dart';
 import 'package:iba_resources_app/screens/home_screen.dart';
 import 'package:iba_resources_app/screens/landing_screen.dart';
@@ -31,30 +32,43 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'IBARA',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
-        useMaterial3: true,
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-            side: MaterialStateProperty.all<BorderSide>(
-              const BorderSide(color: Colors.black),
-            ),
-            splashFactory: NoSplash.splashFactory,
-          ),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 253, 127, 118),
+          primary: const Color.fromARGB(255, 253, 127, 118),
+          secondary: const Color(0XFFFFF1F1),
         ),
-        filledButtonTheme: FilledButtonThemeData(
-          style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-          ),
-        ),
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.white,
+          elevation: 0.5,
         ),
       ),
-      home: const Layout(),
+      // ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+      //   primaryColor: const Theme.of(context).colorScheme.primary,
+      //   useMaterial3: true,
+      //   outlinedButtonTheme: OutlinedButtonThemeData(
+      //     style: ButtonStyle(
+      //       foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+      //       side: MaterialStateProperty.all<BorderSide>(
+      //         const BorderSide(color: Colors.black),
+      //       ),
+      //       splashFactory: NoSplash.splashFactory,
+      //     ),
+      //   ),
+      //   filledButtonTheme: FilledButtonThemeData(
+      //     style: ButtonStyle(
+      //       foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      //       backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+      //     ),
+      //   ),
+      //   iconTheme: const IconThemeData(
+      //     color: Colors.black,
+      //   ),
+      // ),
+      home: const LandingScreen(),
       routes: {
         "/layout": (context) => const Layout(),
         "/landing": (context) => const LandingScreen(),
@@ -67,6 +81,7 @@ class MyApp extends StatelessWidget {
         "/saved": (context) => const SavedResourcesScreen(),
         "/resource": (context) => const AddResourceScreen(),
         "/notifications": (context) => const NotificationsScreen(),
+        "/contributions": (context) => const ContributionsScreen(),
         "/error": (context) => const ErrorScreen(),
       },
     );
