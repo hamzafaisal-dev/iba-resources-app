@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:iba_resources_app/constants/constants.dart';
+import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/firebase_options.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
 import 'package:iba_resources_app/screens/contributions_screen.dart';
@@ -44,30 +46,10 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
           elevation: 0.5,
         ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: ButtonStyles.filledButtonStyle,
+        ),
       ),
-      // ThemeData(
-      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
-      //   primaryColor: const Theme.of(context).colorScheme.primary,
-      //   useMaterial3: true,
-      //   outlinedButtonTheme: OutlinedButtonThemeData(
-      //     style: ButtonStyle(
-      //       foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-      //       side: MaterialStateProperty.all<BorderSide>(
-      //         const BorderSide(color: Colors.black),
-      //       ),
-      //       splashFactory: NoSplash.splashFactory,
-      //     ),
-      //   ),
-      //   filledButtonTheme: FilledButtonThemeData(
-      //     style: ButtonStyle(
-      //       foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-      //       backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-      //     ),
-      //   ),
-      //   iconTheme: const IconThemeData(
-      //     color: Colors.black,
-      //   ),
-      // ),
       home: const LandingScreen(),
       routes: {
         "/layout": (context) => const Layout(),

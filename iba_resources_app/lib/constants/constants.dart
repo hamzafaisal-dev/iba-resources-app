@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Constants {
+class ConstantIcons {
   static const bottomNavBarIcons = [
     Icon(
       Icons.home,

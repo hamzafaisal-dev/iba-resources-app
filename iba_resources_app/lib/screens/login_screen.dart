@@ -3,19 +3,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
+import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
+import 'package:iba_resources_app/widgets/dividers/named_divider.dart';
+import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
+import 'package:iba_resources_app/widgets/textfields/email_text_form_field.dart';
+import 'package:iba_resources_app/widgets/textfields/password_form_field.dart';
 
 final _firebase = FirebaseAuth.instance;
-
-final ButtonStyle customButtonStyle = ButtonStyle(
-  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-    RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(6.0),
-    ),
-  ),
-  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-    const EdgeInsets.symmetric(vertical: 18.0),
-  ),
-);
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,10 +21,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoggingIn = false;
-  bool _passwordHidden = true;
 
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  String email = '';
+  String password = '';
 
   final _loginFormKey = GlobalKey<FormState>();
 
@@ -51,41 +45,33 @@ class _LoginScreenState extends State<LoginScreen> {
           _isLoggingIn = true;
         });
 
-        final userCredentials = await _firebase.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
-
-        if (userCredentials.user != null) {
+        await _firebase
+            .signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        )
+            .then((value) {
           setState(() {
             _isLoggingIn = false;
           });
 
-          // showSnackbar(userCredentials.user!.email.toString());
-
           Navigator.of(context).pushReplacementNamed('/layout');
-        }
-
-        _emailController.clear();
-        _passwordController.clear();
+        });
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
         _isLoggingIn = false;
       });
-      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        showSnackbar('Invalid login credentials');
-      } else if (e.code == 'invalid-email') {
-        showSnackbar('Invalid email');
-      } else if (e.code == 'wrong-password') {
-        showSnackbar('Wrong password');
-      } else {
-        showSnackbar('Error: ${e.message}');
-      }
+
+      // get error statement and display it
+      String firebaseAuthError =
+          FirebaseAuthExceptionErrors.getFirebaseError(e);
+      showSnackbar(firebaseAuthError);
     } catch (error) {
       setState(() {
         _isLoggingIn = false;
       });
+
       showSnackbar('Error: $error');
     }
   }
@@ -120,55 +106,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
-  InputDecoration textFormFieldDecoration(
-    String labelText,
-    Widget prefixIcon,
-    Widget? suffixIcon,
-  ) {
-    return InputDecoration(
-      enabledBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1.5,
-          color: Colors.grey,
-        ),
-      ),
-      focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1.5,
-          color: Colors.black,
-        ),
-      ),
-      errorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1.5,
-          color: Colors.red,
-        ),
-      ),
-      focusedErrorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1.5,
-          color: Colors.red,
-        ),
-      ),
-      floatingLabelStyle: const TextStyle(
-        color: Colors.black,
-      ),
-      prefixIcon: prefixIcon,
-      labelText: labelText,
-      suffixIcon: suffixIcon,
-    );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0XFFF3F3F3),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(24),
@@ -176,11 +117,13 @@ class _LoginScreenState extends State<LoginScreen> {
             //
             const SizedBox(height: 90),
 
+            // welcome back
             const Text(
               'Welcome Back',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
 
+            // Jinnah quote
             const Text(
               'Parhoge likhoge, banoge nawaab - Jinnah',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
@@ -194,64 +137,22 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   // email input
-                  TextFormField(
-                    decoration: textFormFieldDecoration(
-                      'Enter email address',
-                      const Icon(
-                        Icons.email_outlined,
-                      ),
-                      null,
-                    ),
-                    cursorColor: Colors.black,
-                    keyboardType: TextInputType.emailAddress,
-                    controller: _emailController,
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          !value.contains('@khi.iba.edu.pk') ||
-                          value.trim().length < 20) {
-                        return 'Enter a valid IBA email address';
-                      }
-
-                      return null;
+                  EmailTextFormField(
+                    helperLabel: 'Enter email address',
+                    leadingIcon: Icons.email_outlined,
+                    setEmail: (enteredEmail) {
+                      email = enteredEmail;
                     },
                   ),
 
                   const SizedBox(height: 20),
 
                   // password input
-                  TextFormField(
-                    decoration: textFormFieldDecoration(
-                      "Enter password",
-                      const Icon(
-                        Icons.lock_outline,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _passwordHidden = !_passwordHidden;
-                          });
-                        },
-                        icon: _passwordHidden
-                            ? const Icon(
-                                Icons.visibility_off,
-                              )
-                            : const Icon(
-                                Icons.visibility,
-                              ),
-                      ),
-                    ),
-                    cursorColor: Colors.black,
-                    obscureText: _passwordHidden,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim().length < 6) {
-                        return 'Password should contain at least 6 characters ';
-                      }
-
-                      return null;
+                  PasswordFormField(
+                    helperLabel: 'Enter password',
+                    leadingIcon: Icons.lock_outline,
+                    setPassword: (enteredPassword) {
+                      password = enteredPassword;
                     },
                   ),
 
@@ -262,15 +163,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: MediaQuery.of(context).size.width,
                     child: FilledButton(
                       onPressed: handleLogin,
-                      style: customButtonStyle,
+                      style: Theme.of(context).filledButtonTheme.style,
                       child: _isLoggingIn
-                          ? SizedBox(
-                              height: 18,
-                              width: 18,
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            )
+                          ? const ButtonProgressIndicator()
                           : const Text(
                               'LOGIN',
                               style: TextStyle(fontSize: 16),
@@ -281,125 +176,30 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
 
                   //divider
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey,
-                          height: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          'OR',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey,
-                          height: 1,
-                        ),
-                      ),
-                    ],
+                  const NamedDivider(
+                    dividerText: 'OR',
+                    dividerColor: Colors.grey,
                   ),
 
                   const SizedBox(height: 20),
 
                   // google sign in btn
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: FilledButton(
-                      onPressed: signInWithGoogle,
-                      style: customButtonStyle.copyWith(
-                        elevation: MaterialStateProperty.all(4),
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.black),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/google-logo.png',
-                            width: 25,
-                            height: 25,
-                          ),
-                          const SizedBox(width: 10),
-                          const Text(
-                            'Sign in with Google',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ],
-                      ),
-                    ),
+                  AuthProviderButton(
+                    imageSrc: 'assets/google-logo.png',
+                    buttonLabel: 'Sign in with Google',
+                    onTap: signInWithGoogle,
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.white,
                   ),
 
                   const SizedBox(height: 10),
 
                   // facebook sign in btn
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: FilledButton(
-                      onPressed: signInWithFacebook,
-                      style: customButtonStyle.copyWith(
-                        elevation: MaterialStateProperty.all(4),
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color(0XFF448AFF),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/facebook-logo.png',
-                            width: 26.5,
-                            height: 26.5,
-                          ),
-                          const SizedBox(width: 10),
-                          const Text(
-                            'Sign in with FaceBook',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // twitter sign in btn
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: FilledButton(
-                      onPressed: () {},
-                      style: customButtonStyle.copyWith(
-                        elevation: MaterialStateProperty.all(4),
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color(0XFF42464C),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/twitter-logo.png',
-                            width: 26.5,
-                            height: 26.5,
-                          ),
-                          const SizedBox(width: 10),
-                          const Text(
-                            'Sign in with X',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ],
-                      ),
-                    ),
+                  AuthProviderButton(
+                    imageSrc: 'assets/facebook-logo.png',
+                    buttonLabel: 'Sign in with FaceBook',
+                    onTap: signInWithFacebook,
+                    backgroundColor: const Color(0XFF448AFF),
                   ),
 
                   const SizedBox(height: 20),
@@ -418,9 +218,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             TextSpan(
                               text: 'Sign Up',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
-                                color: Colors.blue,
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
@@ -433,11 +234,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       InkWell(
                         onTap: () =>
                             Navigator.of(context).pushNamed("/resetpass"),
-                        child: const Text(
+                        child: Text(
                           'Forgot Password?',
                           style: TextStyle(
                             fontSize: 15,
-                            color: Colors.blue,
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),

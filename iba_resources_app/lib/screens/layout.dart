@@ -38,7 +38,7 @@ class _LayoutState extends State<Layout> {
           widget = const NotificationsScreen();
           break;
         case 4:
-          widget = const UserProfileScreen();
+          widget = const UserScreen();
           break;
         default:
           widget = const HomeScreen();
@@ -66,65 +66,21 @@ class _LayoutState extends State<Layout> {
       }
 
       return AppBar(
+        automaticallyImplyLeading: false,
         iconTheme: Theme.of(context).iconTheme,
         title: Text(
           title,
           style: const TextStyle(
-            // color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
-        // backgroundColor: const Theme.of(context).colorScheme.primary,
       );
     }
 
     return Scaffold(
       backgroundColor: const Color(0XFFF3F3F3),
       appBar: getAppbar(),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              accountName: const Text(
-                "Farhan Mushi",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              accountEmail: const Text(
-                "f.mushi.22971@khi.iba.edu.pk",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-              ),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.person,
-                  size: 50,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text("Settings"),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.contacts),
-              title: const Text("Contact Us"),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Sign Out"),
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
       bottomNavigationBar: CurvedNavigationBar(
         color: Theme.of(context).colorScheme.primary,
         backgroundColor: const Color(0XFFF3F3F3),
@@ -135,7 +91,7 @@ class _LayoutState extends State<Layout> {
             currentIndex = selectedIndex;
           });
         },
-        items: constants.Constants.bottomNavBarIcons,
+        items: constants.ConstantIcons.bottomNavBarIcons,
       ),
       body: getContent(currentIndex),
     );

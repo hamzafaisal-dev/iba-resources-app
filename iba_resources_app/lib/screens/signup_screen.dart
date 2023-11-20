@@ -2,7 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:iba_resources_app/screens/login_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
+import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
+import 'package:iba_resources_app/widgets/dividers/named_divider.dart';
+import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
+import 'package:iba_resources_app/widgets/textfields/email_text_form_field.dart';
+import 'package:iba_resources_app/widgets/textfields/name_form_field.dart';
+import 'package:iba_resources_app/widgets/textfields/password_form_field.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -15,11 +22,10 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool _isSigningUp = false;
-  bool _passwordHidden = true;
 
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  String name = '';
+  String email = '';
+  String password = '';
 
   final _signUpFormKey = GlobalKey<FormState>();
 
@@ -43,8 +49,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         final newUserCredentials =
             await _firebase.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
+          email: email,
+          password: password,
         );
 
         await FirebaseFirestore.instance
@@ -52,92 +58,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
             .doc(newUserCredentials.user!.uid)
             .set(
           {
-            "name": _nameController.text,
-            "email": _emailController.text,
+            "name": name,
+            "email": password,
           },
         ).then((value) {
           setState(() {
             _isSigningUp = false;
           });
 
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context).pushReplacementNamed('/layout');
         });
-
-        // _nameController.clear();
-        // _emailController.clear();
-        // _passwordController.clear();
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
         _isSigningUp = false;
       });
-      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        showSnackbar('INVALID_LOGIN_CREDENTIALS');
-      } else if (e.code == 'invalid-email') {
-        showSnackbar('Invalid email');
-      } else if (e.code == 'wrong-password') {
-        showSnackbar('Wrong password');
-      } else if (e.code == 'email-already-in-use') {
-        showSnackbar('Email already in use');
-      } else {
-        showSnackbar('Error: ${e.message}');
-      }
+
+      // get error statement and display it
+      String firebaseAuthError =
+          FirebaseAuthExceptionErrors.getFirebaseError(e);
+      showSnackbar(firebaseAuthError);
     } catch (error) {
-      _isSigningUp = false;
+      setState(() {
+        _isSigningUp = false;
+      });
+
       showSnackbar('Error: $error');
     }
   }
 
-  InputDecoration textFormFieldDecoration(
-    String labelText,
-    Widget prefixIcon,
-    Widget? suffixIcon,
-  ) {
-    return InputDecoration(
-      enabledBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1.5,
-          color: Colors.grey,
-        ),
-      ),
-      focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1.5,
-          color: Colors.black,
-        ),
-      ),
-      errorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1.5,
-          color: Colors.red,
-        ),
-      ),
-      focusedErrorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1.5,
-          color: Colors.red,
-        ),
-      ),
-      floatingLabelStyle: const TextStyle(
-        color: Colors.black,
-      ),
-      prefixIcon: prefixIcon,
-      labelText: labelText,
-      suffixIcon: suffixIcon,
-    );
-  }
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0XFFF3F3F3),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(24),
@@ -163,88 +134,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   // name input
-                  TextFormField(
-                    decoration: textFormFieldDecoration(
-                      'Enter name',
-                      const Icon(
-                        Icons.person_outline_sharp,
-                      ),
-                      null,
-                    ),
-                    cursorColor: Colors.black,
-                    controller: _nameController,
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim().length < 3) {
-                        return 'Name cannot be less than 3 characters';
-                      }
-
-                      return null;
+                  NameFormField(
+                    helperLabel: 'Enter name',
+                    leadingIcon: Icons.person_outline_sharp,
+                    setName: (enteredName) {
+                      name = enteredName;
                     },
                   ),
 
                   const SizedBox(height: 20),
 
                   // email input
-                  TextFormField(
-                    decoration: textFormFieldDecoration(
-                      'Enter email address',
-                      const Icon(
-                        Icons.email_outlined,
-                      ),
-                      null,
-                    ),
-                    cursorColor: Colors.black,
-                    keyboardType: TextInputType.emailAddress,
-                    controller: _emailController,
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          !value.contains('@khi.iba.edu.pk') ||
-                          value.trim().length < 20) {
-                        return 'Enter a valid IBA email address';
-                      }
-
-                      return null;
+                  EmailTextFormField(
+                    helperLabel: 'Enter email address',
+                    leadingIcon: Icons.email_outlined,
+                    setEmail: (enteredEmail) {
+                      email = enteredEmail;
                     },
                   ),
 
                   const SizedBox(height: 20),
 
                   // password input
-                  TextFormField(
-                    decoration: textFormFieldDecoration(
-                      "Enter password",
-                      const Icon(
-                        Icons.lock_outline,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _passwordHidden = !_passwordHidden;
-                          });
-                        },
-                        icon: _passwordHidden
-                            ? const Icon(
-                                Icons.visibility_off,
-                              )
-                            : const Icon(
-                                Icons.visibility,
-                              ),
-                      ),
-                    ),
-                    obscureText: _passwordHidden,
-                    controller: _passwordController,
-                    cursorColor: Colors.black,
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim().length < 6) {
-                        return 'Password should contain at least 6 characters ';
-                      }
-
-                      return null;
+                  PasswordFormField(
+                    helperLabel: 'Enter password',
+                    leadingIcon: Icons.lock_outline,
+                    setPassword: (enteredPassword) {
+                      password = enteredPassword;
                     },
                   ),
 
@@ -255,13 +171,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     width: MediaQuery.of(context).size.width,
                     child: FilledButton(
                       onPressed: handleSignUp,
-                      style: customButtonStyle,
+                      style: Theme.of(context).filledButtonTheme.style,
                       child: _isSigningUp
-                          ? const SizedBox(
-                              height: 18,
-                              width: 18,
-                              child: CircularProgressIndicator(),
-                            )
+                          ? const ButtonProgressIndicator()
                           : const Text(
                               'SIGN UP',
                               style: TextStyle(fontSize: 16),
@@ -272,57 +184,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 20),
 
                   //divider
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey,
-                          height: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          'OR',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey,
-                          height: 1,
-                        ),
-                      ),
-                    ],
+                  const NamedDivider(
+                    dividerText: 'OR',
+                    dividerColor: Colors.grey,
                   ),
 
                   const SizedBox(height: 20),
 
                   // google sign up btn
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: OutlinedButton(
-                      onPressed: () {},
-                      style: customButtonStyle,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/google-logo.png',
-                            width: 20,
-                            height: 20,
-                          ),
-                          const SizedBox(width: 10),
-                          const Text(
-                            'Sign-up with Google',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ],
-                      ),
-                    ),
+                  AuthProviderButton(
+                    imageSrc: 'assets/google-logo.png',
+                    buttonLabel: 'Sign in with Google',
+                    onTap: signInWithGoogle,
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.white,
                   ),
 
                   const SizedBox(height: 20),
@@ -336,8 +211,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         TextSpan(
                           text: 'Login',
-                          style:
-                              const TextStyle(fontSize: 15, color: Colors.blue),
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w900),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               Navigator.pushNamed(context, '/login');
