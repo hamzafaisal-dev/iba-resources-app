@@ -1,10 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:iba_resources_app/constants/constants.dart';
 import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/firebase_options.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
-import 'package:iba_resources_app/screens/contributions_screen.dart';
+import 'package:iba_resources_app/screens/rewards_screen.dart';
 import 'package:iba_resources_app/screens/error_screen.dart';
 import 'package:iba_resources_app/screens/home_screen.dart';
 import 'package:iba_resources_app/screens/landing_screen.dart';
@@ -21,6 +22,9 @@ import 'package:iba_resources_app/screens/user_profile_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -35,11 +39,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'IBARA',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 253, 127, 118),
           primary: const Color.fromARGB(255, 253, 127, 118),
-          secondary: const Color(0XFFFFF1F1),
+          primaryContainer: const Color(0XFFFFF1F1),
         ),
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.black,
@@ -50,7 +55,7 @@ class MyApp extends StatelessWidget {
           style: ButtonStyles.filledButtonStyle,
         ),
       ),
-      home: const LandingScreen(),
+      initialRoute: "/layout",
       routes: {
         "/layout": (context) => const Layout(),
         "/landing": (context) => const LandingScreen(),
@@ -63,7 +68,7 @@ class MyApp extends StatelessWidget {
         "/saved": (context) => const SavedResourcesScreen(),
         "/resource": (context) => const AddResourceScreen(),
         "/notifications": (context) => const NotificationsScreen(),
-        "/contributions": (context) => const ContributionsScreen(),
+        "/contributions": (context) => const RewardsScreen(),
         "/error": (context) => const ErrorScreen(),
       },
     );

@@ -8,42 +8,55 @@ class ButtonStyles {
       ),
     ),
     padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-      const EdgeInsets.symmetric(vertical: 18.0),
+      const EdgeInsets.symmetric(vertical: 18.0, horizontal: 10.0),
     ),
   );
 }
 
 class TextFormFieldStyles {
-  static InputDecoration textFormFieldDecoration(String labelText,
-      Widget prefixIcon, Widget? suffixIcon, BuildContext context) {
+  static InputDecoration textFormFieldDecoration(
+    String labelText,
+    Widget prefixIcon,
+    Widget? suffixIcon,
+    BuildContext context,
+  ) {
     return InputDecoration(
+      //
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(
           width: 1.5,
           color: Colors.grey,
         ),
       ),
+
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
           width: 1.5,
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
+
       errorBorder: const OutlineInputBorder(
         borderSide: BorderSide(
           width: 1.5,
           color: Colors.red,
         ),
       ),
+
       focusedErrorBorder: const OutlineInputBorder(
         borderSide: BorderSide(
           width: 1.5,
           color: Colors.red,
         ),
       ),
+
       floatingLabelStyle: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.bold),
+        color: Theme.of(context).colorScheme.primary,
+        fontWeight: FontWeight.bold,
+      ),
+
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+
       prefixIcon: prefixIcon,
       labelText: labelText,
       suffixIcon: suffixIcon,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_stat.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_tile.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 final _firebaseAuth = FirebaseAuth.instance;
 
@@ -44,7 +43,65 @@ class _UserScreenState extends State<UserScreen> {
             title: 'Farhan Mushi',
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
+
+          // Your Statistics
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              children: [
+                Text(
+                  'Your Statistics',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // user stats scroll
+          const SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.0),
+              child: Row(
+                children: [
+                  //
+                  UserProfileStat(
+                    statisticValue: 6,
+                    statisticName: 'Contributions',
+                  ),
+
+                  UserProfileStat(
+                    statisticValue: 40,
+                    statisticName: 'Points',
+                  ),
+
+                  UserProfileStat(
+                    statisticValue: 113,
+                    statisticName: 'Upvotes',
+                  ),
+
+                  UserProfileStat(
+                    statisticValue: 34,
+                    statisticName: 'Downvotes',
+                  ),
+
+                  UserProfileStat(
+                    statisticValue: 1,
+                    statisticName: 'Reports',
+                  )
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 20),
 
           // points card
           Card(
@@ -111,7 +168,26 @@ class _UserScreenState extends State<UserScreen> {
             ),
           ),
 
-          const SizedBox(height: 25),
+          const SizedBox(height: 20),
+
+          // redeem rewards
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              children: [
+                Text(
+                  'Redeem Rewards',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
 
           // enter rewards hub
           Stack(
@@ -156,64 +232,6 @@ class _UserScreenState extends State<UserScreen> {
                 ),
               ),
             ],
-          ),
-
-          const SizedBox(height: 25),
-
-          // Your Statistics
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              children: [
-                Text(
-                  'Your Statistics',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 25),
-
-          // user stats scroll
-          const SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.0),
-              child: Row(
-                children: [
-                  //
-                  UserProfileStat(
-                    statisticValue: 6,
-                    statisticName: 'Contributions',
-                  ),
-
-                  UserProfileStat(
-                    statisticValue: 40,
-                    statisticName: 'Points',
-                  ),
-
-                  UserProfileStat(
-                    statisticValue: 113,
-                    statisticName: 'Upvotes',
-                  ),
-
-                  UserProfileStat(
-                    statisticValue: 34,
-                    statisticName: 'Downvotes',
-                  ),
-
-                  UserProfileStat(
-                    statisticValue: 1,
-                    statisticName: 'Reports',
-                  )
-                ],
-              ),
-            ),
           ),
 
           const SizedBox(height: 20),

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ContributionsScreen extends StatelessWidget {
-  const ContributionsScreen({super.key});
+class RewardsScreen extends StatelessWidget {
+  const RewardsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Contributions'),
+        title: const Text('My Rewards'),
         centerTitle: true,
       ),
       body: const Center(
-        child: Text('Contributions Screen'),
+        child: Text('Rewards Screen'),
       ),
     );
   }
