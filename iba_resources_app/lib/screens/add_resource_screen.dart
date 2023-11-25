@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -22,6 +23,8 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
   final _yearController = TextEditingController();
 
   File? _selectedImage;
+
+  late FilePickerResult pickedFiles;
 
   String getFileExtension(String filePath) {
     return extension(filePath).toLowerCase();
@@ -68,28 +71,39 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
     // });
   }
 
-  Future<String> getFileDownloadUrl(File file) async {
-    String timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
+  // returns the download URL of given file
+  Future<String> _uploadToFirebaseStorage(File file) async {
+    String currentTimeStamp = DateTime.now().millisecondsSinceEpoch.toString();
 
     // get file name
     String fileName = basename(file.path);
 
-    // put file in documents collection
+    // put file in documents collection, files stored in a folder whose name is given by user, individual files will have their own names+currentTimeStamp to avoid duplicity
     final storageRef = FirebaseStorage.instance
         .ref()
         .child('documents')
         .child(_resourceNameController.text)
-        .child('$fileName-$timeStamp');
+        .child('$fileName-$currentTimeStamp');
 
     await storageRef.putFile(file);
 
-    // get file download url
     String fileUrl = await storageRef.getDownloadURL();
 
     return fileUrl;
   }
 
-  void uploadResource() async {
+  Future<FilePickerResult?> _selectFiles() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
+
+    if (result == null) return null;
+
+    pickedFiles = result;
+
+    return pickedFiles;
+  }
+
+  void _uploadResource() async {
     print(_resourceNameController.text);
     print(_resourceDescriptionController.text);
     print(_teacherNameController.text);
@@ -100,17 +114,12 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
 
     List<String> fileUrls = [];
 
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
+    // maps over each file path and converts to a File object, then converts to list
+    List<File> files = pickedFiles.paths.map((path) => File(path!)).toList();
 
-    if (result == null) return;
-
-    List<File> files = result.paths.map((path) => File(path!)).toList();
-
-    print(files.length);
-
+    // uploads each file to FB storage, gets individual download URL and adds URL to fileURLS list
     for (File file in files) {
-      String fileUrl = await getFileDownloadUrl(file);
+      String fileUrl = await _uploadToFirebaseStorage(file);
 
       fileUrls.add(fileUrl);
     }
@@ -119,11 +128,17 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
         .collection('resources')
         .doc('${_resourceNameController.text}-$timeStamp')
         .set({
-      'resourceName': _resourceNameController.text,
+      'resourceTitle': _resourceNameController.text,
+      'resourceFiles': fileUrls,
+      'uploader': 'Farhan Mushi', //FirebaseAuth.instance.currentUser,
       'teacherName': _teacherNameController.text,
+      'relevantFields': [],
       'semester': _semesterController.text,
       'year': _yearController.text,
-      'files': fileUrls,
+      'isActive': true,
+      'isDeleted': false,
+      'createdAt': DateTime.now(),
+      'updatedAt': null,
     });
 
     print(fileUrls);
@@ -146,7 +161,7 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
           const SizedBox(height: 20),
 
           FilledButton(
-            onPressed: () {},
+            onPressed: _selectFiles,
             child: const Icon(Icons.library_add_rounded),
           ),
 
@@ -193,7 +208,7 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
           const SizedBox(height: 20),
 
           FilledButton(
-            onPressed: uploadResource,
+            onPressed: _uploadResource,
             child: const Icon(Icons.upload),
           )
         ],

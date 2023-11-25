@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:iba_resources_app/models/resource.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,8 +20,11 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final fireStoreInstance = FirebaseFirestore.instance;
 
+      // fetches all documents in the resources collection
       final resources = await fireStoreInstance.collection('resources').get();
 
+      // resources.docs returns a list of QueryDocumentSnapshot
+      // maps over the list, converts each document into a Resource, returns list of Resources
       List<Resource> allFetchedResources = resources.docs.map((docSnapshot) {
         return Resource.fromJson(docSnapshot.data());
       }).toList();
@@ -28,6 +32,19 @@ class _HomeScreenState extends State<HomeScreen> {
       return allFetchedResources;
     } catch (error) {
       throw Exception(error.toString());
+    }
+  }
+
+  void downloadResource(List<dynamic> fileDownloadUrls) async {
+    // takes in list of download URLs, loops over the list, downloads each file onto phone
+    for (String fileUrl in fileDownloadUrls) {
+      await FileDownloader.downloadFile(
+        url: fileUrl,
+        onDownloadCompleted: (path) {
+          // final File file = File(path);
+          print('Download successful!');
+        },
+      );
     }
   }
 
@@ -48,6 +65,9 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         if (snapshot.hasData) {
+          if (snapshot.data!.isEmpty)
+            return const Text('No resources uploaded');
+
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
@@ -57,7 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   title: Text(resourceObject.resourceTitle),
                   trailing: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (resourceObject.resourceFiles == null) return;
+
+                      downloadResource(resourceObject.resourceFiles!);
+                    },
                     icon: const Icon(Icons.download),
                   ),
                 ),
