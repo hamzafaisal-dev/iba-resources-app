@@ -7,9 +7,9 @@ import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
 import 'package:iba_resources_app/widgets/dividers/named_divider.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
-import 'package:iba_resources_app/widgets/textfields/email_text_form_field.dart';
-import 'package:iba_resources_app/widgets/textfields/name_form_field.dart';
-import 'package:iba_resources_app/widgets/textfields/password_form_field.dart';
+import 'package:iba_resources_app/widgets/textfields/auth_fields/email_text_form_field.dart';
+import 'package:iba_resources_app/widgets/textfields/auth_fields/name_form_field.dart';
+import 'package:iba_resources_app/widgets/textfields/auth_fields/password_form_field.dart';
 
 final _firebase = FirebaseAuth.instance;
 

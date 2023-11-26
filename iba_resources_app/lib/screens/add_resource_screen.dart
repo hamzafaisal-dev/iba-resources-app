@@ -5,8 +5,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:iba_resources_app/widgets/dropdowns/custom_dropdown.dart';
 import 'package:iba_resources_app/widgets/image_input.dart';
+import 'package:iba_resources_app/widgets/textfields/custom_text_field.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
+import 'package:iba_resources_app/constants/dropdown_items.dart';
 
 class AddResourceScreen extends StatefulWidget {
   const AddResourceScreen({super.key});
@@ -28,47 +33,6 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
 
   String getFileExtension(String filePath) {
     return extension(filePath).toLowerCase();
-  }
-
-  void addResource() async {
-    // get extension of selected file
-    String fileExtension = getFileExtension(_selectedImage!.path);
-
-    // 1. ref gives reference to Firebase cloud storage bucket
-    // 2. child creates new path in storage bucket
-    // 3. 'user_images' is a new folder where you will store your images. folder name is upto us
-    // 4. we gave a custom name to the file based on user's uid
-    final storageRef = FirebaseStorage.instance
-        .ref()
-        .child('documents')
-        .child('booty-shake$fileExtension');
-
-    // put selected image in the folder we created and it's name will be the one we specified
-    await storageRef.putFile(_selectedImage!);
-
-    // gives URL to image
-    final imageUrl = await storageRef.getDownloadURL();
-
-    print(imageUrl);
-
-    // await FileDownloader.downloadFile(
-    //   url: imageUrl,
-    //   onDownloadCompleted: (path) {
-    //     final File file = File(path);
-    //   },
-    // );
-
-    // // 1. create instance of Firestore and create new collection in it called users
-    // // 2. then we create a new document in it and it's name is our user's uid
-    // // 3. then we set new data in that document
-    // await FirebaseFirestore.instance
-    //     .collection('users')
-    //     .doc('new-image.jpg')
-    //     .set({
-    //   'userName': _enteredUsername,
-    //   'email': _enteredEmail,
-    //   'image_url': imageUrl
-    // });
   }
 
   // returns the download URL of given file
@@ -104,12 +68,6 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
   }
 
   void _uploadResource() async {
-    print(_resourceNameController.text);
-    print(_resourceDescriptionController.text);
-    print(_teacherNameController.text);
-    print(_semesterController.text);
-    print(_yearController.text);
-
     String timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
 
     List<String> fileUrls = [];
@@ -146,70 +104,44 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: ListView(
         children: [
           //
-          const SizedBox(height: 20),
-
-          Text(
-            'Select A Resource',
-            style:
-                Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
+          Container(
+            height: 300,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              border: Border.all(
+                width: 1,
+              ),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+            child: Lottie.asset(
+              'assets/FileUploadAnimation.json',
+              repeat: false,
+              frameRate: FrameRate(420),
+              height: 300,
+            ),
           ),
 
           const SizedBox(height: 20),
 
           FilledButton(
-            onPressed: _selectFiles,
-            child: const Icon(Icons.library_add_rounded),
-          ),
-
-          const SizedBox(height: 20),
-
-          Text(
-            'Add Description',
-            style:
-                Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
-          ),
-
-          TextField(
-            controller: _resourceNameController,
-            decoration: InputDecoration(labelText: 'Enter resource name'),
-          ),
-
-          TextField(
-            controller: _resourceDescriptionController,
-            decoration: InputDecoration(labelText: 'Enter reour description'),
-          ),
-          TextField(
-            controller: _teacherNameController,
-            decoration: InputDecoration(labelText: 'Enter teacher name'),
-          ),
-
-          TextField(
-            controller: _semesterController,
-            decoration: InputDecoration(labelText: 'Enter  semester'),
-          ),
-
-          TextField(
-            controller: _yearController,
-            decoration: InputDecoration(labelText: 'Enter year'),
-          ),
-
-          const SizedBox(height: 20),
-
-          Text(
-            'Upload This',
-            style:
-                Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
-          ),
-
-          const SizedBox(height: 20),
-
-          FilledButton(
-            onPressed: _uploadResource,
-            child: const Icon(Icons.upload),
+            onPressed: () {
+              Navigator.of(context).pushNamed("/resourceDetails");
+            },
+            child: Text(
+              'Select Files',
+              style: GoogleFonts.urbanist(
+                fontWeight: FontWeight.w600,
+                fontSize: 23,
+              ),
+            ),
           )
         ],
       ),

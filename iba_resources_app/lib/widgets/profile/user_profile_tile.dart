@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 class UserProfileTile extends StatelessWidget {
-  const UserProfileTile(
-      {super.key,
-      required this.leadingIcon,
-      required this.title,
-      this.leadingIconSize,
-      this.trailing,
-      this.onTap});
+  const UserProfileTile({
+    super.key,
+    required this.leadingIcon,
+    required this.title,
+    this.leadingIconSize,
+    this.trailing,
+    this.onTap,
+  });
 
   final IconData leadingIcon;
   final double? leadingIconSize;

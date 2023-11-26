@@ -79,7 +79,7 @@ class _LayoutState extends State<Layout> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0XFFF3F3F3),
+      // backgroundColor: const Color(0XFFF3F3F3),
       appBar: getAppbar(),
       bottomNavigationBar: CurvedNavigationBar(
         color: Theme.of(context).colorScheme.primary,

@@ -4,6 +4,7 @@ class Resource {
   const Resource({
     required this.resourceTitle,
     required this.resourceFiles,
+    required this.resourceDescription,
     required this.uploader,
     required this.teacherName,
     required this.relevantFields,
@@ -18,7 +19,7 @@ class Resource {
   final String resourceTitle;
   final String uploader;
   final String teacherName;
-
+  final String resourceDescription;
   final List<dynamic>? resourceFiles;
 
   final List<dynamic>? relevantFields;
@@ -34,6 +35,8 @@ class Resource {
     return Resource(
       resourceTitle: resourceData['resourceTitle'],
       resourceFiles: resourceData['resourceFiles'],
+      resourceDescription: resourceData['resourceDescription'],
+
       uploader: resourceData['uploader'],
       teacherName: resourceData['teacherName'],
       relevantFields: resourceData['relevantFields'],

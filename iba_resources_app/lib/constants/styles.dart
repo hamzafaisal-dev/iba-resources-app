@@ -16,7 +16,7 @@ class ButtonStyles {
 class TextFormFieldStyles {
   static InputDecoration textFormFieldDecoration(
     String labelText,
-    Widget prefixIcon,
+    Widget? prefixIcon,
     Widget? suffixIcon,
     BuildContext context,
   ) {
@@ -36,17 +36,17 @@ class TextFormFieldStyles {
         ),
       ),
 
-      errorBorder: const OutlineInputBorder(
+      errorBorder: OutlineInputBorder(
         borderSide: BorderSide(
           width: 1.5,
-          color: Colors.red,
+          color: Theme.of(context).colorScheme.error,
         ),
       ),
 
-      focusedErrorBorder: const OutlineInputBorder(
+      focusedErrorBorder: OutlineInputBorder(
         borderSide: BorderSide(
           width: 1.5,
-          color: Colors.red,
+          color: Theme.of(context).colorScheme.error,
         ),
       ),
 
@@ -58,8 +58,11 @@ class TextFormFieldStyles {
       floatingLabelBehavior: FloatingLabelBehavior.never,
 
       prefixIcon: prefixIcon,
-      labelText: labelText,
+      prefixIconConstraints: prefixIcon != null
+          ? const BoxConstraints.tightFor(width: 10)
+          : const BoxConstraints(),
       suffixIcon: suffixIcon,
+      labelText: labelText,
     );
   }
 }

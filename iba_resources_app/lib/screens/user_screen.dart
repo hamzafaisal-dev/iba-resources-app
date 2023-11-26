@@ -46,16 +46,16 @@ class _UserScreenState extends State<UserScreen> {
           const SizedBox(height: 20),
 
           // Your Statistics
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               children: [
                 Text(
                   'Your Statistics',
                   style: TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ],
@@ -141,7 +141,6 @@ class _UserScreenState extends State<UserScreen> {
                   const SizedBox(height: 12),
 
                   LinearPercentIndicator(
-                    // fillColor: Theme.of(context).colorScheme.primary,
                     progressColor: Theme.of(context).colorScheme.primary,
                     percent: 0.4,
                     padding: EdgeInsets.zero,
@@ -151,14 +150,14 @@ class _UserScreenState extends State<UserScreen> {
 
                   const SizedBox(height: 12),
 
-                  const Row(
+                  Row(
                     children: [
                       Text(
                         'You need 60 more points to advance to Level 2',
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0XFF8C959C),
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
                     ],
@@ -171,16 +170,16 @@ class _UserScreenState extends State<UserScreen> {
           const SizedBox(height: 20),
 
           // redeem rewards
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               children: [
                 Text(
                   'Redeem Rewards',
                   style: TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ],
@@ -211,8 +210,8 @@ class _UserScreenState extends State<UserScreen> {
                         child: Text(
                           'Enter Rewards Hub',
                           style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
