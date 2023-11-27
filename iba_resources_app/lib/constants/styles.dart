@@ -65,4 +65,37 @@ class TextFormFieldStyles {
       labelText: labelText,
     );
   }
+
+  static InputDecoration dropDownFormDecoration(BuildContext context) {
+    return InputDecoration(
+      //
+      enabledBorder: const OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1.5,
+          color: Colors.grey,
+        ),
+      ),
+
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1.5,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1.5,
+          color: Theme.of(context).colorScheme.error,
+        ),
+      ),
+
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1.5,
+          color: Theme.of(context).colorScheme.error,
+        ),
+      ),
+    );
+  }
 }

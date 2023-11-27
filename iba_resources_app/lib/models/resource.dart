@@ -5,6 +5,7 @@ class Resource {
     required this.resourceTitle,
     required this.resourceFiles,
     required this.resourceDescription,
+    required this.resourceType,
     required this.uploader,
     required this.teacherName,
     required this.relevantFields,
@@ -20,6 +21,8 @@ class Resource {
   final String uploader;
   final String teacherName;
   final String resourceDescription;
+  final String resourceType;
+
   final List<dynamic>? resourceFiles;
 
   final List<dynamic>? relevantFields;
@@ -36,7 +39,7 @@ class Resource {
       resourceTitle: resourceData['resourceTitle'],
       resourceFiles: resourceData['resourceFiles'],
       resourceDescription: resourceData['resourceDescription'],
-
+      resourceType: resourceData['resourceType'],
       uploader: resourceData['uploader'],
       teacherName: resourceData['teacherName'],
       relevantFields: resourceData['relevantFields'],

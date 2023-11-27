@@ -18,7 +18,7 @@ class CustomTextFormField extends StatefulWidget {
   final int? maxInputLength;
   final int? maxInputLines;
 
-  final void Function(String email) setInput;
+  final void Function(String input) setInput;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -54,6 +54,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           return 'Enter a valid input';
         }
 
+        print('object');
         widget.setInput(value);
         return null;
       },

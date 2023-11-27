@@ -6,7 +6,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iba_resources_app/constants/dropdown_items.dart';
+import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/widgets/dropdowns/custom_dropdown.dart';
+import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
+import 'package:iba_resources_app/widgets/resource_details_widgets/degree_chip.dart';
 import 'package:iba_resources_app/widgets/textfields/custom_text_field.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
@@ -20,19 +23,30 @@ class AddResourceDetailsScreen extends StatefulWidget {
 }
 
 class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
-  final _resourceNameController = TextEditingController();
-
-  final _resourceDescriptionController = TextEditingController();
-
-  final _teacherNameController = TextEditingController();
-
-  final _semesterController = TextEditingController();
-
-  final _yearController = TextEditingController();
+  String _resourceTitle = '';
+  String _resourceDescription = '';
+  String _teacherName = '';
+  String _selectedRelevantField = '';
+  final List<String> _relevantFields = [];
+  String _resourceType = '';
+  String _semester = '';
+  String _year = '';
 
   late FilePickerResult pickedFiles;
 
+  bool _isLoading = false;
+
   final _createResourceFormKey = GlobalKey<FormState>();
+
+  void _addRelevantDegree(String? relevantDegree) {
+    if (relevantDegree != null && relevantDegree.isNotEmpty) {
+      if (_relevantFields.contains(relevantDegree)) return;
+
+      setState(() {
+        _relevantFields.add(relevantDegree);
+      });
+    }
+  }
 
   // returns the download URL of given file
   Future<String> _uploadToFirebaseStorage(File file) async {
@@ -41,11 +55,11 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
     // get file name
     String fileName = basename(file.path);
 
-    // put file in documents collection, files stored in a folder whose name is given by user, individual files will have their own names+currentTimeStamp to avoid duplicity
+    // put file in documents collection, files stored in a folder whose name is given by user, individual filenames will be their own names+currentTimeStamp to avoid duplicity
     final storageRef = FirebaseStorage.instance
         .ref()
         .child('documents')
-        .child(_resourceNameController.text)
+        .child(_resourceTitle)
         .child('$fileName-$currentTimeStamp');
 
     await storageRef.putFile(file);
@@ -57,6 +71,8 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
 
   void _uploadResource() async {
     try {
+      setState(() => _isLoading = true);
+
       String timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
 
       List<String> fileUrls = [];
@@ -73,30 +89,42 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
 
       await FirebaseFirestore.instance
           .collection('resources')
-          .doc('${_resourceNameController.text}-$timeStamp')
+          .doc('$_resourceTitle-$timeStamp')
           .set({
-        'resourceTitle': _resourceNameController.text,
+        'resourceTitle': _resourceTitle,
         'resourceFiles': fileUrls,
-        'resourceDescription': _resourceDescriptionController.text,
+        'resourceDescription': _resourceDescription,
+        'resourceType': _resourceType,
         'uploader': 'Farhan Mushi', //FirebaseAuth.instance.currentUser,
-        'teacherName': _teacherNameController.text,
-        'relevantFields': [],
-        'semester': _semesterController.text,
-        'year': _yearController.text,
+        'teacherName': _teacherName,
+        'relevantFields': _relevantFields,
+        'semester': _semester,
+        'year': _year,
         'isActive': true,
         'isDeleted': false,
         'createdAt': DateTime.now(),
         'updatedAt': null,
       });
 
-      print(fileUrls);
+      setState(() => _isLoading = false);
+
+      // print(fileUrls);
     } catch (error) {
-      print(error.toString());
+      setState(() => _isLoading = false);
+
+      // print(error.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // extracts the arguments from the current AddResourceScreen settings and cast them as a Map.
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    // get files from the previous screen
+    pickedFiles = args["pickedFiles"];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -116,59 +144,62 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
             children: [
               //
 
-              // const SizedBox(height: 20),
-
-              // // Add Details
-              // Text(
-              //   'Add Details',
-              //   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              //         fontSize: 24,
-              //         color: Theme.of(context).colorScheme.tertiary,
-              //       ),
-              // ),
-
               const SizedBox(height: 5),
 
+              // resource name field
               CustomTextFormField(
                 labelText: 'Enter resource name',
                 hintText: 'Eg. Business Communication Midterm Exam',
                 maxInputLength: 45,
-                setInput: (value) {},
+                setInput: (String resourceName) {
+                  _resourceTitle = resourceName;
+                },
               ),
 
               const SizedBox(height: 24),
 
+              // resource description field
               CustomTextFormField(
                 labelText: 'Write a short description',
                 hintText: 'Eg. Pictures of B.Comm midterm exam',
-                maxInputLength: 500,
-                maxInputLines: 11,
-                setInput: (value) {},
+                maxInputLength: 300,
+                maxInputLines: 8,
+                setInput: (String resourceDescription) {
+                  _resourceDescription = resourceDescription;
+                },
               ),
 
               const SizedBox(height: 24),
 
+              // teacher name field
               CustomTextFormField(
                 labelText: 'Who taught this course?',
                 hintText: 'Eg. Ms. Fatima Hatim Anjary',
                 maxInputLength: 45,
-                setInput: (value) {},
+                setInput: (String teacherName) {
+                  _teacherName = teacherName;
+                },
               ),
 
               const SizedBox(height: 24),
 
+              // relevant degrees dropdown
               Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   // relevantFields dropdwon
                   CustomDropdown(
                     dropDownMenuItems: DropdownItems.degreePrograms,
                     labelText: 'Select relevant fields',
+                    hintText: 'Eg. BSCS',
                     width: MediaQuery.of(context).size.width / 1.35,
+                    setInput: (String relevantDegreeOption) {
+                      _selectedRelevantField = relevantDegreeOption;
+                    },
                   ),
 
                   const Spacer(),
 
+                  // add relevant degree button
                   Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
@@ -177,7 +208,9 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                     height: 58,
                     width: 58,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _addRelevantDegree(_selectedRelevantField);
+                      },
                       icon: const Icon(
                         Icons.add,
                         size: 32,
@@ -190,52 +223,20 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
 
               const SizedBox(height: 4),
 
+              // relevant degree chip tiles container
               Wrap(
                 direction: Axis.horizontal,
                 clipBehavior: Clip.none,
                 children: [
-                  // individual degree chip
-                  Container(
-                    margin: const EdgeInsets.only(right: 5),
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        //
-                        const Chip(
-                          label: Text('MS (Development Studies)'),
-                        ),
-
-                        Positioned(
-                          right: -4,
-                          top: 3,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: InkWell(
-                                onTap: () {
-                                  print('Potty');
-                                },
-                                child: const Icon(
-                                  Icons.clear,
-                                  size: 14,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                  ..._relevantFields.map(
+                    (relevantField) => DegreeChip(label: relevantField),
                   ),
                 ],
               ),
 
               const SizedBox(height: 15),
 
+              // semester + year + type dropdowns
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -243,7 +244,11 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                   CustomDropdown(
                     dropDownMenuItems: DropdownItems.semesterDropdownItems,
                     labelText: 'Select semester',
-                    width: MediaQuery.of(context).size.width / 2.3,
+                    hintText: 'Fall',
+                    width: MediaQuery.of(context).size.width / 3.6,
+                    setInput: (String semesterOption) {
+                      _semester = semesterOption;
+                    },
                   ),
 
                   const SizedBox(width: 18),
@@ -252,26 +257,48 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                   CustomDropdown(
                     dropDownMenuItems: DropdownItems.yearDropdownItems,
                     labelText: 'Select year',
-                    width: MediaQuery.of(context).size.width / 2.3,
+                    hintText: '2010',
+                    width: MediaQuery.of(context).size.width / 3.6,
+                    setInput: (String yearOption) {
+                      _year = yearOption;
+                    },
+                  ),
+
+                  const SizedBox(width: 18),
+
+                  // resource type dropdown
+                  CustomDropdown(
+                    dropDownMenuItems: DropdownItems.resourceTypes,
+                    labelText: 'Select type',
+                    hintText: 'Quiz',
+                    width: MediaQuery.of(context).size.width / 3.6,
+                    setInput: (String typeOption) {
+                      _resourceType = typeOption;
+                    },
                   ),
                 ],
               ),
 
               const SizedBox(height: 24),
 
+              // upload resource button
               FilledButton(
-                onPressed: () {
-                  if (_createResourceFormKey.currentState!.validate()) {
-                    _uploadResource();
-                  }
-                },
-                child: Text(
-                  'Upload Resource',
-                  style: GoogleFonts.urbanist(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 23,
-                  ),
-                ),
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                        if (_createResourceFormKey.currentState!.validate()) {
+                          _uploadResource();
+                        }
+                      },
+                child: _isLoading
+                    ? const ButtonProgressIndicator()
+                    : Text(
+                        'Upload Resource',
+                        style: GoogleFonts.urbanist(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 23,
+                        ),
+                      ),
               )
             ],
           ),

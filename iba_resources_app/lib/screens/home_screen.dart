@@ -31,7 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
       return allFetchedResources;
     } catch (error) {
-      throw Exception(error.toString());
+      return [];
+      // throw Exception(error.toString());
     }
   }
 

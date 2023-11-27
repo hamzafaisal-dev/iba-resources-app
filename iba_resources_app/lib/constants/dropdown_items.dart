@@ -1,10 +1,18 @@
-import 'package:flutter/material.dart';
-
 class DropdownItems {
   static const semesterDropdownItems = [
     'Fall',
     'Spring',
     'Summer',
+  ];
+
+  static const resourceTypes = [
+    'Final Exam',
+    'Mid Exam',
+    'Quiz',
+    'Notes (from teacher)',
+    'Notes (self-made)',
+    'Slides',
+    'Other',
   ];
 
   static const yearDropdownItems = [
