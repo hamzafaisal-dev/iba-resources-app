@@ -1,6 +1,8 @@
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iba_resources_app/constants/icons.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
 import 'package:lottie/lottie.dart';
 
 class HomeScreenLayout extends StatefulWidget {
@@ -83,13 +85,14 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                       ),
                     ],
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.search),
-                      SizedBox(width: 8),
+                      const Icon(Icons.search),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
-                          decoration: InputDecoration(
+                          controller: _searchBarController,
+                          decoration: const InputDecoration(
                             hintText: 'Search for resources',
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
@@ -135,6 +138,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
 
         const SizedBox(height: 18),
 
+        // all resources container
         Container(
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -145,13 +149,15 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
           ),
           width: MediaQuery.of(context).size.width,
           height: 1200,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //
-                const Text(
+
+                // Latest Uploads
+                Text(
                   'Latest Uploads ⚡',
                   style: TextStyle(
                     fontSize: 22,
@@ -159,181 +165,10 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                   ),
                 ),
 
-                const SizedBox(height: 18),
+                SizedBox(height: 18),
 
-                // resource container
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 15,
-                  ),
-                  margin: const EdgeInsets.only(bottom: 14),
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //
-
-                      // resource title
-                      const Text(
-                        'The quick brown fox jumps over the lazy dog',
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w900,
-                          color: Color.fromARGB(255, 246, 246, 246),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      // resource description
-                      const Text(
-                        'The quick brown fox jumps over the lazy dogfdgf...',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: Color.fromARGB(255, 246, 246, 246),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      // resource type + likes/dislikes buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // resource type
-                          const Chip(
-                            label: Text(
-                              'Quiz',
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            ),
-                            backgroundColor: Colors.white,
-                          ),
-
-                          // likes + dislikes
-                          Row(
-                            children: [
-                              // likes button
-                              const Chip(
-                                backgroundColor: Colors.white,
-                                label: Row(
-                                  children: [
-                                    //
-                                    Text(
-                                      '743',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-
-                                    SizedBox(width: 4),
-
-                                    FaIcon(
-                                      FontAwesomeIcons.thumbsUp,
-                                      size: 18,
-                                    ),
-                                  ],
-                                ),
-                                labelPadding:
-                                    EdgeInsets.symmetric(horizontal: 10),
-                              ),
-
-                              const SizedBox(width: 8),
-
-                              // dislikes button
-                              Chip(
-                                backgroundColor: Colors.white,
-                                label: Row(
-                                  children: [
-                                    //
-                                    const Text(
-                                      '22',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-
-                                    const SizedBox(width: 4),
-
-                                    Transform(
-                                      alignment: Alignment.center,
-                                      transform: Matrix4.rotationY(3.14),
-                                      child: const FaIcon(
-                                        FontAwesomeIcons.thumbsDown,
-                                        size: 18,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                labelPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      // pfp + name + save button
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //
-                          const Row(
-                            children: [
-                              //
-                              CircleAvatar(
-                                radius: 18,
-                                backgroundImage:
-                                    AssetImage('assets/avatar.png'),
-                              ),
-
-                              SizedBox(width: 4),
-
-                              Text(
-                                'Harry Potter',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          Transform.scale(
-                            scale: 2.6,
-                            child: ColorFiltered(
-                              colorFilter: const ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcATop,
-                              ),
-                              child: Lottie.asset(
-                                'assets/Bookmark.json',
-                                width: 20,
-                                repeat: false,
-                                frameRate: FrameRate(420),
-                              ),
-                            ),
-                          ),
-
-                          // FaIcon(FontAwesomeIcons.bookmark)
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                // resource tile
+                ResourceTile()
               ],
             ),
           ),
@@ -342,3 +177,19 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
     );
   }
 }
+
+// Transform.scale(
+//                             scale: 2.6,
+//                             child: ColorFiltered(
+//                               colorFilter: const ColorFilter.mode(
+//                                 Colors.white,
+//                                 BlendMode.srcATop,
+//                               ),
+//                               child: Lottie.asset(
+//                                 'assets/Bookmark.json',
+//                                 width: 20,
+//                                 repeat: false,
+//                                 frameRate: FrameRate(420),
+//                               ),
+//                             ),
+//                           ),

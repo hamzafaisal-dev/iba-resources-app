@@ -6,7 +6,7 @@ import 'package:iba_resources_app/screens/home_screen.dart';
 import 'package:iba_resources_app/screens/notifications_screen.dart';
 import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/screens/user_profile_screen.dart';
-import 'package:iba_resources_app/constants/constants.dart' as constants;
+import 'package:iba_resources_app/constants/icons.dart' as constants;
 import 'package:iba_resources_app/screens/user_screen.dart';
 
 class Layout extends StatefulWidget {

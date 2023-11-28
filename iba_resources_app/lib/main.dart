@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iba_resources_app/constants/constants.dart';
+import 'package:iba_resources_app/constants/icons.dart';
 import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/firebase_options.dart';
 import 'package:iba_resources_app/screens/add_resource_details_screen.dart';
@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
 
         textTheme: GoogleFonts.urbanistTextTheme(),
       ),
-      initialRoute: "/layout",
+      initialRoute: "/landing",
       routes: {
         "/layout": (context) => const Layout(),
         "/landing": (context) => const LandingScreen(),

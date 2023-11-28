@@ -59,7 +59,7 @@ class TextFormFieldStyles {
 
       prefixIcon: prefixIcon,
       prefixIconConstraints: prefixIcon != null
-          ? const BoxConstraints.tightFor(width: 10)
+          ? const BoxConstraints.tightFor(width: 40)
           : const BoxConstraints(),
       suffixIcon: suffixIcon,
       labelText: labelText,

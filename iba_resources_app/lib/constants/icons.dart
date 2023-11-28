@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ConstantIcons {
   static const bottomNavBarIcons = [
@@ -28,4 +29,20 @@ class ConstantIcons {
       size: 30,
     ),
   ];
+}
+
+class HomeScreenIcons {
+  static Widget thumbsUp = const FaIcon(
+    FontAwesomeIcons.thumbsUp,
+    size: 18,
+  );
+
+  static Widget thumbsDown = Transform(
+    alignment: Alignment.center,
+    transform: Matrix4.rotationY(3.14),
+    child: const FaIcon(
+      FontAwesomeIcons.thumbsDown,
+      size: 18,
+    ),
+  );
 }
