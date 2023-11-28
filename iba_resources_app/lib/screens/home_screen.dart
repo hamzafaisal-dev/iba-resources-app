@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:iba_resources_app/models/resource.dart';
+import 'package:iba_resources_app/screens/home_screen_layout.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -66,29 +67,31 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         if (snapshot.hasData) {
-          if (snapshot.data!.isEmpty)
+          if (snapshot.data!.isEmpty) {
             return const Text('No resources uploaded');
+          }
 
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              var resourceObject = snapshot.data![index];
+          return const HomeScreenLayout();
+          // ListView.builder(
+          //   itemCount: snapshot.data!.length,
+          //   itemBuilder: (context, index) {
+          //     var resourceObject = snapshot.data![index];
 
-              return Card(
-                child: ListTile(
-                  title: Text(resourceObject.resourceTitle),
-                  trailing: IconButton(
-                    onPressed: () {
-                      if (resourceObject.resourceFiles == null) return;
+          //     return Card(
+          //       child: ListTile(
+          //         title: Text(resourceObject.resourceTitle),
+          //         trailing: IconButton(
+          //           onPressed: () {
+          //             if (resourceObject.resourceFiles == null) return;
 
-                      downloadResource(resourceObject.resourceFiles!);
-                    },
-                    icon: const Icon(Icons.download),
-                  ),
-                ),
-              );
-            },
-          );
+          //             downloadResource(resourceObject.resourceFiles!);
+          //           },
+          //           icon: const Icon(Icons.download),
+          //         ),
+          //       ),
+          //     );
+          //   },
+          // );
         }
 
         return const Text('Loading...');

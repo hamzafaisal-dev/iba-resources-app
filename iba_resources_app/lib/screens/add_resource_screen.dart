@@ -40,7 +40,7 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: ListView(
         children: [
-          //
+          // animaton
           Container(
             //
             height: 300,
@@ -66,6 +66,7 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
 
           const SizedBox(height: 20),
 
+          // select files button
           FilledButton(
             onPressed: () {
               _selectFiles(context);
@@ -97,35 +98,37 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
                   ),
                 ),
 
-                InkWell(
-                  onTap: () => {
-                    Navigator.of(context).pushNamed(
-                      "/resourceDetails",
-                      arguments: {"pickedFiles": pickedFiles},
-                    )
-                  },
-                  child: Row(
-                    children: [
-                      //
-                      Text(
-                        'Proceed',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                // proceed to add reource details screen
+                if (pickedFiles != null && pickedFiles!.files.isNotEmpty)
+                  InkWell(
+                    onTap: () => {
+                      Navigator.of(context).pushNamed(
+                        "/resourceDetails",
+                        arguments: {"pickedFiles": pickedFiles},
+                      )
+                    },
+                    child: Row(
+                      children: [
+                        //
+                        Text(
+                          'Proceed',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+
+                        const SizedBox(width: 4),
+
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
                           color: Theme.of(context).colorScheme.primary,
                         ),
-                      ),
-
-                      const SizedBox(width: 4),
-
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ],
-                  ),
-                )
+                      ],
+                    ),
+                  )
               ],
             ),
           ),

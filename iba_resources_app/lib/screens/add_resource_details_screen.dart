@@ -9,7 +9,7 @@ import 'package:iba_resources_app/constants/dropdown_items.dart';
 import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/widgets/dropdowns/custom_dropdown.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
-import 'package:iba_resources_app/widgets/resource_details_widgets/degree_chip.dart';
+import 'package:iba_resources_app/widgets/add_resource_all_widgets/degree_chip.dart';
 import 'package:iba_resources_app/widgets/textfields/custom_text_field.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
@@ -183,7 +183,7 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
 
               const SizedBox(height: 24),
 
-              // relevant degrees dropdown
+              // relevant degrees dropdown + add button
               Row(
                 children: [
                   // relevantFields dropdwon
