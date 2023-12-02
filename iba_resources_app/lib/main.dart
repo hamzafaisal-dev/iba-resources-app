@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iba_resources_app/constants/icons.dart';
 import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/firebase_options.dart';
+import 'package:iba_resources_app/route_generator.dart';
 import 'package:iba_resources_app/screens/add_resource_details_screen.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
 import 'package:iba_resources_app/screens/rewards_screen.dart';
@@ -20,6 +22,7 @@ import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/screens/signup_screen.dart';
 import 'package:iba_resources_app/screens/splash_screen.dart';
 import 'package:iba_resources_app/screens/user_profile_screen.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +34,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -68,23 +75,9 @@ class MyApp extends StatelessWidget {
 
         textTheme: GoogleFonts.urbanistTextTheme(),
       ),
-      initialRoute: "/landing",
-      routes: {
-        "/layout": (context) => const Layout(),
-        "/landing": (context) => const LandingScreen(),
-        "/home": (context) => const HomeScreen(),
-        "/login": (context) => const LoginScreen(),
-        "/signup": (context) => const SignUpScreen(),
-        "/resetpass": (context) => const ResetPasswordScreen(),
-        "/otp": (context) => const OTPScreen(),
-        "/profile": (context) => const UserProfileScreen(),
-        "/saved": (context) => const SavedResourcesScreen(),
-        "/resource": (context) => const AddResourceScreen(),
-        "/resourceDetails": (context) => const AddResourceDetailsScreen(),
-        "/notifications": (context) => const NotificationsScreen(),
-        "/contributions": (context) => const RewardsScreen(),
-        "/error": (context) => const ErrorScreen(),
-      },
+      onGenerateRoute: RouteGenerator.generateRoutes,
+      navigatorKey: NavigationService.navigatorKey,
+      home: const LandingScreen(),
     );
   }
 }

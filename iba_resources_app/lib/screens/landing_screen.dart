@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:lottie/lottie.dart';
 
 final ButtonStyle customButtonStyle = ButtonStyle(
@@ -62,7 +63,7 @@ class LandingScreen extends StatelessWidget {
                     width: MediaQuery.of(context).size.width / 2.5,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/login');
+                        NavigationService.routeToReplacementNamed('/login');
                       },
                       style: customButtonStyle,
                       child: const Text(
@@ -77,7 +78,7 @@ class LandingScreen extends StatelessWidget {
                     width: MediaQuery.of(context).size.width / 2.5,
                     child: FilledButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/signup');
+                        NavigationService.routeToReplacementNamed('/signup');
                       },
                       style: customButtonStyle,
                       child: const Text(

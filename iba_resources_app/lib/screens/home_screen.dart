@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // resources.docs returns a list of QueryDocumentSnapshot
       // maps over the list, converts each document into a Resource, returns list of Resources
       List<Resource> allFetchedResources = resources.docs.map((docSnapshot) {
-        return Resource.fromJson(docSnapshot.data());
+        return Resource.fromMap(docSnapshot.data());
       }).toList();
 
       return allFetchedResources;

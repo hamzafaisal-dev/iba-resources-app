@@ -2,7 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:iba_resources_app/core/providers/firebase_providers.dart';
+import 'package:iba_resources_app/features/auth/repository/auth_repository.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
 import 'package:iba_resources_app/widgets/dividers/named_divider.dart';
@@ -13,14 +17,14 @@ import 'package:iba_resources_app/widgets/textfields/auth_fields/password_form_f
 
 final _firebase = FirebaseAuth.instance;
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   bool _isSigningUp = false;
 
   String name = '';
@@ -40,69 +44,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future<void> handleSignUp() async {
-    try {
-      if (_signUpFormKey.currentState!.validate()) {
-        setState(() {
-          _isSigningUp = true;
-        });
+  // Future<void> handleSignUp() async {
+  //   try {
+  //     setState(() {
+  //       _isSigningUp = true;
+  //     });
 
-        final newUserCredentials =
-            await _firebase.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+  //     final newUserCredentials = await _firebase.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
 
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(newUserCredentials.user!.uid)
-            .set(
-          {
-            "name": name,
-            "email": password,
-          },
-        ).then((value) {
-          setState(() {
-            _isSigningUp = false;
-          });
+  //     await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(newUserCredentials.user!.uid)
+  //         .set(
+  //       {
+  //         "name": name,
+  //         "email": password,
+  //       },
+  //     ).then((value) {
+  //       setState(() {
+  //         _isSigningUp = false;
+  //       });
 
-          Navigator.of(context).pushReplacementNamed('/layout');
-        });
-      }
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _isSigningUp = false;
-      });
+  //       NavigationService.routeToReplacementNamed('/layout');
+  //     });
+  //   } on FirebaseAuthException catch (e) {
+  //     setState(() {
+  //       _isSigningUp = false;
+  //     });
 
-      // get error statement and display it
-      String firebaseAuthError =
-          FirebaseAuthExceptionErrors.getFirebaseError(e);
-      showSnackbar(firebaseAuthError);
-    } catch (error) {
-      setState(() {
-        _isSigningUp = false;
-      });
+  //     // get error statement and display it
+  //     String firebaseAuthError =
+  //         FirebaseAuthExceptionErrors.getFirebaseError(e);
+  //     showSnackbar(firebaseAuthError);
+  //   } catch (error) {
+  //     setState(() {
+  //       _isSigningUp = false;
+  //     });
 
-      showSnackbar('Error: $error');
-    }
-  }
+  //     showSnackbar('Error: $error');
+  //   }
+  // }
 
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+  void handleSignUp(WidgetRef ref) {
+    ref.read(authRepoProvider).signUp(name, email, password);
   }
 
   @override
@@ -170,7 +157,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: FilledButton(
-                      onPressed: handleSignUp,
+                      onPressed: () {
+                        if (_signUpFormKey.currentState!.validate()) {
+                          handleSignUp(ref);
+                        }
+                      },
                       style: Theme.of(context).filledButtonTheme.style,
                       child: _isSigningUp
                           ? const ButtonProgressIndicator()
@@ -192,16 +183,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 20),
 
                   // google sign up btn
-                  AuthProviderButton(
+                  const GoogleButton(
                     imageSrc: 'assets/google-logo.png',
                     buttonLabel: 'Sign in with Google',
-                    onTap: signInWithGoogle,
                     foregroundColor: Colors.black,
                     backgroundColor: Colors.white,
                   ),
 
                   const SizedBox(height: 20),
 
+                  // go to login screen button
                   RichText(
                     text: TextSpan(
                       children: [
@@ -216,9 +207,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.w900),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushNamed(context, '/login');
-                            },
+                            ..onTap =
+                                () => NavigationService.routeToNamed('/login'),
                         ),
                       ],
                     ),

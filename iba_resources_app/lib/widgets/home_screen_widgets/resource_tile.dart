@@ -64,7 +64,7 @@ class ResourceTile extends StatelessWidget {
             'BComm. Midterm Exam pictures',
             style: TextStyle(
               fontSize: 21,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w600,
             ),
           ),
 

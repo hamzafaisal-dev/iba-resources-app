@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
 import 'package:iba_resources_app/widgets/dividers/named_divider.dart';
@@ -32,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        showCloseIcon: true,
+        // showCloseIcon: true,
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
@@ -40,24 +39,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> handleLogin() async {
     try {
-      if (_loginFormKey.currentState!.validate()) {
+      setState(() {
+        _isLoggingIn = true;
+      });
+
+      await _firebase
+          .signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      )
+          .then((value) {
         setState(() {
-          _isLoggingIn = true;
+          _isLoggingIn = false;
         });
 
-        await _firebase
-            .signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        )
-            .then((value) {
-          setState(() {
-            _isLoggingIn = false;
-          });
-
-          Navigator.of(context).pushReplacementNamed('/layout');
-        });
-      }
+        NavigationService.routeToReplacementNamed('/layout');
+      });
     } on FirebaseAuthException catch (e) {
       setState(() {
         _isLoggingIn = false;
@@ -74,36 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       showSnackbar('Error: $error');
     }
-  }
-
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
-
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
   @override
@@ -162,7 +129,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: FilledButton(
-                      onPressed: handleLogin,
+                      onPressed: () {
+                        if (_loginFormKey.currentState!.validate()) {
+                          handleLogin();
+                        }
+                      },
                       style: Theme.of(context).filledButtonTheme.style,
                       child: _isLoggingIn
                           ? const ButtonProgressIndicator()
@@ -184,10 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
 
                   // google sign in btn
-                  AuthProviderButton(
+                  const GoogleButton(
                     imageSrc: 'assets/google-logo.png',
                     buttonLabel: 'Sign in with Google',
-                    onTap: signInWithGoogle,
                     foregroundColor: Colors.black,
                     backgroundColor: Colors.white,
                   ),
@@ -195,11 +165,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 10),
 
                   // facebook sign in btn
-                  AuthProviderButton(
+                  const FacebookButton(
                     imageSrc: 'assets/facebook-logo.png',
                     buttonLabel: 'Sign in with FaceBook',
-                    onTap: signInWithFacebook,
-                    backgroundColor: const Color(0XFF448AFF),
+                    backgroundColor: Color(0XFF448AFF),
                   ),
 
                   const SizedBox(height: 20),
@@ -225,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.pushNamed(context, '/signup');
+                                  NavigationService.routeToNamed('/signup');
                                 },
                             ),
                           ],
@@ -233,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       InkWell(
                         onTap: () =>
-                            Navigator.of(context).pushNamed("/resetpass"),
+                            NavigationService.routeToNamed('/resetpass'),
                         child: Text(
                           'Forgot Password?',
                           style: TextStyle(
