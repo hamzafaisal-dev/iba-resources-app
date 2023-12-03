@@ -5,6 +5,7 @@ import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iba_resources_app/constants/icons.dart';
 import 'package:iba_resources_app/models/resource.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
 import 'package:lottie/lottie.dart';
 
@@ -40,19 +41,6 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
     } catch (error) {
       return [];
       // throw Exception(error.toString());
-    }
-  }
-
-  void downloadResource(List<dynamic> fileDownloadUrls) async {
-    // takes in list of download URLs, loops over the list, downloads each file onto phone
-    for (String fileUrl in fileDownloadUrls) {
-      await FileDownloader.downloadFile(
-        url: fileUrl,
-        onDownloadCompleted: (path) {
-          // final File file = File(path);
-          print('Download successful!');
-        },
-      );
     }
   }
 
@@ -236,15 +224,21 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                             itemBuilder: (context, index) {
                               var resourceObject = snapshot.data![index];
 
-                              return ResourceTile(
-                                resourceId: resourceObject.resourceId,
-                                resourceTitle: resourceObject.resourceTitle,
-                                resourceDescription:
-                                    resourceObject.resourceDescription,
-                                uploader: resourceObject.uploader,
-                                resourceType: resourceObject.resourceType,
-                                likes: resourceObject.likes,
-                                dislikes: resourceObject.dislikes,
+                              return InkWell(
+                                onTap: () => NavigationService.routeToNamed(
+                                  '/viewResourceDetails',
+                                  arguments: {'resourceObject': resourceObject},
+                                ),
+                                child: ResourceTile(
+                                  resourceId: resourceObject.resourceId,
+                                  resourceTitle: resourceObject.resourceTitle,
+                                  resourceDescription:
+                                      resourceObject.resourceDescription,
+                                  uploader: resourceObject.uploader,
+                                  resourceType: resourceObject.resourceType,
+                                  likes: resourceObject.likes,
+                                  dislikes: resourceObject.dislikes,
+                                ),
                               );
                             },
                           );

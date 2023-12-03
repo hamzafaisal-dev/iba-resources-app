@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iba_resources_app/constants/icons.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/dislike_resource_chip.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/like_resource_chip.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/resource_type_chip.dart';
@@ -43,7 +44,6 @@ class ResourceTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //
-
           // pfp + username
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

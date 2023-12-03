@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/screens/add_resource_details_screen.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
 import 'package:iba_resources_app/screens/error_screen.dart';
@@ -13,6 +14,7 @@ import 'package:iba_resources_app/screens/rewards_screen.dart';
 import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/screens/signup_screen.dart';
 import 'package:iba_resources_app/screens/user_profile_screen.dart';
+import 'package:iba_resources_app/screens/view_resource_details_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -44,13 +46,22 @@ class RouteGenerator {
       case '/resourceDetails':
         {
           // extracts the arguments from the current AddResourceScreen settings and cast them as a Map.
-
           Map<String, dynamic>? receivedArguments =
               settings.arguments as Map<String, dynamic>?;
           return MaterialPageRoute(
             builder: (context) =>
                 AddResourceDetailsScreen(arguments: receivedArguments),
           );
+        }
+      case '/viewResourceDetails':
+        {
+          print(settings.arguments);
+          Map<String, Resource>? receivedMap =
+              settings.arguments as Map<String, Resource>?;
+
+          return MaterialPageRoute(
+              builder: (context) =>
+                  ViewResourceDetailsScreen(resourceMap: receivedMap));
         }
 
       case '/notifications':
