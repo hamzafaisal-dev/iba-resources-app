@@ -7,6 +7,7 @@ import 'package:iba_resources_app/constants/icons.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
+import 'package:iba_resources_app/widgets/progress_indicators/screen_progress_indicator.dart';
 import 'package:lottie/lottie.dart';
 
 class HomeScreenLayout extends StatefulWidget {
@@ -217,8 +218,6 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                             return const Text('No resources uploaded');
                           }
 
-                          // return const HomeScreenLayout();
-                          // return Text('resources aa gaye');
                           return ListView.builder(
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
@@ -244,7 +243,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                           );
                         }
 
-                        return const Text('Loading...');
+                        return const ScreenProgressIndicator();
                       },
                     ),
                   ),
