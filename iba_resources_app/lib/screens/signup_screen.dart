@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
 import 'package:iba_resources_app/widgets/dividers/named_divider.dart';
@@ -65,8 +66,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           setState(() {
             _isSigningUp = false;
           });
-
-          Navigator.of(context).pushReplacementNamed('/layout');
+          NavigationService.routeToReplacementNamed('/layout');
         });
       }
     } on FirebaseAuthException catch (e) {

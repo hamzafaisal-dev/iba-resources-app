@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 
 final ButtonStyle customButtonStyle = ButtonStyle(
   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -91,8 +92,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           showSnackbar('Password reset link sent to ${_emailController.text}');
 
           _emailController.clear();
-
-          Navigator.of(context).pushNamed("/login");
+          NavigationService.routeToNamed('/login');
         }
       }
     } on FirebaseAuthException catch (e) {

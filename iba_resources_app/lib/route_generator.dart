@@ -42,8 +42,17 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => const AddResourceScreen());
       case '/resourceDetails':
-        return MaterialPageRoute(
-            builder: (context) => const AddResourceDetailsScreen());
+        {
+          // extracts the arguments from the current AddResourceScreen settings and cast them as a Map.
+
+          Map<String, dynamic>? receivedArguments =
+              settings.arguments as Map<String, dynamic>?;
+          return MaterialPageRoute(
+            builder: (context) =>
+                AddResourceDetailsScreen(arguments: receivedArguments),
+          );
+        }
+
       case '/notifications':
         return MaterialPageRoute(
             builder: (context) => const NotificationsScreen());

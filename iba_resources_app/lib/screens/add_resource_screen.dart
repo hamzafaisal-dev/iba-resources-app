@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/add_resource_all_widgets/selectedFileTile.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
@@ -102,7 +103,13 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
                 if (pickedFiles != null && pickedFiles!.files.isNotEmpty)
                   InkWell(
                     onTap: () => {
-                      Navigator.of(context).pushNamed(
+                      print(pickedFiles),
+                      // Navigator.of(context).pushNamed(
+                      //   "/resourceDetails",
+                      //   arguments: {"pickedFiles": pickedFiles},
+                      // )
+
+                      NavigationService.routeToNamed(
                         "/resourceDetails",
                         arguments: {"pickedFiles": pickedFiles},
                       )

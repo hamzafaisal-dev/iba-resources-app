@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/buttons/custom_filled_button.dart';
 import 'package:iba_resources_app/widgets/profile/profile_action_tile.dart';
 import 'package:iba_resources_app/widgets/profile/profile_stat.dart';
@@ -27,7 +28,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         setState(() {
           loading = false;
         });
-        Navigator.of(context).pushReplacementNamed('/login');
+        NavigationService.routeToReplacementNamed('/login');
       },
     );
   }
@@ -104,9 +105,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           backgroundColor: MaterialStateProperty.all<Color>(
                             const Color.fromARGB(255, 240, 99, 89),
                           ),
-                          onTap: () {
-                            Navigator.of(context).pushNamed('/contributions');
-                          },
+                          onTap: () =>
+                              NavigationService.routeToNamed('/contributions'),
                         )
                       ],
                     ),

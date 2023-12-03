@@ -58,44 +58,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: FutureBuilder(
-      future: allResources,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return const Text('Masla hogaya bhau');
-        }
+    return const HomeScreenLayout();
+    // Center(
+    //   child: FutureBuilder(
+    //     future: allResources,
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasError) {
+    //         return const Text('Masla hogaya bhau');
+    //       }
 
-        if (snapshot.hasData) {
-          if (snapshot.data!.isEmpty) {
-            return const Text('No resources uploaded');
-          }
+    //       if (snapshot.hasData) {
+    //         if (snapshot.data!.isEmpty) {
+    //           return const Text('No resources uploaded');
+    //         }
 
-          return const HomeScreenLayout();
-          // ListView.builder(
-          //   itemCount: snapshot.data!.length,
-          //   itemBuilder: (context, index) {
-          //     var resourceObject = snapshot.data![index];
+    //         return const HomeScreenLayout();
+    //         // ListView.builder(
+    //         //   itemCount: snapshot.data!.length,
+    //         //   itemBuilder: (context, index) {
+    //         //     var resourceObject = snapshot.data![index];
 
-          //     return Card(
-          //       child: ListTile(
-          //         title: Text(resourceObject.resourceTitle),
-          //         trailing: IconButton(
-          //           onPressed: () {
-          //             if (resourceObject.resourceFiles == null) return;
+    //         //     return Card(
+    //         //       child: ListTile(
+    //         //         title: Text(resourceObject.resourceTitle),
+    //         //         trailing: IconButton(
+    //         //           onPressed: () {
+    //         //             if (resourceObject.resourceFiles == null) return;
 
-          //             downloadResource(resourceObject.resourceFiles!);
-          //           },
-          //           icon: const Icon(Icons.download),
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // );
-        }
+    //         //             downloadResource(resourceObject.resourceFiles!);
+    //         //           },
+    //         //           icon: const Icon(Icons.download),
+    //         //         ),
+    //         //       ),
+    //         //     );
+    //         //   },
+    //         // );
+    //       }
 
-        return const Text('Loading...');
-      },
-    ));
+    //       return const Text('Loading...');
+    //     },
+    //   ),
+    // );
   }
 }

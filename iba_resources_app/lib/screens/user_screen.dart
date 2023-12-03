@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_stat.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_tile.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -26,7 +27,7 @@ class _UserScreenState extends State<UserScreen> {
         setState(() {
           loading = false;
         });
-        Navigator.of(context).pushReplacementNamed('/login');
+        NavigationService.routeToReplacementNamed('/login');
       },
     );
   }
@@ -193,8 +194,9 @@ class _UserScreenState extends State<UserScreen> {
             clipBehavior: Clip.none,
             children: [
               // rewards hub card
+
               InkWell(
-                onTap: () => Navigator.of(context).pushNamed("/contributions"),
+                onTap: () => NavigationService.routeToNamed('/contributions'),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 child: Card(

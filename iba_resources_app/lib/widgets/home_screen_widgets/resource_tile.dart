@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:iba_resources_app/constants/icons.dart';
-import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/quality_control_chips.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/dislike_resource_chip.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/like_resource_chip.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/resource_type_chip.dart';
 
 class ResourceTile extends StatelessWidget {
-  const ResourceTile({super.key});
+  const ResourceTile({
+    super.key,
+    required this.resourceId,
+    required this.resourceTitle,
+    required this.resourceDescription,
+    required this.uploader,
+    required this.resourceType,
+    required this.likes,
+    required this.dislikes,
+  });
+
+  final String resourceId;
+  final String resourceTitle;
+  final String resourceDescription;
+  final String uploader;
+  final String resourceType;
+  final int likes;
+  final int dislikes;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +61,7 @@ class ResourceTile extends StatelessWidget {
 
                   // username
                   Text(
-                    'Younas Mahmood',
+                    uploader,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -60,9 +78,9 @@ class ResourceTile extends StatelessWidget {
           const SizedBox(height: 8),
 
           // resource title
-          const Text(
-            'BComm. Midterm Exam pictures',
-            style: TextStyle(
+          Text(
+            resourceTitle,
+            style: const TextStyle(
               fontSize: 21,
               fontWeight: FontWeight.w900,
             ),
@@ -72,7 +90,7 @@ class ResourceTile extends StatelessWidget {
 
           // resource description
           Text(
-            'The quick brown fox jumps over the lazy dogfdgf...',
+            resourceDescription,
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w800,
@@ -87,22 +105,24 @@ class ResourceTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // resource type
-              const ResourceTypeChip(label: 'Midterm'),
+              ResourceTypeChip(label: resourceType),
 
               // likes + dislikes
               Row(
                 children: [
                   // likes button
-                  QualityControlChip(
-                    count: 743,
+                  LikeResourceChip(
+                    resourceId: resourceId,
+                    count: likes,
                     icon: HomeScreenIcons.thumbsUp,
                   ),
 
                   const SizedBox(width: 8),
 
                   // dislikes button
-                  QualityControlChip(
-                    count: 22,
+                  DislikeResourceChip(
+                    resourceId: resourceId,
+                    count: dislikes,
                     icon: HomeScreenIcons.thumbsDown,
                   ),
                 ],

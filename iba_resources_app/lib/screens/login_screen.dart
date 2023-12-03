@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
 import 'package:iba_resources_app/widgets/dividers/named_divider.dart';
@@ -55,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
             _isLoggingIn = false;
           });
 
-          Navigator.of(context).pushReplacementNamed('/layout');
+          NavigationService.routeToReplacementNamed('/layout');
         });
       }
     } on FirebaseAuthException catch (e) {
@@ -233,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       InkWell(
                         onTap: () =>
-                            Navigator.of(context).pushNamed("/resetpass"),
+                            NavigationService.routeToNamed("/resetpass"),
                         child: Text(
                           'Forgot Password?',
                           style: TextStyle(

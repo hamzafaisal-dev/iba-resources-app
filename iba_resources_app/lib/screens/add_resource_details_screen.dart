@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iba_resources_app/constants/dropdown_items.dart';
 import 'package:iba_resources_app/constants/styles.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/dropdowns/custom_dropdown.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
 import 'package:iba_resources_app/widgets/add_resource_all_widgets/degree_chip.dart';
@@ -15,7 +16,9 @@ import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
 
 class AddResourceDetailsScreen extends StatefulWidget {
-  const AddResourceDetailsScreen({super.key});
+  const AddResourceDetailsScreen({super.key, this.arguments});
+
+  final Map<String, dynamic>? arguments;
 
   @override
   State<AddResourceDetailsScreen> createState() =>
@@ -25,6 +28,7 @@ class AddResourceDetailsScreen extends StatefulWidget {
 class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
   String _resourceTitle = '';
   String _resourceDescription = '';
+  String _courseName = '';
   String _teacherName = '';
   String _selectedRelevantField = '';
   final List<String> _relevantFields = [];
@@ -75,7 +79,7 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
 
       String timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
 
-      List<String> fileUrls = [];
+      List<String> _fileUrls = [];
 
       // maps over each file path and converts to a File object, then converts to list
       List<File> files = pickedFiles.paths.map((path) => File(path!)).toList();
@@ -84,31 +88,38 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
       for (File file in files) {
         String fileUrl = await _uploadToFirebaseStorage(file);
 
-        fileUrls.add(fileUrl);
+        _fileUrls.add(fileUrl);
       }
 
       await FirebaseFirestore.instance
           .collection('resources')
           .doc('$_resourceTitle-$timeStamp')
           .set({
+        'resourceId': '$_resourceTitle-$timeStamp',
         'resourceTitle': _resourceTitle,
-        'resourceFiles': fileUrls,
+        'resourceFiles': _fileUrls,
         'resourceDescription': _resourceDescription,
         'resourceType': _resourceType,
         'uploader': 'Farhan Mushi', //FirebaseAuth.instance.currentUser,
         'teacherName': _teacherName,
+        'courseName': _courseName,
         'relevantFields': _relevantFields,
         'semester': _semester,
         'year': _year,
+        'likes': 0,
+        'dislikes': 0,
+        'reportCount': 0,
         'isActive': true,
         'isDeleted': false,
         'createdAt': DateTime.now(),
         'updatedAt': null,
-      });
+      }).then(
+        (value) => NavigationService.routeToNamed("/layout"),
+      );
 
-      setState(() => _isLoading = false);
+      // setState(() => _isLoading = false);
 
-      // print(fileUrls);
+      // print(_fileUrls);
     } catch (error) {
       setState(() => _isLoading = false);
 
@@ -118,12 +129,11 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // extracts the arguments from the current AddResourceScreen settings and cast them as a Map.
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-
     // get files from the previous screen
-    pickedFiles = args["pickedFiles"];
+
+    if (widget.arguments != null) {
+      pickedFiles = widget.arguments!["pickedFiles"];
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -166,6 +176,18 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                 maxInputLines: 8,
                 setInput: (String resourceDescription) {
                   _resourceDescription = resourceDescription;
+                },
+              ),
+
+              const SizedBox(height: 24),
+
+              // course name field
+              CustomTextFormField(
+                labelText: 'Enter course name',
+                hintText: 'Eg. Business Communication',
+                maxInputLength: 45,
+                setInput: (String courseName) {
+                  _courseName = courseName;
                 },
               ),
 
