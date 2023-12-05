@@ -54,7 +54,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           return 'Enter a valid input';
         }
 
-        print('object');
         widget.setInput(value);
         return null;
       },

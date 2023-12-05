@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
 import 'package:iba_resources_app/screens/error_screen.dart';
 import 'package:iba_resources_app/screens/home_screen.dart';
@@ -10,7 +11,9 @@ import 'package:iba_resources_app/constants/icons.dart' as constants;
 import 'package:iba_resources_app/screens/user_screen.dart';
 
 class Layout extends StatefulWidget {
-  const Layout({super.key});
+  const Layout({super.key, required this.resourceRepository});
+
+  final ResourceRepository resourceRepository;
 
   @override
   State<Layout> createState() => _LayoutState();
@@ -21,12 +24,15 @@ class _LayoutState extends State<Layout> {
 
   @override
   Widget build(BuildContext context) {
+    ResourceRepository resourceRepository = widget.resourceRepository;
+
     // shows dynamic screen content based on btotom navbar index
     Widget getContent(index) {
       Widget widget = const ErrorScreen();
+
       switch (index) {
         case 0:
-          widget = const HomeScreen();
+          widget = HomeScreen(resourceRepository: resourceRepository);
           break;
         case 1:
           widget = const SavedResourcesScreen();
@@ -41,7 +47,7 @@ class _LayoutState extends State<Layout> {
           widget = const UserScreen();
           break;
         default:
-          widget = const HomeScreen();
+          widget = HomeScreen(resourceRepository: resourceRepository);
           break;
       }
       return widget;

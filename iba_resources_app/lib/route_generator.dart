@@ -1,4 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
+import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart';
+import 'package:iba_resources_app/core/auth/network.dart';
+import 'package:iba_resources_app/core/resource/network.dart';
+import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/screens/add_resource_details_screen.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
@@ -17,16 +25,39 @@ import 'package:iba_resources_app/screens/user_profile_screen.dart';
 import 'package:iba_resources_app/screens/view_resource_details_screen.dart';
 
 class RouteGenerator {
+//
   static Route<dynamic> generateRoutes(RouteSettings settings) {
+    //
+    final ResourceRepository resourceRepository = ResourceRepository(
+      resourceFirestoreClient: ResourceFirestoreClient(
+        firestore: FirebaseFirestore.instance,
+      ),
+    );
+
+    final AuthRepository authRepository = AuthRepository(
+      userFirebaseClient: UserFirebaseClient(
+        firebaseAuth: FirebaseAuth.instance,
+      ),
+    );
+
     switch (settings.name) {
       case '/layout':
-        return MaterialPageRoute(builder: (context) => const Layout());
+        return MaterialPageRoute(
+            builder: (context) =>
+                Layout(resourceRepository: resourceRepository));
       case '/landing':
         return MaterialPageRoute(builder: (context) => const LandingScreen());
       case '/home':
-        return MaterialPageRoute(builder: (context) => const HomeScreen());
+        return MaterialPageRoute(
+            builder: (context) =>
+                HomeScreen(resourceRepository: resourceRepository));
       case '/login':
-        return MaterialPageRoute(builder: (context) => const LoginScreen());
+        return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                  create: (context) =>
+                      SignInBloc(authRepository: authRepository),
+                  child: const LoginScreen(),
+                ));
       case '/signup':
         return MaterialPageRoute(builder: (context) => const SignUpScreen());
       case '/resetpass':

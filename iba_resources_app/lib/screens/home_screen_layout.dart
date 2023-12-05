@@ -1,9 +1,12 @@
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/constants/icons.dart';
+import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
@@ -11,7 +14,9 @@ import 'package:iba_resources_app/widgets/progress_indicators/screen_progress_in
 import 'package:lottie/lottie.dart';
 
 class HomeScreenLayout extends StatefulWidget {
-  const HomeScreenLayout({super.key});
+  const HomeScreenLayout({super.key, required this.resourceRepository});
+
+  final ResourceRepository resourceRepository;
 
   @override
   State<HomeScreenLayout> createState() => _HomeScreenLayoutState();
@@ -20,34 +25,14 @@ class HomeScreenLayout extends StatefulWidget {
 class _HomeScreenLayoutState extends State<HomeScreenLayout> {
   final _searchBarController = TextEditingController();
 
-  late Future<List<Resource>> allResources;
-
-  Future<List<Resource>> getAllResources() async {
-    try {
-      final fireStoreInstance = FirebaseFirestore.instance;
-
-      // fetches all documents in the resources collection
-      final resources = await fireStoreInstance
-          .collection('resources')
-          .orderBy('createdAt')
-          .get();
-
-      // resources.docs returns a list of QueryDocumentSnapshot
-      // maps over the list, converts each document into a Resource, returns list of Resources
-      List<Resource> allFetchedResources = resources.docs.map((docSnapshot) {
-        return Resource.fromJson(docSnapshot.data());
-      }).toList();
-
-      return allFetchedResources;
-    } catch (error) {
-      return [];
-      // throw Exception(error.toString());
-    }
-  }
+  late ResourceBloc _resourceBloc;
 
   @override
   void initState() {
-    allResources = getAllResources();
+    _resourceBloc = ResourceBloc(resourceRepository: widget.resourceRepository);
+
+    _resourceBloc.add(const FetchResources());
+
     super.initState();
   }
 
@@ -161,7 +146,9 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                   ],
                 ),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    BlocProvider.of<ResourceBloc>(context).add(FetchMocNigga());
+                  },
                   icon: Icon(
                     Icons.filter_alt_sharp,
                     size: 28,
@@ -204,24 +191,28 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
 
                   const SizedBox(height: 18),
 
-                  Expanded(
-                    child: FutureBuilder(
-                      future: allResources,
-                      builder: (context, snapshot) {
-                        print(snapshot);
-                        if (snapshot.hasError) {
-                          return const Text('Masla hogaya bhau');
-                        }
+                  BlocBuilder(
+                    bloc: _resourceBloc,
+                    builder: (BuildContext context, ResourceState state) {
+                      print(state);
+                      if (state is ResourcesLoading) {
+                        return const ScreenProgressIndicator();
+                      }
 
-                        if (snapshot.hasData) {
-                          if (snapshot.data!.isEmpty) {
-                            return const Text('No resources uploaded');
-                          }
+                      if (state is ResourceError) {
+                        return const Text('Masla hogaya bhau');
+                      }
 
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
+                      if (state is ResourceEmpty) {
+                        return const Text('No resources uploaded');
+                      }
+
+                      if (state is ResourcesLoaded) {
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: state.resources.length,
                             itemBuilder: (context, index) {
-                              var resourceObject = snapshot.data![index];
+                              var resourceObject = state.resources[index];
 
                               return InkWell(
                                 onTap: () => NavigationService.routeToNamed(
@@ -240,12 +231,12 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                                 ),
                               );
                             },
-                          );
-                        }
+                          ),
+                        );
+                      }
 
-                        return const ScreenProgressIndicator();
-                      },
-                    ),
+                      return const SizedBox.shrink();
+                    },
                   ),
                 ],
               ),
@@ -255,37 +246,10 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
       ],
     );
   }
+
+  @override
+  void dispose() {
+    _resourceBloc.close();
+    super.dispose();
+  }
 }
-
-
-// // Latest Uploads
-//                 Text(
-//                   'Latest Uploads ⚡',
-//                   style: TextStyle(
-//                     fontSize: 22,
-//                     fontWeight: FontWeight.w800,
-//                   ),
-//                 ),
-
-//                 SizedBox(height: 18),
-
-// ListView.builder(
-//                   itemCount: 5,
-//                   itemBuilder: (context, index) => Text('goo'),
-//                 ),
-
-// Transform.scale(
-//                             scale: 2.6,
-//                             child: ColorFiltered(
-//                               colorFilter: const ColorFilter.mode(
-//                                 Colors.white,
-//                                 BlendMode.srcATop,
-//                               ),
-//                               child: Lottie.asset(
-//                                 'assets/Bookmark.json',
-//                                 width: 20,
-//                                 repeat: false,
-//                                 frameRate: FrameRate(420),
-//                               ),
-//                             ),
-//                           ),

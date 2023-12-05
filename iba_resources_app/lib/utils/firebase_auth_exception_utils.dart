@@ -13,6 +13,10 @@ class FirebaseAuthExceptionErrors {
         errorStatement = 'Wrong password';
       case 'email-already-in-use':
         errorStatement = 'Email already in use';
+      case 'cancelled':
+        errorStatement = 'Sign-In process cancelled';
+      case 'missing_auth_details':
+        errorStatement = 'Authentication details missing';
       default:
         errorStatement = error.message.toString();
     }

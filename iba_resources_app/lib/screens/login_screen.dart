@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
@@ -21,8 +23,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _isLoggingIn = false;
-
   String email = '';
   String password = '';
 
@@ -33,78 +33,24 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        showCloseIcon: true,
+        behavior: SnackBarBehavior.floating,
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
 
-  Future<void> handleLogin() async {
-    try {
-      if (_loginFormKey.currentState!.validate()) {
-        setState(() {
-          _isLoggingIn = true;
-        });
-
-        await _firebase
-            .signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        )
-            .then((value) {
-          setState(() {
-            _isLoggingIn = false;
-          });
-
-          NavigationService.routeToReplacementNamed('/layout');
-        });
-      }
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _isLoggingIn = false;
-      });
-
-      // get error statement and display it
-      String firebaseAuthError =
-          FirebaseAuthExceptionErrors.getFirebaseError(e);
-      showSnackbar(firebaseAuthError);
-    } catch (error) {
-      setState(() {
-        _isLoggingIn = false;
-      });
-
-      showSnackbar('Error: $error');
-    }
-  }
-
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+  void _handleSignInPressed() {
+    BlocProvider.of<SignInBloc>(context).add(
+      SignInSubmittedEvent(email, password),
     );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
+  void _signInWithGoogle() {
+    BlocProvider.of<SignInBloc>(context).add(SignInWithGoogleEvent());
+  }
 
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  void _signInWithFacebook() {
+    BlocProvider.of<SignInBloc>(context).add(SignInWithFacebookEvent());
   }
 
   @override
@@ -135,118 +81,136 @@ class _LoginScreenState extends State<LoginScreen> {
             // login form
             Form(
               key: _loginFormKey,
-              child: Column(
-                children: [
-                  // email input
-                  EmailTextFormField(
-                    helperLabel: 'Enter email address',
-                    leadingIcon: Icons.email_outlined,
-                    setEmail: (enteredEmail) {
-                      email = enteredEmail;
-                    },
-                  ),
+              child: BlocConsumer<SignInBloc, SignInState>(
+                listener: (context, state) {
+                  if (state is SignInInErrorState) {
+                    showSnackbar(state.errorMessage!);
+                  }
 
-                  const SizedBox(height: 20),
-
-                  // password input
-                  PasswordFormField(
-                    helperLabel: 'Enter password',
-                    leadingIcon: Icons.lock_outline,
-                    setPassword: (enteredPassword) {
-                      password = enteredPassword;
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  //login button
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: FilledButton(
-                      onPressed: handleLogin,
-                      style: Theme.of(context).filledButtonTheme.style,
-                      child: _isLoggingIn
-                          ? const ButtonProgressIndicator()
-                          : const Text(
-                              'LOGIN',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  //divider
-                  const NamedDivider(
-                    dividerText: 'OR',
-                    dividerColor: Colors.grey,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // google sign in btn
-                  AuthProviderButton(
-                    imageSrc: 'assets/google-logo.png',
-                    buttonLabel: 'Sign in with Google',
-                    onTap: signInWithGoogle,
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.white,
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // facebook sign in btn
-                  AuthProviderButton(
-                    imageSrc: 'assets/facebook-logo.png',
-                    buttonLabel: 'Sign in with FaceBook',
-                    onTap: signInWithFacebook,
-                    backgroundColor: const Color(0XFF448AFF),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  if (state is SignInValidState) {
+                    NavigationService.routeToReplacementNamed('/layout');
+                  }
+                },
+                builder: (context, state) {
+                  return Column(
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            const TextSpan(
-                              text: 'Don\'t have an account? ',
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.black),
+                      // email input
+                      EmailTextFormField(
+                        helperLabel: 'Enter email address',
+                        leadingIcon: Icons.email_outlined,
+                        setEmail: (String enteredEmail) {
+                          email = enteredEmail;
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // password input
+                      PasswordFormField(
+                        helperLabel: 'Enter password',
+                        leadingIcon: Icons.lock_outline,
+                        setPassword: (enteredPassword) {
+                          password = enteredPassword;
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      //login button
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: FilledButton(
+                          onPressed: () {
+                            if (_loginFormKey.currentState!.validate()) {
+                              _handleSignInPressed();
+                            }
+                          },
+                          style: Theme.of(context).filledButtonTheme.style,
+                          child: (state is SignInLoadingState)
+                              ? const ButtonProgressIndicator()
+                              : const Text(
+                                  'LOGIN',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      //divider
+                      const NamedDivider(
+                        dividerText: 'OR',
+                        dividerColor: Colors.grey,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // google sign in btn
+                      AuthProviderButton(
+                        imageSrc: 'assets/google-logo.png',
+                        buttonLabel: 'Sign in with Google',
+                        onTap: _signInWithGoogle,
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.white,
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // facebook sign in btn
+                      AuthProviderButton(
+                        imageSrc: 'assets/facebook-logo.png',
+                        buttonLabel: 'Sign in with FaceBook',
+                        onTap: _signInWithFacebook,
+                        backgroundColor: const Color(0XFF448AFF),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Don\'t have an account? ',
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                ),
+                                TextSpan(
+                                  text: 'Sign Up',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.pushNamed(context, '/signup');
+                                    },
+                                ),
+                              ],
                             ),
-                            TextSpan(
-                              text: 'Sign Up',
+                          ),
+                          InkWell(
+                            onTap: () =>
+                                NavigationService.routeToNamed("/resetpass"),
+                            child: Text(
+                              'Forgot Password?',
                               style: TextStyle(
                                 fontSize: 15,
                                 color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushNamed(context, '/signup');
-                                },
                             ),
-                          ],
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () =>
-                            NavigationService.routeToNamed("/resetpass"),
-                        child: Text(
-                          'Forgot Password?',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
+                  );
+                },
               ),
             )
           ],
