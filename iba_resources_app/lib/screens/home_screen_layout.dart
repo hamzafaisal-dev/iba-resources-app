@@ -38,6 +38,12 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
   }
 
   @override
+  void dispose() {
+    _resourceBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,11 +257,5 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    _resourceBloc.close();
-    super.dispose();
   }
 }

@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
+import 'package:iba_resources_app/blocs/sign_up/sign_up_bloc.dart';
 import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart';
 import 'package:iba_resources_app/core/auth/network.dart';
@@ -72,6 +73,11 @@ class MyApp extends StatelessWidget {
         BlocProvider<SignInBloc>(
           create: (BuildContext context) {
             return SignInBloc(authRepository: authRepository);
+          },
+        ),
+        BlocProvider<SignUpBloc>(
+          create: (BuildContext context) {
+            return SignUpBloc(authRepository: authRepository);
           },
         ),
         BlocProvider<ResourceBloc>(

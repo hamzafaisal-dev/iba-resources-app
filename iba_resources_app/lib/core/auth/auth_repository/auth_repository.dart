@@ -11,7 +11,7 @@ class AuthRepository {
     return userFirebaseClient.userAuthChangeStream;
   }
 
-  Future<UserModel> getCurrentUser(User? user) {
+  Future<UserModel?> getCurrentUser(User? user) {
     return userFirebaseClient.getCurrentUser(user);
   }
 
@@ -25,6 +25,18 @@ class AuthRepository {
 
   Future<UserCredential> loginWithFacebook() async {
     return await userFirebaseClient.signInWithFacebook();
+  }
+
+  Future<void> handleSignUp(String name, String email, String password) async {
+    return await userFirebaseClient.handleSignUp(name, email, password);
+  }
+
+  Future<void> signUpWithGoogle() async {
+    return await userFirebaseClient.signUpWithGoogle();
+  }
+
+  Future<void> signUpWithFacebook() async {
+    return await userFirebaseClient.signUpWithFacebook();
   }
 
   void signOut() async {

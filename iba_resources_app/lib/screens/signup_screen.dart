@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:iba_resources_app/blocs/sign_up/sign_up_bloc.dart';
 import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
@@ -23,8 +25,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  bool _isSigningUp = false;
-
   String name = '';
   String email = '';
   String password = '';
@@ -36,85 +36,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        showCloseIcon: true,
+        behavior: SnackBarBehavior.floating,
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
 
-  Future<void> handleSignUp() async {
-    try {
-      if (_signUpFormKey.currentState!.validate()) {
-        setState(() {
-          _isSigningUp = true;
-        });
-
-        final newUserCredentials =
-            await _firebase.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-
-        UserModel newUser = UserModel(
-          role: 'user',
-          name: name,
-          email: email,
-          postedResources: [],
-          savedResources: [],
-          points: 0,
-          reportCount: 0,
-          isBanned: false,
-          createdAt: DateTime.now(),
-          updatedAt: null,
-          isActive: true,
-          isDeleted: false,
-        );
-
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(newUserCredentials.user!.uid)
-            .set(newUser.toMap())
-            .then((value) {
-          setState(() {
-            _isSigningUp = false;
-          });
-          NavigationService.routeToReplacementNamed('/layout');
-        });
-      }
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _isSigningUp = false;
-      });
-
-      // get error statement and display it
-      String firebaseAuthError =
-          FirebaseAuthExceptionErrors.getFirebaseError(e);
-      showSnackbar(firebaseAuthError);
-    } catch (error) {
-      setState(() {
-        _isSigningUp = false;
-      });
-
-      showSnackbar('Error: $error');
-    }
+  void handleSignUp() {
+    BlocProvider.of<SignUpBloc>(context).add(
+      SignUpSubmittedEvent(name, email, password),
+    );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  void _signUpWithGoogle() {
+    BlocProvider.of<SignUpBloc>(context).add(SignUpWithGoogleEvent());
+  }
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+  void _signInWithFacebook() {
+    BlocProvider.of<SignUpBloc>(context).add(SignUpWithFacebookEvent());
+  }
 
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+  @override
+  void dispose() {
+    BlocProvider.of<SignUpBloc>(context).close();
+    super.dispose();
   }
 
   @override
@@ -126,7 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           padding: const EdgeInsets.all(24),
           children: [
             //
-            const SizedBox(height: 160),
+            const SizedBox(height: 95),
 
             const Text(
               'Get On Board!',
@@ -142,100 +87,132 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             Form(
               key: _signUpFormKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // name input
-                  NameFormField(
-                    helperLabel: 'Enter name',
-                    leadingIcon: Icons.person_outline_sharp,
-                    setName: (enteredName) {
-                      name = enteredName;
-                    },
-                  ),
+              child: BlocConsumer<SignUpBloc, SignUpState>(
+                listener: (context, state) {
+                  if (state is SignUpValidState) {
+                    NavigationService.routeToReplacementNamed('/layout');
+                  } else if (state is SignUpErrorState) {
+                    showSnackbar(state.errorMessage);
+                  }
+                },
+                builder: (context, state) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // name input
+                      NameFormField(
+                        helperLabel: 'Enter name',
+                        leadingIcon: Icons.person_outline_sharp,
+                        setName: (enteredName) {
+                          name = enteredName;
+                        },
+                      ),
 
-                  const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                  // email input
-                  EmailTextFormField(
-                    helperLabel: 'Enter email address',
-                    leadingIcon: Icons.email_outlined,
-                    setEmail: (enteredEmail) {
-                      email = enteredEmail;
-                    },
-                  ),
+                      // email input
+                      EmailTextFormField(
+                        helperLabel: 'Enter email address',
+                        leadingIcon: Icons.email_outlined,
+                        setEmail: (enteredEmail) {
+                          email = enteredEmail;
+                        },
+                      ),
 
-                  const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                  // password input
-                  PasswordFormField(
-                    helperLabel: 'Enter password',
-                    leadingIcon: Icons.lock_outline,
-                    setPassword: (enteredPassword) {
-                      password = enteredPassword;
-                    },
-                  ),
+                      // password input
+                      PasswordFormField(
+                        helperLabel: 'Enter password',
+                        leadingIcon: Icons.lock_outline,
+                        setPassword: (enteredPassword) {
+                          password = enteredPassword;
+                        },
+                      ),
 
-                  const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                  //sign up button
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: FilledButton(
-                      onPressed: handleSignUp,
-                      style: Theme.of(context).filledButtonTheme.style,
-                      child: _isSigningUp
-                          ? const ButtonProgressIndicator()
-                          : const Text(
-                              'SIGN UP',
-                              style: TextStyle(fontSize: 16),
+                      //sign up button
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: FilledButton(
+                          onPressed: state is SignUpLoadingState
+                              ? null
+                              : () {
+                                  if (_signUpFormKey.currentState!.validate()) {
+                                    handleSignUp();
+                                  }
+                                },
+                          style: Theme.of(context).filledButtonTheme.style,
+                          child: state is SignUpLoadingState
+                              ? const ButtonProgressIndicator()
+                              : const Text(
+                                  'SIGN UP',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      //divider
+                      const NamedDivider(
+                        dividerText: 'OR',
+                        dividerColor: Colors.grey,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // google sign up btn
+                      AuthProviderButton(
+                        imageSrc: 'assets/google-logo.png',
+                        buttonLabel: 'Continue with Google',
+                        onTap: () {
+                          _signUpWithGoogle();
+                        },
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.white,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // facebook sign in btn
+                      AuthProviderButton(
+                        imageSrc: 'assets/facebook-logo.png',
+                        buttonLabel: 'Continue with FaceBook',
+                        onTap: () {
+                          _signInWithFacebook();
+                        },
+                        backgroundColor: const Color(0XFF448AFF),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: 'Already have an account? ',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.black),
                             ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  //divider
-                  const NamedDivider(
-                    dividerText: 'OR',
-                    dividerColor: Colors.grey,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // google sign up btn
-                  AuthProviderButton(
-                    imageSrc: 'assets/google-logo.png',
-                    buttonLabel: 'Sign in with Google',
-                    onTap: signInWithGoogle,
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.white,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: 'Already have an account? ',
-                          style: TextStyle(fontSize: 15, color: Colors.black),
+                            TextSpan(
+                              text: 'Login',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w900),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(context, '/login');
+                                },
+                            ),
+                          ],
                         ),
-                        TextSpan(
-                          text: 'Login',
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.w900),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushNamed(context, '/login');
-                            },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
+                    ],
+                  );
+                },
               ),
             )
           ],

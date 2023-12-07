@@ -12,10 +12,11 @@ class UserFirebaseClient {
 
   Stream<User?> get userAuthChangeStream => firebaseAuth.userChanges();
 
-  Future<UserModel> getCurrentUser(User? currentUser) async {
+  // get current user
+  Future<UserModel?> getCurrentUser(User? currentUser) async {
     String? currentUserId = currentUser?.uid;
 
-    if (currentUserId == null) throw Exception('User does not exist');
+    if (currentUserId == null) return null;
 
     DocumentSnapshot querySnapshot =
         await firestore.collection('users').doc(currentUserId).get();
@@ -27,14 +28,19 @@ class UserFirebaseClient {
     return user;
   }
 
+  // email and pass login
   Future<UserCredential> handleLogin(String email, String password) async {
-    UserCredential userCredential =
-        await firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      UserCredential userCredential =
+          await firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    return userCredential;
+      return userCredential;
+    } catch (error) {
+      throw Exception(error.toString());
+    }
   }
 
   // google sign-in
@@ -110,6 +116,178 @@ class UserFirebaseClient {
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
+  // email and pass sign up
+  Future<void> handleSignUp(String name, String email, String password) async {
+    final newUserCredentials =
+        await firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    UserModel newUser = UserModel(
+      role: 'user',
+      name: name,
+      email: email,
+      postedResources: [],
+      savedResources: [],
+      points: 0,
+      reportCount: 0,
+      isBanned: false,
+      createdAt: DateTime.now(),
+      updatedAt: null,
+      isActive: true,
+      isDeleted: false,
+    );
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(newUserCredentials.user!.uid)
+        .set(newUser.toMap());
+  }
+
+  // google sign-up
+  Future<void> signUpWithGoogle() async {
+    print('we here g2');
+
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser == null) {
+        throw FirebaseAuthException(
+          code: 'cancelled',
+          message: 'Google Sign-In process cancelled',
+        );
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      if (googleAuth == null) {
+        throw FirebaseAuthException(
+          code: 'missing_auth_details',
+          message: 'Authentication details missing',
+        );
+      }
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      UserCredential userCredential =
+          await firebaseAuth.signInWithCredential(credential);
+
+      if (userCredential.user == null) {
+        throw FirebaseAuthException(
+          code: 'INVALID_LOGIN_CREDENTIALS',
+          message: 'Invalid login credentials',
+        );
+      }
+
+      QuerySnapshot userQuery = await firestore
+          .collection('users')
+          .where('email', isEqualTo: userCredential.user!.email)
+          .get();
+
+      if (userQuery.docs.isNotEmpty) {
+        throw FirebaseAuthException(
+          code: 'email-already-in-use',
+          message: 'Email already in use',
+        );
+      }
+
+      UserModel newGoogleUser = UserModel(
+        role: 'user',
+        name: userCredential.user!.displayName ?? 'User',
+        email: userCredential.user!.email!,
+        postedResources: [],
+        savedResources: [],
+        points: 0,
+        reportCount: 0,
+        isBanned: false,
+        createdAt: DateTime.now(),
+        updatedAt: null,
+        isActive: true,
+        isDeleted: false,
+      );
+
+      await firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set(newGoogleUser.toMap());
+    } catch (error) {
+      // throws OG error if error not related to cancellation
+      rethrow;
+    }
+  }
+
+  // facebook sign-up
+  Future<void> signUpWithFacebook() async {
+    print('we here f2');
+
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    if (loginResult.accessToken == null) {
+      throw FirebaseAuthException(
+        code: 'cancelled',
+        message: 'Facebook Sign-In process cancelled',
+      );
+    }
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    // Once signed in, return the UserCredential
+    UserCredential userCredential =
+        await firebaseAuth.signInWithCredential(facebookAuthCredential);
+
+    if (userCredential.user == null) {
+      throw FirebaseAuthException(
+        code: 'INVALID_LOGIN_CREDENTIALS',
+        message: 'Invalid login credentials',
+      );
+    }
+
+    QuerySnapshot userQuery = await firestore
+        .collection('users')
+        .where('email', isEqualTo: userCredential.user!.email)
+        .get();
+
+    if (userQuery.docs.isNotEmpty) {
+      throw FirebaseAuthException(
+        code: 'email-already-in-use',
+        message: 'Email already in use',
+      );
+    }
+
+    UserModel newGoogleUser = UserModel(
+      role: 'user',
+      name: userCredential.user!.displayName ?? 'User',
+      email: userCredential.user!.email!,
+      postedResources: [],
+      savedResources: [],
+      points: 0,
+      reportCount: 0,
+      isBanned: false,
+      createdAt: DateTime.now(),
+      updatedAt: null,
+      isActive: true,
+      isDeleted: false,
+    );
+
+    await firestore
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .set(newGoogleUser.toMap());
+  }
+
+  // sign out
   Future<void> signOut() async {
     await firebaseAuth.signOut();
   }
