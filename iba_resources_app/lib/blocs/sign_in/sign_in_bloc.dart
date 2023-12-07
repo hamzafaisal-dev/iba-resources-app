@@ -30,11 +30,19 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   ) async {
     emit(SignInLoadingState());
     try {
-      await authRepository.handleLogin(email, password);
+      // get user credential from login operation
+      UserCredential authenticatedUser =
+          await authRepository.handleLogin(email, password);
 
-      print('Email and pass is: $email + $password');
+      // if user null, emit error
+      if (authenticatedUser.user == null) {
+        emit(SignInInErrorState('User does not exist'));
+      }
 
-      emit(SignInValidState());
+      // else emit valid login state
+      emit(
+        SignInValidState(authenticatedUser.user!),
+      );
     } on FirebaseAuthException catch (error) {
       // get error statement from util and emit it
       String firebaseAuthError =
@@ -48,11 +56,13 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
 
   Future<void> _signInWithGoogle(Emitter<SignInState> emit) async {
     try {
-      UserCredential user = await authRepository.loginWithGoogle();
+      UserCredential authenticatedUser = await authRepository.loginWithGoogle();
 
-      if (user.user == null) emit(SignInInErrorState('User does not exist'));
+      if (authenticatedUser.user == null) {
+        emit(SignInInErrorState('User does not exist'));
+      }
 
-      emit(SignInValidState());
+      emit(SignInValidState(authenticatedUser.user!));
     } on FirebaseAuthException catch (error) {
       String firebaseAuthError =
           FirebaseAuthExceptionErrors.getFirebaseError(error);
@@ -65,11 +75,14 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
 
   Future<void> _signInWithFacebook(Emitter<SignInState> emit) async {
     try {
-      UserCredential user = await authRepository.loginWithFacebook();
+      UserCredential authenticatedUser =
+          await authRepository.loginWithFacebook();
 
-      if (user.user == null) emit(SignInInErrorState('User does not exist'));
+      if (authenticatedUser.user == null) {
+        emit(SignInInErrorState('User does not exist'));
+      }
 
-      emit(SignInValidState());
+      emit(SignInValidState(authenticatedUser.user!));
     } on FirebaseAuthException catch (error) {
       String firebaseAuthError =
           FirebaseAuthExceptionErrors.getFirebaseError(error);

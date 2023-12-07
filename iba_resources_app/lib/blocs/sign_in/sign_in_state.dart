@@ -4,7 +4,11 @@ abstract class SignInState {}
 
 class SignInInitialState extends SignInState {}
 
-class SignInValidState extends SignInState {}
+class SignInValidState extends SignInState {
+  final User authenticatedUser;
+
+  SignInValidState(this.authenticatedUser);
+}
 
 class SignInNotValidState extends SignInState {}
 

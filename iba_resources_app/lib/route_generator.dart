@@ -1,10 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
-import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart';
-import 'package:iba_resources_app/core/auth/network.dart';
 import 'package:iba_resources_app/core/resource/network.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 import 'package:iba_resources_app/models/resource.dart';
@@ -34,46 +29,59 @@ class RouteGenerator {
       ),
     );
 
-    final AuthRepository authRepository = AuthRepository(
-      userFirebaseClient: UserFirebaseClient(
-        firebaseAuth: FirebaseAuth.instance,
-      ),
-    );
-
     switch (settings.name) {
+      //
       case '/layout':
         return MaterialPageRoute(
-            builder: (context) =>
-                Layout(resourceRepository: resourceRepository));
+          builder: (context) => Layout(resourceRepository: resourceRepository),
+        );
+
       case '/landing':
-        return MaterialPageRoute(builder: (context) => const LandingScreen());
+        return MaterialPageRoute(
+          builder: (context) => const LandingScreen(),
+        );
+
       case '/home':
         return MaterialPageRoute(
-            builder: (context) =>
-                HomeScreen(resourceRepository: resourceRepository));
+          builder: (context) =>
+              HomeScreen(resourceRepository: resourceRepository),
+        );
+
       case '/login':
         return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-                  create: (context) =>
-                      SignInBloc(authRepository: authRepository),
-                  child: const LoginScreen(),
-                ));
+          builder: (context) => const LoginScreen(),
+        );
+
       case '/signup':
-        return MaterialPageRoute(builder: (context) => const SignUpScreen());
+        return MaterialPageRoute(
+          builder: (context) => const SignUpScreen(),
+        );
+
       case '/resetpass':
         return MaterialPageRoute(
-            builder: (context) => const ResetPasswordScreen());
+          builder: (context) => const ResetPasswordScreen(),
+        );
+
       case '/otp':
-        return MaterialPageRoute(builder: (context) => const OTPScreen());
+        return MaterialPageRoute(
+          builder: (context) => const OTPScreen(),
+        );
+
       case '/profile':
         return MaterialPageRoute(
-            builder: (context) => const UserProfileScreen());
+          builder: (context) => const UserProfileScreen(),
+        );
+
       case '/saved':
         return MaterialPageRoute(
-            builder: (context) => const SavedResourcesScreen());
+          builder: (context) => const SavedResourcesScreen(),
+        );
+
       case '/resource':
         return MaterialPageRoute(
-            builder: (context) => const AddResourceScreen());
+          builder: (context) => const AddResourceScreen(),
+        );
+
       case '/resourceDetails':
         {
           // extracts the arguments from the current AddResourceScreen settings and cast them as a Map.
@@ -84,22 +92,28 @@ class RouteGenerator {
                 AddResourceDetailsScreen(arguments: receivedArguments),
           );
         }
+
       case '/viewResourceDetails':
         {
-          print(settings.arguments);
-          Map<String, Resource>? receivedMap =
-              settings.arguments as Map<String, Resource>?;
+          Map<String, ResourceModel>? receivedMap =
+              settings.arguments as Map<String, ResourceModel>?;
 
           return MaterialPageRoute(
-              builder: (context) =>
-                  ViewResourceDetailsScreen(resourceMap: receivedMap));
+            builder: (context) =>
+                ViewResourceDetailsScreen(resourceMap: receivedMap),
+          );
         }
 
       case '/notifications':
         return MaterialPageRoute(
-            builder: (context) => const NotificationsScreen());
+          builder: (context) => const NotificationsScreen(),
+        );
+
       case '/contributions':
-        return MaterialPageRoute(builder: (context) => const RewardsScreen());
+        return MaterialPageRoute(
+          builder: (context) => const RewardsScreen(),
+        );
+
       case '/error':
         return MaterialPageRoute(
           builder: (context) => const ErrorScreen(),

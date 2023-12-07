@@ -1,13 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
+import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
+import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
 import 'package:iba_resources_app/constants/styles.dart';
+import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart';
+import 'package:iba_resources_app/core/auth/network.dart';
+import 'package:iba_resources_app/core/resource/network.dart';
+import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 
 import 'package:iba_resources_app/firebase_options.dart';
 import 'package:iba_resources_app/screens/landing_screen.dart';
 import 'package:iba_resources_app/route_generator.dart';
+import 'package:iba_resources_app/screens/layout.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 
 void main() async {
@@ -20,46 +30,89 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  final AuthRepository authRepository = AuthRepository(
+    userFirebaseClient: UserFirebaseClient(
+        firebaseAuth: FirebaseAuth.instance,
+        firestore: FirebaseFirestore.instance),
+  );
+
+  final ResourceRepository resourceRepository = ResourceRepository(
+    resourceFirestoreClient: ResourceFirestoreClient(
+      firestore: FirebaseFirestore.instance,
+    ),
+  );
+
+  runApp(
+    MyApp(
+      authRepository: authRepository,
+      resourceRepository: resourceRepository,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+    required this.authRepository,
+    required this.resourceRepository,
+  });
+
+  final AuthRepository authRepository;
+  final ResourceRepository resourceRepository;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'IBARA',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        //
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0XFFFF7B66),
-          primary: const Color(0XFFFF7B66),
-          primaryContainer: const Color(0XFFFFF1F1),
-          secondary: const Color(0XFF01D2AF),
-          secondaryContainer: const Color(0XFFE6FAF8),
-          tertiary: Colors.grey,
-          error: const Color(0XFFB41528),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (BuildContext context) {
+            return AuthBloc(authRepository: authRepository);
+          },
         ),
-
-        appBarTheme: const AppBarTheme(
-          foregroundColor: Colors.black,
-          backgroundColor: Color(0XFFF2F6F7),
-          elevation: 0,
+        BlocProvider<SignInBloc>(
+          create: (BuildContext context) {
+            return SignInBloc(authRepository: authRepository);
+          },
         ),
-
-        filledButtonTheme: FilledButtonThemeData(
-          style: ButtonStyles.filledButtonStyle,
+        BlocProvider<ResourceBloc>(
+          create: (BuildContext context) {
+            return ResourceBloc(resourceRepository: resourceRepository);
+          },
         ),
+      ],
+      child: MaterialApp(
+        title: 'IBARA',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          //
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0XFFFF7B66),
+            primary: const Color(0XFFFF7B66),
+            primaryContainer: const Color(0XFFFFF1F1),
+            secondary: const Color(0XFF01D2AF),
+            secondaryContainer: const Color(0XFFE6FAF8),
+            tertiary: Colors.grey,
+            error: const Color(0XFFB41528),
+          ),
 
-        scaffoldBackgroundColor: const Color(0XFFF2F6F7),
+          appBarTheme: const AppBarTheme(
+            foregroundColor: Colors.black,
+            backgroundColor: Color(0XFFF2F6F7),
+            elevation: 0,
+          ),
 
-        textTheme: GoogleFonts.urbanistTextTheme(),
+          filledButtonTheme: FilledButtonThemeData(
+            style: ButtonStyles.filledButtonStyle,
+          ),
+
+          scaffoldBackgroundColor: const Color(0XFFF2F6F7),
+
+          textTheme: GoogleFonts.urbanistTextTheme(),
+        ),
+        onGenerateRoute: RouteGenerator.generateRoutes,
+        navigatorKey: NavigationService.navigatorKey,
+        home: const LandingScreen(),
       ),
-      onGenerateRoute: RouteGenerator.generateRoutes,
-      navigatorKey: NavigationService.navigatorKey,
-      home: const LandingScreen(),
     );
   }
 }

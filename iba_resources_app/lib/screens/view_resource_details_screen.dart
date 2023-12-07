@@ -6,7 +6,7 @@ import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widg
 class ViewResourceDetailsScreen extends StatefulWidget {
   const ViewResourceDetailsScreen({super.key, this.resourceMap});
 
-  final Map<String, Resource>? resourceMap;
+  final Map<String, ResourceModel>? resourceMap;
 
   @override
   State<ViewResourceDetailsScreen> createState() =>
@@ -32,7 +32,7 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    late Resource resource;
+    late ResourceModel resource;
 
     if (widget.resourceMap != null) {
       resource = widget.resourceMap!['resourceObject']!;

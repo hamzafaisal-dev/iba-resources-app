@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/constants/icons.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
@@ -42,30 +43,36 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Hey username
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Hey ',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
+        BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Hey ',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+                    TextSpan(
+                      text: state is AuthStateAuthenticated
+                          ? state.authenticatedUser.name
+                          : '...',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
                 ),
-                TextSpan(
-                  text: 'Farhan',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
 
         const SizedBox(height: 10),
@@ -194,7 +201,6 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                   BlocBuilder(
                     bloc: _resourceBloc,
                     builder: (BuildContext context, ResourceState state) {
-                      print(state);
                       if (state is ResourcesLoading) {
                         return const ScreenProgressIndicator();
                       }

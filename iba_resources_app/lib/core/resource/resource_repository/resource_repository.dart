@@ -6,7 +6,7 @@ class ResourceRepository {
 
   ResourceRepository({required this.resourceFirestoreClient});
 
-  Future<List<Resource>> getAllResources() async {
+  Future<List<ResourceModel>> getAllResources() async {
     return await resourceFirestoreClient.getAllResources();
   }
 }

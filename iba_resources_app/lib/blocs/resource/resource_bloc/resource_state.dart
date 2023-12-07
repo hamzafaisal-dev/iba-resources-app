@@ -10,7 +10,7 @@ class ResourceEmpty extends ResourceState {}
 class ResourcesLoading extends ResourceState {}
 
 class ResourcesLoaded extends ResourceState {
-  final List<Resource> resources;
+  final List<ResourceModel> resources;
 
   ResourcesLoaded({required this.resources}) : super([resources]);
 }

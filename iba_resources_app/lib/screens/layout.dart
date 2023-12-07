@@ -1,5 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
 import 'package:iba_resources_app/screens/error_screen.dart';
@@ -9,6 +11,7 @@ import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/screens/user_profile_screen.dart';
 import 'package:iba_resources_app/constants/icons.dart' as constants;
 import 'package:iba_resources_app/screens/user_screen.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
 
 class Layout extends StatefulWidget {
   const Layout({super.key, required this.resourceRepository});
@@ -29,10 +32,16 @@ class _LayoutState extends State<Layout> {
     // shows dynamic screen content based on btotom navbar index
     Widget getContent(index) {
       Widget widget = const ErrorScreen();
-
       switch (index) {
         case 0:
-          widget = HomeScreen(resourceRepository: resourceRepository);
+          widget = BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthStateUnauthenticated) {
+                NavigationService.routeToReplacementNamed('/login');
+              }
+            },
+            child: HomeScreen(resourceRepository: resourceRepository),
+          );
           break;
         case 1:
           widget = const SavedResourcesScreen();
@@ -47,7 +56,7 @@ class _LayoutState extends State<Layout> {
           widget = const UserScreen();
           break;
         default:
-          widget = HomeScreen(resourceRepository: resourceRepository);
+          widget = const ErrorScreen();
           break;
       }
       return widget;

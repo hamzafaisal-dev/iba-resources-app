@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Resource {
-  const Resource({
+class ResourceModel {
+  const ResourceModel({
     required this.resourceId,
     required this.resourceTitle,
     required this.resourceFiles,
@@ -47,8 +47,8 @@ class Resource {
   final bool isActive;
   final bool isDeleted;
 
-  factory Resource.fromJson(Map<String, dynamic> resourceData) {
-    return Resource(
+  factory ResourceModel.fromJson(Map<String, dynamic> resourceData) {
+    return ResourceModel(
       resourceId: resourceData['resourceId'],
       resourceTitle: resourceData['resourceTitle'],
       resourceFiles: resourceData['resourceFiles'],
@@ -68,9 +68,32 @@ class Resource {
       isActive: resourceData['isActive'],
       isDeleted: resourceData['isDeleted'],
 
-      // Firestore converts DateTime to Timestamps, so we need to convert it back to DateTime upon fetching
+      // firestore converts DateTime to Timestamps, so we need to convert it back to DateTime upon fetching
       createdAt: (resourceData['createdAt'] as Timestamp).toDate(),
       updatedAt: (resourceData['updatedAt'] as Timestamp?)?.toDate(),
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'resourceId': resourceId,
+      'resourceTitle': resourceTitle,
+      'uploader': uploader,
+      'teacherName': teacherName,
+      'courseName': courseName,
+      'resourceDescription': resourceDescription,
+      'resourceType': resourceType,
+      'resourceFiles': resourceFiles,
+      'relevantFields': relevantFields,
+      'semester': semester,
+      'year': year,
+      'likes': likes,
+      'dislikes': dislikes,
+      'reportCount': reportCount,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'isActive': isActive,
+      'isDeleted': isDeleted,
+    };
   }
 }

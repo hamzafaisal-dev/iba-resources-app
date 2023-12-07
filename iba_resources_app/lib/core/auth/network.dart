@@ -1,19 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:iba_resources_app/models/user.dart';
 
 class UserFirebaseClient {
   final FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firestore;
 
-  UserFirebaseClient({
-    required this.firebaseAuth,
-  });
+  UserFirebaseClient({required this.firebaseAuth, required this.firestore});
 
-  Future<void> handleLogin(String email, String password) async {
-    await firebaseAuth.signInWithEmailAndPassword(
+  Stream<User?> get userAuthChangeStream => firebaseAuth.userChanges();
+
+  Future<UserModel> getCurrentUser(User? currentUser) async {
+    String? currentUserId = currentUser?.uid;
+
+    if (currentUserId == null) throw Exception('User does not exist');
+
+    DocumentSnapshot querySnapshot =
+        await firestore.collection('users').doc(currentUserId).get();
+
+    Map<String, dynamic> userMap = querySnapshot.data() as Map<String, dynamic>;
+
+    UserModel user = UserModel.fromJson(userMap);
+
+    return user;
+  }
+
+  Future<UserCredential> handleLogin(String email, String password) async {
+    UserCredential userCredential =
+        await firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
+
+    return userCredential;
   }
 
   // google sign-in
@@ -87,5 +108,9 @@ class UserFirebaseClient {
 
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
+
+  Future<void> signOut() async {
+    await firebaseAuth.signOut();
   }
 }

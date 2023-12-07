@@ -23,7 +23,7 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
   Future<void> _getAllResources(Emitter<ResourceState> emit) async {
     emit(ResourcesLoading());
     try {
-      final List<Resource> resources =
+      final List<ResourceModel> resources =
           await resourceRepository.getAllResources();
 
       if (resources.isEmpty) {

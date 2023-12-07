@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 import 'package:iba_resources_app/widgets/buttons/provider_auth_button.dart';
@@ -54,15 +55,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
           password: password,
         );
 
+        UserModel newUser = UserModel(
+          role: 'user',
+          name: name,
+          email: email,
+          postedResources: [],
+          savedResources: [],
+          points: 0,
+          reportCount: 0,
+          isBanned: false,
+          createdAt: DateTime.now(),
+          updatedAt: null,
+          isActive: true,
+          isDeleted: false,
+        );
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(newUserCredentials.user!.uid)
-            .set(
-          {
-            "name": name,
-            "email": password,
-          },
-        ).then((value) {
+            .set(newUser.toMap())
+            .then((value) {
           setState(() {
             _isSigningUp = false;
           });

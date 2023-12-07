@@ -17,9 +17,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ResourceBloc(resourceRepository: resourceRepository),
-      child: HomeScreenLayout(resourceRepository: resourceRepository),
-    );
+    return HomeScreenLayout(resourceRepository: resourceRepository);
   }
 }
