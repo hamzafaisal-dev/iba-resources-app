@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ResourceModel {
@@ -95,5 +96,47 @@ class ResourceModel {
       'isActive': isActive,
       'isDeleted': isDeleted,
     };
+  }
+
+  ResourceModel copyWith({
+    String? resourceId,
+    String? resourceTitle,
+    String? uploader,
+    String? teacherName,
+    String? courseName,
+    String? resourceDescription,
+    String? resourceType,
+    List<dynamic>? resourceFiles,
+    List<dynamic>? relevantFields,
+    String? semester,
+    String? year,
+    int? likes,
+    int? dislikes,
+    int? reportCount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    bool? isDeleted,
+  }) {
+    return ResourceModel(
+      resourceId: resourceId ?? this.resourceId,
+      resourceTitle: resourceTitle ?? this.resourceTitle,
+      uploader: uploader ?? this.uploader,
+      teacherName: teacherName ?? this.teacherName,
+      courseName: courseName ?? this.courseName,
+      resourceDescription: resourceDescription ?? this.resourceDescription,
+      resourceType: resourceType ?? this.resourceType,
+      resourceFiles: resourceFiles ?? this.resourceFiles,
+      relevantFields: relevantFields ?? this.relevantFields,
+      semester: semester ?? this.semester,
+      year: year ?? this.year,
+      likes: likes ?? this.likes,
+      dislikes: dislikes ?? this.dislikes,
+      reportCount: reportCount ?? this.reportCount,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      isDeleted: isDeleted ?? this.isDeleted,
+    );
   }
 }

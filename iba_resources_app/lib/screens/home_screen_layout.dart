@@ -1,18 +1,13 @@
-import 'package:anim_search_bar/anim_search_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
-import 'package:iba_resources_app/constants/icons.dart';
+import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
+import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
-import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/screen_progress_indicator.dart';
-import 'package:lottie/lottie.dart';
 
 class HomeScreenLayout extends StatefulWidget {
   const HomeScreenLayout({super.key, required this.resourceRepository});

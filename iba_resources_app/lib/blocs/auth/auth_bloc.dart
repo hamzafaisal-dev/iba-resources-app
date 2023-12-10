@@ -10,7 +10,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
 
   AuthBloc({required this.authRepository}) : super(AuthUnknown()) {
-    print('shooty bake');
+//
 
     authRepository.userStateChangeStream().listen((user) async {
       UserModel? currentUser = await authRepository.getCurrentUser(user);

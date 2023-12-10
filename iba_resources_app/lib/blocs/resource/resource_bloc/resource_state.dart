@@ -1,4 +1,4 @@
-part of 'resource_bloc.dart';
+import 'package:iba_resources_app/models/resource.dart';
 
 abstract class ResourceState {
   const ResourceState([List props = const []]) : super();
@@ -14,6 +14,8 @@ class ResourcesLoaded extends ResourceState {
 
   ResourcesLoaded({required this.resources}) : super([resources]);
 }
+
+class ResourceBookmarkSuccess extends ResourceState {}
 
 class ResourceError extends ResourceState {
   final String? errorMsg;

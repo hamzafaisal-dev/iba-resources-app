@@ -124,7 +124,10 @@ class UserFirebaseClient {
       password: password,
     );
 
+    String userId = newUserCredentials.user!.uid;
+
     UserModel newUser = UserModel(
+      userId: userId,
       role: 'user',
       name: name,
       email: email,
@@ -200,7 +203,10 @@ class UserFirebaseClient {
         );
       }
 
+      String userId = userCredential.user!.uid;
+
       UserModel newGoogleUser = UserModel(
+        userId: userId,
         role: 'user',
         name: userCredential.user!.displayName ?? 'User',
         email: userCredential.user!.email!,
@@ -266,7 +272,10 @@ class UserFirebaseClient {
       );
     }
 
+    String userId = userCredential.user!.uid;
+
     UserModel newGoogleUser = UserModel(
+      userId: userId,
       role: 'user',
       name: userCredential.user!.displayName ?? 'User',
       email: userCredential.user!.email!,
