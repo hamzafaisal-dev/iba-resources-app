@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +19,6 @@ import 'package:iba_resources_app/core/resource/resource_repository/resource_rep
 import 'package:iba_resources_app/firebase_options.dart';
 import 'package:iba_resources_app/screens/landing_screen.dart';
 import 'package:iba_resources_app/route_generator.dart';
-import 'package:iba_resources_app/screens/layout.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 
 void main() async {
@@ -39,8 +39,8 @@ void main() async {
 
   final ResourceRepository resourceRepository = ResourceRepository(
     resourceFirestoreClient: ResourceFirestoreClient(
-      firestore: FirebaseFirestore.instance,
-    ),
+        firestore: FirebaseFirestore.instance,
+        firebaseStorage: FirebaseStorage.instance),
   );
 
   runApp(

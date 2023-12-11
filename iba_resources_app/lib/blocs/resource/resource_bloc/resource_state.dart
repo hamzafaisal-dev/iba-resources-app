@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:iba_resources_app/models/resource.dart';
 
 abstract class ResourceState {
@@ -17,7 +18,17 @@ class ResourcesLoaded extends ResourceState {
 
 class ResourceBookmarkSuccess extends ResourceState {}
 
+class ResourceFilesSelectSuccess extends ResourceState {
+  final FilePickerResult? filePickerResult;
+
+  ResourceFilesSelectSuccess(this.filePickerResult);
+}
+
+class ResourceFilesUploadSuccess extends ResourceState {}
+
+class ResourceFilesUploadLoading extends ResourceState {}
+
 class ResourceError extends ResourceState {
-  final String? errorMsg;
-  ResourceError({this.errorMsg});
+  final String errorMsg;
+  ResourceError({required this.errorMsg});
 }

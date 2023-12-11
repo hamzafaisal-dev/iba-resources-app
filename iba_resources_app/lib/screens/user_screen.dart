@@ -271,11 +271,11 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    BlocProvider.of<AuthBloc>(context).close();
-    BlocProvider.of<SignInBloc>(context).close();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   BlocProvider.of<AuthBloc>(context).close();
+  //   BlocProvider.of<SignInBloc>(context).close();
+  //   super.dispose();
+  // }
 }

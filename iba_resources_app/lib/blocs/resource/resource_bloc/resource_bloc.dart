@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
@@ -18,9 +19,28 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
           event.user, event.resourceId, event.isBookMarked, emit);
     });
 
+    on<SelectFilesEvent>((event, emit) async {
+      await _selectFiles(emit);
+    });
+
+    on<UploadFilesEvent>((event, emit) async {
+      await _uploadResource(
+        event.pickedFiles,
+        event.resourceTitle,
+        event.resourceDescription,
+        event.resourceType,
+        event.teacherName,
+        event.courseName,
+        event.relevantFields,
+        event.semester,
+        event.year,
+        emit,
+      );
+    });
+
     on<FetchMocNigga>((event, emit) {
       print('Mock nigga');
-      return emit(ResourceEmpty());
+      // return emit(ResourceEmpty());
     });
   }
 
@@ -51,6 +71,54 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       emit(ResourceBookmarkSuccess());
     } catch (e) {
       emit(ResourceError(errorMsg: e.toString()));
+    }
+  }
+
+  Future<void> _selectFiles(Emitter<ResourceState> emit) async {
+    try {
+      FilePickerResult? filePickerResult =
+          await resourceRepository.selectFiles();
+
+      if (filePickerResult == null || filePickerResult.files.isEmpty) {
+        emit(ResourceError(errorMsg: 'Something went wrong. Please try again'));
+      }
+
+      emit(ResourceFilesSelectSuccess(filePickerResult));
+    } catch (error) {
+      emit(ResourceError(errorMsg: error.toString()));
+    }
+  }
+
+  Future<void> _uploadResource(
+    FilePickerResult pickedFiles,
+    String resourceTitle,
+    String resourceDescription,
+    String resourceType,
+    String teacherName,
+    String courseName,
+    List<String> relevantFields,
+    String semester,
+    String year,
+    Emitter<ResourceState> emit,
+  ) async {
+    try {
+      emit(ResourceFilesUploadLoading());
+
+      await resourceRepository.uploadResource(
+        pickedFiles,
+        resourceTitle,
+        resourceDescription,
+        resourceType,
+        teacherName,
+        courseName,
+        relevantFields,
+        semester,
+        year,
+      );
+
+      emit(ResourceFilesUploadSuccess());
+    } catch (error) {
+      emit(ResourceError(errorMsg: error.toString()));
     }
   }
 }

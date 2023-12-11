@@ -15,8 +15,6 @@ import 'package:iba_resources_app/widgets/textfields/auth_fields/email_text_form
 import 'package:iba_resources_app/widgets/textfields/auth_fields/name_form_field.dart';
 import 'package:iba_resources_app/widgets/textfields/auth_fields/password_form_field.dart';
 
-final _firebase = FirebaseAuth.instance;
-
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -56,11 +54,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     BlocProvider.of<SignUpBloc>(context).add(SignUpWithFacebookEvent());
   }
 
-  @override
-  void dispose() {
-    BlocProvider.of<SignUpBloc>(context).close();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   BlocProvider.of<SignUpBloc>(context).close();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

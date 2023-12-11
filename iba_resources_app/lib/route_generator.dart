@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:iba_resources_app/core/resource/network.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
@@ -25,8 +26,8 @@ class RouteGenerator {
     //
     final ResourceRepository resourceRepository = ResourceRepository(
       resourceFirestoreClient: ResourceFirestoreClient(
-        firestore: FirebaseFirestore.instance,
-      ),
+          firestore: FirebaseFirestore.instance,
+          firebaseStorage: FirebaseStorage.instance),
     );
 
     switch (settings.name) {

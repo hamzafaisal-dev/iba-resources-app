@@ -48,11 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
     BlocProvider.of<SignInBloc>(context).add(SignInWithFacebookEvent());
   }
 
-  @override
-  void dispose() {
-    BlocProvider.of<SignInBloc>(context).close();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   BlocProvider.of<SignInBloc>(context).close();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
