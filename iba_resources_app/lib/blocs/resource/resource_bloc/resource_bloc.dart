@@ -16,7 +16,7 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
 
     on<BookmarkResourceEvent>((event, emit) async {
       await _bookmarkResource(
-          event.user, event.resourceId, event.isBookMarked, emit);
+          event.user, event.savedResource, event.isBookMarked, emit);
     });
 
     on<SelectFilesEvent>((event, emit) async {
@@ -62,12 +62,13 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
 
   Future<void> _bookmarkResource(
     UserModel user,
-    String resourceId,
+    ResourceModel savedResource,
     bool isBookMarked,
     Emitter<ResourceState> emit,
   ) async {
     try {
-      await resourceRepository.bookmarkResource(resourceId, user, isBookMarked);
+      await resourceRepository.bookmarkResource(
+          savedResource, user, isBookMarked);
       emit(ResourceBookmarkSuccess());
     } catch (e) {
       emit(ResourceError(errorMsg: e.toString()));

@@ -8,7 +8,6 @@ import 'package:iba_resources_app/screens/error_screen.dart';
 import 'package:iba_resources_app/screens/home_screen.dart';
 import 'package:iba_resources_app/screens/notifications_screen.dart';
 import 'package:iba_resources_app/screens/saved_resources_screen.dart';
-import 'package:iba_resources_app/screens/user_profile_screen.dart';
 import 'package:iba_resources_app/constants/icons.dart' as constants;
 import 'package:iba_resources_app/screens/user_screen.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
@@ -94,7 +93,6 @@ class _LayoutState extends State<Layout> {
     }
 
     return Scaffold(
-      // backgroundColor: const Color(0XFFF3F3F3),
       appBar: getAppbar(),
       bottomNavigationBar: CurvedNavigationBar(
         color: Theme.of(context).colorScheme.primary,

@@ -13,9 +13,9 @@ class ResourceRepository {
   }
 
   Future<void> bookmarkResource(
-      String resourceId, UserModel user, bool isBookMarked) async {
+      ResourceModel savedResource, UserModel user, bool isBookMarked) async {
     await resourceFirestoreClient.bookmarkResource(
-      resourceId,
+      savedResource,
       user,
       isBookMarked,
     );

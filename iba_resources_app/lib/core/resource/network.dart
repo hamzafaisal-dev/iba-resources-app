@@ -12,8 +12,10 @@ class ResourceFirestoreClient {
   final FirebaseFirestore firestore;
   final FirebaseStorage firebaseStorage;
 
-  ResourceFirestoreClient(
-      {required this.firestore, required this.firebaseStorage});
+  ResourceFirestoreClient({
+    required this.firestore,
+    required this.firebaseStorage,
+  });
 
   Future<List<ResourceModel>> getAllResources() async {
     // fetches all documents in the resources collection
@@ -30,26 +32,26 @@ class ResourceFirestoreClient {
   }
 
   Future<void> bookmarkResource(
-    String resourceId,
+    ResourceModel savedResource,
     UserModel user,
     bool isBookMarked,
   ) async {
     late UserModel updatedUser;
-    List<String>? usersSavedResources = user.savedResources ?? [];
+    List<ResourceModel>? usersSavedResources = user.savedResources ?? [];
 
     // have to toggle isBookMarked bec previous value is being passed in, lazy state or something
     isBookMarked = !isBookMarked;
 
-    print('resource id in resource network: $resourceId');
+    print('resource in resource network: $savedResource');
 
     if (isBookMarked) {
-      // add resourceId to the list if not already present
-      if (!usersSavedResources.contains(resourceId)) {
-        usersSavedResources.add(resourceId);
+      // add savedResource to the list if not already present
+      if (!usersSavedResources.contains(savedResource)) {
+        usersSavedResources.add(savedResource);
       }
     } else {
-      // remove resourceId from the list
-      usersSavedResources.remove(resourceId);
+      // remove savedResource from the list
+      usersSavedResources.remove(savedResource);
     }
 
     // update the user model with the modified savedResources list

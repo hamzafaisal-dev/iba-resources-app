@@ -24,7 +24,7 @@ class UserModel {
   final String email;
 
   final List<ResourceModel>? postedResources;
-  final List<String>? savedResources;
+  final List<ResourceModel>? savedResources;
   final int points;
   final int? reportCount;
   final bool? isBanned;
@@ -42,8 +42,9 @@ class UserModel {
       postedResources: (userData['postedResources'] as List<dynamic>?)
           ?.map((resourceData) => ResourceModel.fromJson(resourceData))
           .toList(),
-      savedResources:
-          (userData['savedResources'] as List<dynamic>?)?.cast<String>(),
+      savedResources: (userData['savedResources'] as List<dynamic>?)
+          ?.map((resourceData) => ResourceModel.fromJson(resourceData))
+          .toList(),
       points: userData['points'],
       reportCount: userData['reportCount'],
       isBanned: userData['isBanned'],
@@ -62,7 +63,8 @@ class UserModel {
       'email': email,
       'postedResources':
           postedResources?.map((resource) => resource.toMap()).toList(),
-      'savedResources': savedResources,
+      'savedResources':
+          savedResources?.map((resource) => resource.toMap()).toList(),
       'points': points,
       'reportCount': reportCount,
       'isBanned': isBanned,
@@ -79,7 +81,7 @@ class UserModel {
     String? name,
     String? email,
     List<ResourceModel>? postedResources,
-    List<String>? savedResources,
+    List<ResourceModel>? savedResources,
     int? points,
     int? reportCount,
     bool? isBanned,

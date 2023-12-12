@@ -39,7 +39,7 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
     BlocProvider.of<ResourceBloc>(context).add(
       BookmarkResourceEvent(
         user: user,
-        resourceId: resource.resourceId,
+        savedResource: resource,
         isBookMarked: _isBookmarked,
       ),
     );
@@ -67,7 +67,7 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
             if (state is AuthStateAuthenticated) {
               // if resource id already present in user's saved resources array then initial value of _isBookmarked: true
               if (state.authenticatedUser.savedResources!
-                  .contains(currentResource.resourceId)) {
+                  .contains(currentResource)) {
                 _isBookmarked = true;
               }
             }

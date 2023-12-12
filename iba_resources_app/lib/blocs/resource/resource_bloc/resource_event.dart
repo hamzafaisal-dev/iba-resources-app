@@ -16,18 +16,18 @@ class FetchResources extends ResourceEvent {
 
 class BookmarkResourceEvent extends ResourceEvent {
   final UserModel user;
-  final String resourceId;
+  final ResourceModel savedResource;
   final bool isBookMarked;
 
   const BookmarkResourceEvent({
     required this.user,
-    required this.resourceId,
+    required this.savedResource,
     required this.isBookMarked,
   });
 
   @override
   // TODO: implement props
-  List<Object?> get props => [user, resourceId];
+  List<Object?> get props => [user, savedResource];
 }
 
 class SelectFilesEvent extends ResourceEvent {

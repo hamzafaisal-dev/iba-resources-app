@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
+import 'package:iba_resources_app/models/resource.dart';
+import 'package:iba_resources_app/services/navigation_service.dart';
+import 'package:lottie/lottie.dart';
 
 class SavedResourcesScreen extends StatefulWidget {
   const SavedResourcesScreen({super.key});
@@ -10,7 +13,7 @@ class SavedResourcesScreen extends StatefulWidget {
 }
 
 class _SavedResourcesScreenState extends State<SavedResourcesScreen> {
-  late final List<String> usersSavedResources;
+  late List<ResourceModel> usersSavedResources;
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +25,45 @@ class _SavedResourcesScreenState extends State<SavedResourcesScreen> {
           }
         }
 
+        if (usersSavedResources.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'You have no resources saved',
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall!
+                      .copyWith(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+                Lottie.asset(
+                  'assets/EmptyGhostAnimation.json',
+                  repeat: false,
+                  frameRate: FrameRate(420),
+                  height: 300,
+                ),
+              ],
+            ),
+          );
+        }
+
         return Center(
           child: ListView.builder(
             itemCount: usersSavedResources.length,
             itemBuilder: (context, index) {
-              final String savedResource = usersSavedResources[index];
+              final ResourceModel savedResource = usersSavedResources[index];
 
               return Card(
                 child: ListTile(
-                  title: Text(savedResource),
+                  onTap: () {
+                    NavigationService.routeToNamed(
+                      '/viewResourceDetails',
+                      arguments: {'resourceObject': savedResource},
+                    );
+                  },
+                  title: Text(savedResource.courseName),
                 ),
               );
             },

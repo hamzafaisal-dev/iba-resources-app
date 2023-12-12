@@ -39,8 +39,9 @@ void main() async {
 
   final ResourceRepository resourceRepository = ResourceRepository(
     resourceFirestoreClient: ResourceFirestoreClient(
-        firestore: FirebaseFirestore.instance,
-        firebaseStorage: FirebaseStorage.instance),
+      firestore: FirebaseFirestore.instance,
+      firebaseStorage: FirebaseStorage.instance,
+    ),
   );
 
   runApp(
