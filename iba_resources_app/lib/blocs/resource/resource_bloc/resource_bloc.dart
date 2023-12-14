@@ -14,6 +14,11 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       await _getAllResources(emit);
     });
 
+    on<FetchSearchedResources>((event, emit) async {
+      print('we here');
+      await _getSearchedResources(event.searchedName, emit);
+    });
+
     on<BookmarkResourceEvent>((event, emit) async {
       await _bookmarkResource(
           event.user, event.savedResource, event.isBookMarked, emit);
@@ -49,6 +54,23 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     try {
       final List<ResourceModel> resources =
           await resourceRepository.getAllResources();
+
+      if (resources.isEmpty) {
+        return emit(ResourceEmpty());
+      }
+
+      emit(ResourcesLoaded(resources: resources));
+    } catch (e) {
+      emit(ResourceError(errorMsg: e.toString()));
+    }
+  }
+
+  Future<void> _getSearchedResources(
+      String searchedName, Emitter<ResourceState> emit) async {
+    emit(ResourcesLoading());
+    try {
+      final List<ResourceModel> resources =
+          await resourceRepository.getSearchedResources(searchedName);
 
       if (resources.isEmpty) {
         return emit(ResourceEmpty());

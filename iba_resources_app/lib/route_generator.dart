@@ -6,6 +6,7 @@ import 'package:iba_resources_app/core/resource/resource_repository/resource_rep
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/screens/add_resource_details_screen.dart';
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
+import 'package:iba_resources_app/screens/edit_profile_screen.dart';
 import 'package:iba_resources_app/screens/error_screen.dart';
 import 'package:iba_resources_app/screens/home_screen.dart';
 import 'package:iba_resources_app/screens/landing_screen.dart';
@@ -16,6 +17,7 @@ import 'package:iba_resources_app/screens/otp_screen.dart';
 import 'package:iba_resources_app/screens/reset_password_screen.dart';
 import 'package:iba_resources_app/screens/rewards_screen.dart';
 import 'package:iba_resources_app/screens/saved_resources_screen.dart';
+import 'package:iba_resources_app/screens/settings_screen.dart';
 import 'package:iba_resources_app/screens/signup_screen.dart';
 import 'package:iba_resources_app/screens/user_profile_screen.dart';
 import 'package:iba_resources_app/screens/view_resource_details_screen.dart';
@@ -71,6 +73,16 @@ class RouteGenerator {
       case '/profile':
         return MaterialPageRoute(
           builder: (context) => const UserProfileScreen(),
+        );
+
+      case '/editProfile':
+        return MaterialPageRoute(
+          builder: (context) => const EditProfileScreen(),
+        );
+
+      case '/settings':
+        return MaterialPageRoute(
+          builder: (context) => const SettingsScreen(),
         );
 
       case '/saved':

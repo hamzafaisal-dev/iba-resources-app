@@ -65,10 +65,20 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
           },
           builder: (context, state) {
             if (state is AuthStateAuthenticated) {
-              // if resource id already present in user's saved resources array then initial value of _isBookmarked: true
-              if (state.authenticatedUser.savedResources!
-                  .contains(currentResource)) {
-                _isBookmarked = true;
+              // if resource already present in user's saved resources array then initial value of _isBookmarked: true
+              // if (state.authenticatedUser.savedResources!
+              //     .contains(currentResource)) {
+              //   _isBookmarked = true;
+              // }
+
+              for (ResourceModel userSavedResource
+                  in state.authenticatedUser.savedResources!) {
+                if (currentResource.resourceId ==
+                    userSavedResource.resourceId) {
+                  print('we finna here');
+                  _isBookmarked = true;
+                  break;
+                }
               }
             }
 

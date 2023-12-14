@@ -12,6 +12,10 @@ class ResourceRepository {
     return await resourceFirestoreClient.getAllResources();
   }
 
+  Future<List<ResourceModel>> getSearchedResources(String searchedName) async {
+    return await resourceFirestoreClient.getSearchedResources(searchedName);
+  }
+
   Future<void> bookmarkResource(
       ResourceModel savedResource, UserModel user, bool isBookMarked) async {
     await resourceFirestoreClient.bookmarkResource(

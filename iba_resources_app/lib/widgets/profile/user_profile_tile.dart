@@ -34,6 +34,7 @@ class UserProfileTile extends StatelessWidget {
             size: leadingIconSize ?? 35,
           ),
         ),
+        trailing: trailing,
         title: Text(
           title,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

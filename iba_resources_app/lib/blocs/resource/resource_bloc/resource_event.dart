@@ -14,6 +14,15 @@ class FetchResources extends ResourceEvent {
   List<Object?> get props => throw UnimplementedError();
 }
 
+class FetchSearchedResources extends ResourceEvent {
+  final String searchedName;
+
+  const FetchSearchedResources(this.searchedName) : super();
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
 class BookmarkResourceEvent extends ResourceEvent {
   final UserModel user;
   final ResourceModel savedResource;

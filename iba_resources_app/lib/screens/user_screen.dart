@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
-import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
+import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_stat.dart';
@@ -22,7 +21,72 @@ class _UserScreenState extends State<UserScreen> {
   late UserModel authenticatedUser;
 
   void logOut() {
-    BlocProvider.of<AuthBloc>(context).add(SignOutRequestedEvent());
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              //
+              const Text(
+                'Are you sure you want to log out?',
+                style: TextStyle(fontSize: 20),
+              ),
+
+              const SizedBox(height: 20),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 2.9,
+                    child: FilledButton(
+                      onPressed: () {
+                        BlocProvider.of<AuthBloc>(context).add(
+                          SignOutRequestedEvent(),
+                        );
+                      },
+                      child: const Text(
+                        'Yes',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 2.9,
+                    child: FilledButton(
+                      style: ButtonStyles.filledButtonStyle.copyWith(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.black),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text(
+                        'No',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -36,7 +100,7 @@ class _UserScreenState extends State<UserScreen> {
           }
 
           if (state is AuthError) {
-            print(state.errorMessage);
+            // print(state.errorMessage);
           }
 
           if (state is AuthStateUnauthenticated) {
@@ -253,6 +317,16 @@ class _UserScreenState extends State<UserScreen> {
                     ),
                   ),
                 ],
+              ),
+
+              const SizedBox(height: 20),
+
+              // settings tile
+              UserProfileTile(
+                leadingIcon: Icons.settings,
+                leadingIconSize: 30,
+                title: 'Settings',
+                onTap: () => NavigationService.routeToNamed('/settings'),
               ),
 
               const SizedBox(height: 20),

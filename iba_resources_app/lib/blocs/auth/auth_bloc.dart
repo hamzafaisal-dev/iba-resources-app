@@ -11,7 +11,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({required this.authRepository}) : super(AuthUnknown()) {
 //
-
     authRepository.userStateChangeStream().listen((user) async {
       UserModel? currentUser = await authRepository.getCurrentUser(user);
 

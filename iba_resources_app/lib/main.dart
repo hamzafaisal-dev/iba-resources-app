@@ -10,11 +10,14 @@ import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
 import 'package:iba_resources_app/blocs/sign_up/sign_up_bloc.dart';
+import 'package:iba_resources_app/blocs/user/user_bloc.dart';
 import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart';
 import 'package:iba_resources_app/core/auth/network.dart';
 import 'package:iba_resources_app/core/resource/network.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
+import 'package:iba_resources_app/core/user/network.dart';
+import 'package:iba_resources_app/core/user/user_repository.dart';
 
 import 'package:iba_resources_app/firebase_options.dart';
 import 'package:iba_resources_app/screens/landing_screen.dart';
@@ -33,8 +36,9 @@ void main() async {
 
   final AuthRepository authRepository = AuthRepository(
     userFirebaseClient: UserFirebaseClient(
-        firebaseAuth: FirebaseAuth.instance,
-        firestore: FirebaseFirestore.instance),
+      firebaseAuth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
+    ),
   );
 
   final ResourceRepository resourceRepository = ResourceRepository(
@@ -44,10 +48,17 @@ void main() async {
     ),
   );
 
+  final UserRepository userRepository = UserRepository(
+    userFirestoreClient: UserFirestoreClient(
+      firebaseFirestore: FirebaseFirestore.instance,
+    ),
+  );
+
   runApp(
     MyApp(
       authRepository: authRepository,
       resourceRepository: resourceRepository,
+      userRepository: userRepository,
     ),
   );
 }
@@ -57,10 +68,12 @@ class MyApp extends StatelessWidget {
     super.key,
     required this.authRepository,
     required this.resourceRepository,
+    required this.userRepository,
   });
 
   final AuthRepository authRepository;
   final ResourceRepository resourceRepository;
+  final UserRepository userRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +97,11 @@ class MyApp extends StatelessWidget {
         BlocProvider<ResourceBloc>(
           create: (BuildContext context) {
             return ResourceBloc(resourceRepository: resourceRepository);
+          },
+        ),
+        BlocProvider<UserBloc>(
+          create: (BuildContext context) {
+            return UserBloc(userRepository: userRepository);
           },
         ),
       ],
@@ -110,6 +128,19 @@ class MyApp extends StatelessWidget {
 
           filledButtonTheme: FilledButtonThemeData(
             style: ButtonStyles.filledButtonStyle,
+          ),
+
+          dialogTheme: const DialogTheme(
+            backgroundColor: Color(0XFFF2F6F7),
+            titleTextStyle: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+            contentTextStyle: TextStyle(
+              color: Colors.black87,
+              fontSize: 16,
+            ),
           ),
 
           scaffoldBackgroundColor: const Color(0XFFF2F6F7),

@@ -155,7 +155,13 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                 ),
                 child: IconButton(
                   onPressed: () {
-                    BlocProvider.of<ResourceBloc>(context).add(FetchMocNigga());
+                    BlocProvider.of<ResourceBloc>(context).add(
+                      FetchSearchedResources('Theory'),
+                    );
+
+                    _resourceBloc.add(
+                      FetchSearchedResources('Theory'),
+                    );
                   },
                   icon: Icon(
                     Icons.filter_alt_sharp,
@@ -207,7 +213,8 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                       }
 
                       if (state is ResourceError) {
-                        return const Text('Masla hogaya bhau');
+                        print(state.errorMsg);
+                        return Text(state.errorMsg);
                       }
 
                       if (state is ResourceEmpty) {
