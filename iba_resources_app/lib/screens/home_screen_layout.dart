@@ -23,6 +23,12 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
 
   late ResourceBloc _resourceBloc;
 
+  void _searchByName(String searchedName) {
+    if (searchedName == '') return;
+
+    _resourceBloc.add(FetchSearchedResources(searchedName));
+  }
+
   @override
   void initState() {
     _resourceBloc = ResourceBloc(resourceRepository: widget.resourceRepository);
@@ -101,8 +107,8 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
               // search bar
               Expanded(
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+                  // const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
@@ -117,13 +123,33 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.search),
+                      Container(
+                        height: 54,
+                        width: 54,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            bottomLeft: Radius.circular(15),
+                          ),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            _searchByName(_searchBarController.text);
+                          },
+                          icon: Icon(
+                            Icons.search,
+                            size: 30,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
                           controller: _searchBarController,
                           decoration: const InputDecoration(
-                            hintText: 'Search for resources',
+                            hintText: 'Search by name',
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
                           ),
@@ -218,7 +244,8 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                       }
 
                       if (state is ResourceEmpty) {
-                        return const Text('No resources uploaded');
+                        return const Text(
+                            'Could not find what you were looking for');
                       }
 
                       if (state is ResourcesLoaded) {
