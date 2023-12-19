@@ -109,7 +109,6 @@ class MyApp extends StatelessWidget {
         title: 'IBARA',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          //
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color(0XFFFF7B66),
             primary: const Color(0XFFFF7B66),
@@ -119,17 +118,14 @@ class MyApp extends StatelessWidget {
             tertiary: Colors.grey,
             error: const Color(0XFFB41528),
           ),
-
           appBarTheme: const AppBarTheme(
             foregroundColor: Colors.black,
             backgroundColor: Color(0XFFF2F6F7),
             elevation: 0,
           ),
-
           filledButtonTheme: FilledButtonThemeData(
             style: ButtonStyles.filledButtonStyle,
           ),
-
           dialogTheme: const DialogTheme(
             backgroundColor: Color(0XFFF2F6F7),
             titleTextStyle: TextStyle(
@@ -142,10 +138,13 @@ class MyApp extends StatelessWidget {
               fontSize: 16,
             ),
           ),
-
           scaffoldBackgroundColor: const Color(0XFFF2F6F7),
-
           textTheme: GoogleFonts.urbanistTextTheme(),
+          // bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          //   backgroundColor: Color(0XFFFF7B66),
+          //   // selectedItemColor: Colors.white,
+          //   // unselectedItemColor: Colors.white,
+          // ),
         ),
         onGenerateRoute: RouteGenerator.generateRoutes,
         navigatorKey: NavigationService.navigatorKey,

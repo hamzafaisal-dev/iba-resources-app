@@ -4,6 +4,7 @@ import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
+import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/resource_type_chip.dart';
@@ -23,16 +24,8 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
   bool _isDownloading = false;
 
   void _downloadResource(List<dynamic> fileDownloadUrls) async {
-    // takes in list of download URLs, loops over the list, downloads each file onto phone
-    for (String fileUrl in fileDownloadUrls) {
-      await FileDownloader.downloadFile(
-        url: fileUrl,
-        onDownloadCompleted: (path) {
-          // final File file = File(path);
-          print('Download successful!');
-        },
-      );
-    }
+    BlocProvider.of<ResourceBloc>(context)
+        .add(DownloadResourceEvent(fileDownloadUrls: fileDownloadUrls));
   }
 
   void _bookmarkResource(ResourceModel resource, UserModel user) {
@@ -41,6 +34,17 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
         user: user,
         savedResource: resource,
         isBookMarked: _isBookmarked,
+      ),
+    );
+  }
+
+  void showSnackbar(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -82,196 +86,209 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
               }
             }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //
+            return WillPopScope(
+              onWillPop: () async {
+                Navigator.pop(context, currentResource);
 
-                // resource title + bookmark icon
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //
-                    // resource title
-                    Flexible(
-                      // will wrap text
-                      child: Text(
-                        currentResource.resourceTitle,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
+                return false;
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //
+
+                  // resource title + bookmark icon
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //
+                      // resource title
+                      Flexible(
+                        // will wrap text
+                        child: Text(
+                          currentResource.resourceTitle,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
-                    ),
 
-                    // bookmark resource
-                    IconButton(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      onPressed: () {
-                        if (state is AuthStateAuthenticated) {
-                          _bookmarkResource(
-                            currentResource,
-                            state.authenticatedUser,
-                          );
+                      // bookmark resource
+                      IconButton(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onPressed: () {
+                          if (state is AuthStateAuthenticated) {
+                            _bookmarkResource(
+                              currentResource,
+                              state.authenticatedUser,
+                            );
 
-                          setState(() {
-                            _isBookmarked = !_isBookmarked;
-                          });
-                        }
-                      },
-                      icon: _isBookmarked
-                          ? Icon(
-                              Icons.bookmark,
-                              size: 40,
-                              color: Theme.of(context).colorScheme.primary,
-                            )
-                          : Icon(
-                              Icons.bookmark_outline,
-                              size: 40,
-                              color: Theme.of(context).colorScheme.primary,
+                            setState(() {
+                              _isBookmarked = !_isBookmarked;
+                            });
+                          }
+                        },
+                        icon: _isBookmarked
+                            ? Icon(
+                                Icons.bookmark,
+                                size: 40,
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : Icon(
+                                Icons.bookmark_outline,
+                                size: 40,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // pfp + username
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // pfp + username
+                      Row(
+                        children: [
+                          // pfp
+                          const CircleAvatar(
+                            radius: 13,
+                            backgroundImage: AssetImage('assets/avatar.png'),
+                          ),
+
+                          const SizedBox(width: 6),
+
+                          // username
+                          Text(
+                            currentResource.uploader,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).colorScheme.tertiary,
                             ),
-                    ),
-                  ],
-                ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
 
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-                // pfp + username
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // pfp + username
-                    Row(
-                      children: [
-                        // pfp
-                        const CircleAvatar(
-                          radius: 13,
-                          backgroundImage: AssetImage('assets/avatar.png'),
+                  Wrap(
+                    children: [
+                      //
+                      ...currentResource.relevantFields!.map(
+                        (relevantField) => ResourceTypeChip(
+                          label: relevantField,
+                          fontSize: 15.5,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          textColor: Theme.of(context).colorScheme.primary,
                         ),
+                      ),
 
-                        const SizedBox(width: 6),
+                      ResourceTypeChip(
+                          label: currentResource.resourceType, fontSize: 16),
+                    ],
+                  ),
 
-                        // username
-                        Text(
-                          currentResource.uploader,
+                  const SizedBox(height: 12),
+
+                  // teacher name
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      children: [
+                        const TextSpan(
+                          text: 'Teacher: ',
+                        ),
+                        TextSpan(
+                          text: currentResource.teacherName,
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
                             color: Theme.of(context).colorScheme.tertiary,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-
-                Wrap(
-                  children: [
-                    //
-                    ...currentResource.relevantFields!.map(
-                      (relevantField) => ResourceTypeChip(
-                        label: relevantField,
-                        fontSize: 15.5,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer,
-                        textColor: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-
-                    ResourceTypeChip(
-                        label: currentResource.resourceType, fontSize: 16),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-
-                // teacher name
-                RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    children: [
-                      const TextSpan(
-                        text: 'Teacher: ',
-                      ),
-                      TextSpan(
-                        text: currentResource.teacherName,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                      ),
-                    ],
                   ),
-                ),
 
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-                // resource description
-                RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    children: [
-                      const TextSpan(
-                        text: 'Description: ',
+                  // resource description
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
-                      TextSpan(
-                        text: currentResource.resourceDescription,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const Spacer(),
-
-                Center(
-                  child: FilledButton(
-                    onPressed: _isDownloading
-                        ? null
-                        : () {
-                            setState(() {
-                              _isDownloading = !_isDownloading;
-                            });
-
-                            _downloadResource(currentResource.resourceFiles!);
-
-                            setState(() {
-                              _isDownloading = !_isDownloading;
-                            });
-                          },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //
-                        Icon(Icons.download_rounded, size: 28),
-
-                        SizedBox(width: 8),
-
-                        Text(
-                          'Download Files',
-                          style: TextStyle(fontSize: 20),
+                        const TextSpan(
+                          text: 'Description: ',
+                        ),
+                        TextSpan(
+                          text: currentResource.resourceDescription,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 30),
-              ],
+                  const Spacer(),
+
+                  BlocConsumer<ResourceBloc, ResourceState>(
+                    listener: (context, state) {
+                      if (state is ResourceFilesDownloadSuccess) {
+                        showSnackbar('Resource downloaded succesfully');
+                      }
+
+                      if (state is ResourceError) {
+                        showSnackbar(state.errorMsg);
+                      }
+                    },
+                    builder: (context, state) {
+                      return Center(
+                        child: FilledButton(
+                          onPressed: (state is ResourceFilesDownloadLoading)
+                              ? null
+                              : () {
+                                  _downloadResource(
+                                      currentResource.resourceFiles!);
+                                },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              //
+                              Icon(Icons.download_rounded, size: 28),
+
+                              SizedBox(width: 8),
+
+                              Text(
+                                'Download Files',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 30),
+                ],
+              ),
             );
           },
         ),

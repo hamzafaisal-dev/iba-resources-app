@@ -9,4 +9,8 @@ class UserRepository {
   void editProfile(UserModel user, String userName) {
     userFirestoreClient.editProfile(user, userName);
   }
+
+  Future<UserModel> fetchCurrentUser(String userId) {
+    return userFirestoreClient.fetchCurrentUser(userId);
+  }
 }

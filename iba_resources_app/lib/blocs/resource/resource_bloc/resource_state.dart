@@ -28,6 +28,10 @@ class ResourceFilesUploadSuccess extends ResourceState {}
 
 class ResourceFilesUploadLoading extends ResourceState {}
 
+class ResourceFilesDownloadSuccess extends ResourceState {}
+
+class ResourceFilesDownloadLoading extends ResourceState {}
+
 class ResourceError extends ResourceState {
   final String errorMsg;
   ResourceError({required this.errorMsg});

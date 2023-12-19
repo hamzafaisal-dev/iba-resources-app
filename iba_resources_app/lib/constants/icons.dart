@@ -18,11 +18,11 @@ class ConstantIcons {
       color: Colors.white,
       size: 30,
     ),
-    Icon(
-      Icons.notifications,
-      color: Colors.white,
-      size: 29,
-    ),
+    // Icon(
+    //   Icons.notifications,
+    //   color: Colors.white,
+    //   size: 29,
+    // ),
     Icon(
       Icons.person,
       color: Colors.white,

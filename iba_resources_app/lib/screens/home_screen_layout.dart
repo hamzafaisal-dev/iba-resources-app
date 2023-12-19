@@ -181,13 +181,13 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                 ),
                 child: IconButton(
                   onPressed: () {
-                    BlocProvider.of<ResourceBloc>(context).add(
-                      FetchSearchedResources('Theory'),
-                    );
+                    // BlocProvider.of<ResourceBloc>(context).add(
+                    //   FetchSearchedResources('Theory'),
+                    // );
 
-                    _resourceBloc.add(
-                      FetchSearchedResources('Theory'),
-                    );
+                    // _resourceBloc.add(
+                    //   FetchSearchedResources('Theory'),
+                    // );
                   },
                   icon: Icon(
                     Icons.filter_alt_sharp,

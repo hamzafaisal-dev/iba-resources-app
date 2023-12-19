@@ -49,11 +49,11 @@ class _LayoutState extends State<Layout> {
           widget = const AddResourceScreen();
           break;
         case 3:
-          widget = const NotificationsScreen();
-          break;
-        case 4:
           widget = const UserScreen();
           break;
+        // case 4:
+        //   widget = const UserScreen();
+        // break;
         default:
           widget = const ErrorScreen();
           break;
@@ -72,9 +72,9 @@ class _LayoutState extends State<Layout> {
         case 2:
           title = 'Add Resource';
         case 3:
-          title = 'Notifications';
-        case 4:
           title = 'Profile';
+        // case 4:
+        //   title = 'Profile';
         default:
           title = 'IBARA';
       }
@@ -96,7 +96,8 @@ class _LayoutState extends State<Layout> {
       appBar: getAppbar(),
       bottomNavigationBar: CurvedNavigationBar(
         color: Theme.of(context).colorScheme.primary,
-        backgroundColor: const Color(0XFFF3F3F3),
+        backgroundColor:
+            currentIndex == 0 ? Colors.white : const Color(0XFFF3F3F3),
         animationDuration: const Duration(milliseconds: 300),
         index: currentIndex,
         onTap: (selectedIndex) {

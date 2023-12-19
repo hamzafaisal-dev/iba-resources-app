@@ -23,6 +23,18 @@ class FetchSearchedResources extends ResourceEvent {
   List<Object?> get props => throw UnimplementedError();
 }
 
+class DownloadResourceEvent extends ResourceEvent {
+  final List<dynamic> fileDownloadUrls;
+
+  const DownloadResourceEvent({
+    required this.fileDownloadUrls,
+  });
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [fileDownloadUrls];
+}
+
 class BookmarkResourceEvent extends ResourceEvent {
   final UserModel user;
   final ResourceModel savedResource;

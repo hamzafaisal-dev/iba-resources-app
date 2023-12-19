@@ -12,4 +12,10 @@ class UserUpdateError extends UserState {
   UserUpdateError({required this.errorMessage});
 }
 
-class UserUpdateLoading extends UserState {}
+class UserLoadingState extends UserState {}
+
+class UserLoaded extends UserState {
+  final UserModel currentUser;
+
+  UserLoaded(this.currentUser);
+}

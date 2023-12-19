@@ -19,6 +19,10 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       await _getSearchedResources(event.searchedName, emit);
     });
 
+    on<DownloadResourceEvent>((event, emit) async {
+      await _downloadResource(event.fileDownloadUrls, emit);
+    });
+
     on<BookmarkResourceEvent>((event, emit) async {
       await _bookmarkResource(
           event.user, event.savedResource, event.isBookMarked, emit);
@@ -77,6 +81,20 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       }
 
       emit(ResourcesLoaded(resources: resources));
+    } catch (e) {
+      emit(ResourceError(errorMsg: e.toString()));
+    }
+  }
+
+  Future<void> _downloadResource(
+    List<dynamic> fileDownloadUrls,
+    Emitter<ResourceState> emit,
+  ) async {
+    try {
+      emit(ResourceFilesDownloadLoading());
+
+      await resourceRepository.downloadResource(fileDownloadUrls);
+      emit(ResourceFilesDownloadSuccess());
     } catch (e) {
       emit(ResourceError(errorMsg: e.toString()));
     }

@@ -13,11 +13,25 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UserUpdateEvent>((event, emit) {
       _updateUser(event.user, event.name, emit);
     });
+
+    on<FetchUser>((event, emit) async {
+      await _fetchUser(event.userId, emit);
+    });
+  }
+
+  Future<void> _fetchUser(String userId, Emitter<UserState> emit) async {
+    try {
+      emit(UserLoadingState());
+      UserModel currentUser = await userRepository.fetchCurrentUser(userId);
+      emit(UserLoaded(currentUser));
+    } catch (error) {
+      emit(UserUpdateError(errorMessage: error.toString()));
+    }
   }
 
   void _updateUser(UserModel user, String userName, Emitter<UserState> emit) {
     try {
-      emit(UserUpdateLoading());
+      emit(UserLoadingState());
       userRepository.editProfile(user, userName);
       emit(UserUpdateSuccess());
     } catch (error) {

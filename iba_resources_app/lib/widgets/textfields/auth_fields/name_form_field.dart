@@ -18,11 +18,11 @@ class NameFormField extends StatefulWidget {
 }
 
 class _NameFormFieldState extends State<NameFormField> {
-  final _emailController = TextEditingController();
+  final _nameController = TextEditingController();
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -36,8 +36,7 @@ class _NameFormFieldState extends State<NameFormField> {
         context,
       ),
       cursorColor: Theme.of(context).colorScheme.primary,
-      keyboardType: TextInputType.emailAddress,
-      controller: _emailController,
+      controller: _nameController,
       validator: (value) {
         if (value == null || value.isEmpty || value.trim().length < 3) {
           return 'Name cannot be less than 3 characters';

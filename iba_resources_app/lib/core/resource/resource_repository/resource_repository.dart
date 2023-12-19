@@ -16,6 +16,10 @@ class ResourceRepository {
     return await resourceFirestoreClient.getSearchedResources(searchedName);
   }
 
+  Future<void> downloadResource(List<dynamic> fileDownloadUrls) async {
+    await resourceFirestoreClient.downloadResource(fileDownloadUrls);
+  }
+
   Future<void> bookmarkResource(
       ResourceModel savedResource, UserModel user, bool isBookMarked) async {
     await resourceFirestoreClient.bookmarkResource(

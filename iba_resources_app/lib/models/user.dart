@@ -9,6 +9,8 @@ class UserModel {
     required this.email,
     required this.postedResources,
     required this.savedResources,
+    required this.likedResources,
+    required this.dislikedResources,
     required this.points,
     required this.reportCount,
     required this.isBanned,
@@ -25,6 +27,8 @@ class UserModel {
 
   final List<ResourceModel>? postedResources;
   final List<ResourceModel>? savedResources;
+  final List<ResourceModel>? likedResources;
+  final List<ResourceModel>? dislikedResources;
   final int points;
   final int? reportCount;
   final bool? isBanned;
@@ -43,6 +47,12 @@ class UserModel {
           ?.map((resourceData) => ResourceModel.fromJson(resourceData))
           .toList(),
       savedResources: (userData['savedResources'] as List<dynamic>?)
+          ?.map((resourceData) => ResourceModel.fromJson(resourceData))
+          .toList(),
+      likedResources: (userData['likedResources'] as List<dynamic>?)
+          ?.map((resourceData) => ResourceModel.fromJson(resourceData))
+          .toList(),
+      dislikedResources: (userData['dislikedResources'] as List<dynamic>?)
           ?.map((resourceData) => ResourceModel.fromJson(resourceData))
           .toList(),
       points: userData['points'],
@@ -65,6 +75,10 @@ class UserModel {
           postedResources?.map((resource) => resource.toMap()).toList(),
       'savedResources':
           savedResources?.map((resource) => resource.toMap()).toList(),
+      'likedResources':
+          likedResources?.map((resource) => resource.toMap()).toList(),
+      'dislikedResources':
+          dislikedResources?.map((resource) => resource.toMap()).toList(),
       'points': points,
       'reportCount': reportCount,
       'isBanned': isBanned,
@@ -82,6 +96,8 @@ class UserModel {
     String? email,
     List<ResourceModel>? postedResources,
     List<ResourceModel>? savedResources,
+    List<ResourceModel>? likedResources,
+    List<ResourceModel>? dislikedResources,
     int? points,
     int? reportCount,
     bool? isBanned,
@@ -97,6 +113,8 @@ class UserModel {
       email: email ?? this.email,
       postedResources: postedResources ?? this.postedResources,
       savedResources: savedResources ?? this.savedResources,
+      likedResources: likedResources ?? this.likedResources,
+      dislikedResources: dislikedResources ?? this.dislikedResources,
       points: points ?? this.points,
       reportCount: reportCount ?? this.reportCount,
       isBanned: isBanned ?? this.isBanned,

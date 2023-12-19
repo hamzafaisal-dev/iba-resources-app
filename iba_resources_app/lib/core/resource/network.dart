@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
 import 'package:path/path.dart';
@@ -46,6 +47,22 @@ class ResourceFirestoreClient {
     }).toList();
 
     return allFetchedResources;
+  }
+
+  Future<void> downloadResource(List<dynamic> fileDownloadUrls) async {
+    // takes in list of download URLs, loops over the list, downloads each file onto phone
+    for (String fileUrl in fileDownloadUrls) {
+      await FileDownloader.downloadFile(
+        url: fileUrl,
+        onDownloadCompleted: (path) {
+          // final File file = File(path);
+          print('Download successful!');
+        },
+        onProgress: (fileName, progress) {
+          print(progress);
+        },
+      );
+    }
   }
 
   Future<void> bookmarkResource(

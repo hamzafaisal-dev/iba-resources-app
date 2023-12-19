@@ -100,7 +100,7 @@ class _UserScreenState extends State<UserScreen> {
           }
 
           if (state is AuthError) {
-            // print(state.errorMessage);
+            NavigationService.routeToReplacementNamed('/login');
           }
 
           if (state is AuthStateUnauthenticated) {
@@ -146,35 +146,38 @@ class _UserScreenState extends State<UserScreen> {
               const SizedBox(height: 20),
 
               // user stats scroll
-              const SingleChildScrollView(
+              SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: Row(
                     children: [
                       //
                       UserProfileStat(
-                        statisticValue: 6,
+                        statisticValue:
+                            authenticatedUser.postedResources!.length,
                         statisticName: 'Contributions',
                       ),
 
                       UserProfileStat(
-                        statisticValue: 40,
+                        statisticValue: authenticatedUser.points,
                         statisticName: 'Points',
                       ),
 
                       UserProfileStat(
-                        statisticValue: 113,
+                        statisticValue:
+                            authenticatedUser.likedResources!.length,
                         statisticName: 'Upvotes',
                       ),
 
                       UserProfileStat(
-                        statisticValue: 34,
+                        statisticValue:
+                            authenticatedUser.dislikedResources!.length,
                         statisticName: 'Downvotes',
                       ),
 
                       UserProfileStat(
-                        statisticValue: 1,
+                        statisticValue: authenticatedUser.reportCount!,
                         statisticName: 'Reports',
                       )
                     ],
