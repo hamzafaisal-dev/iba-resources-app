@@ -43,6 +43,7 @@ class ResourceRepository {
     List<String> relevantFields,
     String semester,
     String year,
+    UserModel updatedUser,
   ) {
     return resourceFirestoreClient.uploadResource(
       pickedFiles,
@@ -54,6 +55,7 @@ class ResourceRepository {
       relevantFields,
       semester,
       year,
+      updatedUser,
     );
   }
 }

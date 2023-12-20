@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
@@ -8,8 +9,10 @@ import 'package:iba_resources_app/models/user.dart';
 
 class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
   final ResourceRepository resourceRepository;
+  final AuthBloc authBloc;
 
-  ResourceBloc({required this.resourceRepository}) : super(ResourcesLoading()) {
+  ResourceBloc({required this.resourceRepository, required this.authBloc})
+      : super(ResourcesLoading()) {
     on<FetchResources>((event, emit) async {
       await _getAllResources(emit);
     });
@@ -43,6 +46,7 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
         event.relevantFields,
         event.semester,
         event.year,
+        event.updatedUser,
         emit,
       );
     });
@@ -107,9 +111,31 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     Emitter<ResourceState> emit,
   ) async {
     try {
+// final userUpdatedSavedResources = user.savedResources!.add(savedResource);
+
+      List<ResourceModel>? usersSavedResources = user.savedResources ?? [];
+
+      // have to toggle isBookMarked bec previous value is being passed in, lazy state or something
+      isBookMarked = !isBookMarked;
+
+      print('resource in resource network: $savedResource');
+
+      if (isBookMarked) {
+        // add savedResource to the list if not already present
+        if (!usersSavedResources.contains(savedResource)) {
+          usersSavedResources.add(savedResource);
+        }
+      } else {
+        // remove savedResource from the list
+        usersSavedResources.remove(savedResource);
+      }
+
+      final updatedUser = user.copyWith(savedResources: usersSavedResources);
+
       await resourceRepository.bookmarkResource(
-          savedResource, user, isBookMarked);
+          savedResource, updatedUser, isBookMarked);
       emit(ResourceBookmarkSuccess());
+      authBloc.add(AuthStateUpdatedEvent(updatedUser));
     } catch (e) {
       emit(ResourceError(errorMsg: e.toString()));
     }
@@ -140,24 +166,28 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     List<String> relevantFields,
     String semester,
     String year,
+    UserModel updatedUser,
     Emitter<ResourceState> emit,
   ) async {
     try {
       emit(ResourceFilesUploadLoading());
 
       await resourceRepository.uploadResource(
-        pickedFiles,
-        resourceTitle,
-        resourceDescription,
-        resourceType,
-        teacherName,
-        courseName,
-        relevantFields,
-        semester,
-        year,
-      );
+          pickedFiles,
+          resourceTitle,
+          resourceDescription,
+          resourceType,
+          teacherName,
+          courseName,
+          relevantFields,
+          semester,
+          year,
+          updatedUser);
 
       emit(ResourceFilesUploadSuccess());
+      print('updated user after resource upload');
+      print(updatedUser);
+      authBloc.add(AuthStateUpdatedEvent(updatedUser));
     } catch (error) {
       emit(ResourceError(errorMsg: error.toString()));
     }

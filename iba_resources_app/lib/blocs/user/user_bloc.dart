@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/core/user/user_repository.dart';
 import 'package:iba_resources_app/models/user.dart';
 
@@ -8,8 +9,10 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository userRepository;
+  final AuthBloc authBloc;
 
-  UserBloc({required this.userRepository}) : super(UserInitial()) {
+  UserBloc({required this.userRepository, required this.authBloc})
+      : super(UserInitial()) {
     on<UserUpdateEvent>((event, emit) {
       _updateUser(event.user, event.name, emit);
     });
@@ -34,6 +37,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(UserLoadingState());
       userRepository.editProfile(user, userName);
       emit(UserUpdateSuccess());
+      authBloc.add(AuthStateUpdatedEvent(user));
     } catch (error) {
       emit(UserUpdateError(errorMessage: error.toString()));
     }

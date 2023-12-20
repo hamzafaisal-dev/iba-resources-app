@@ -96,12 +96,18 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ResourceBloc>(
           create: (BuildContext context) {
-            return ResourceBloc(resourceRepository: resourceRepository);
+            return ResourceBloc(
+              resourceRepository: resourceRepository,
+              authBloc: BlocProvider.of<AuthBloc>(context),
+            );
           },
         ),
         BlocProvider<UserBloc>(
           create: (BuildContext context) {
-            return UserBloc(userRepository: userRepository);
+            return UserBloc(
+              userRepository: userRepository,
+              authBloc: BlocProvider.of<AuthBloc>(context),
+            );
           },
         ),
       ],

@@ -70,32 +70,29 @@ class ResourceFirestoreClient {
     UserModel user,
     bool isBookMarked,
   ) async {
-    late UserModel updatedUser;
-    List<ResourceModel>? usersSavedResources = user.savedResources ?? [];
+    // late UserModel updatedUser;
+    // List<ResourceModel>? usersSavedResources = user.savedResources ?? [];
 
-    // have to toggle isBookMarked bec previous value is being passed in, lazy state or something
-    isBookMarked = !isBookMarked;
+    // // have to toggle isBookMarked bec previous value is being passed in, lazy state or something
+    // isBookMarked = !isBookMarked;
 
-    print('resource in resource network: $savedResource');
+    // print('resource in resource network: $savedResource');
 
-    if (isBookMarked) {
-      // add savedResource to the list if not already present
-      if (!usersSavedResources.contains(savedResource)) {
-        usersSavedResources.add(savedResource);
-      }
-    } else {
-      // remove savedResource from the list
-      usersSavedResources.remove(savedResource);
-    }
+    // if (isBookMarked) {
+    //   // add savedResource to the list if not already present
+    //   if (!usersSavedResources.contains(savedResource)) {
+    //     usersSavedResources.add(savedResource);
+    //   }
+    // } else {
+    //   // remove savedResource from the list
+    //   usersSavedResources.remove(savedResource);
+    // }
 
-    // update the user model with the modified savedResources list
-    updatedUser = user.copyWith(savedResources: usersSavedResources);
+    // // update the user model with the modified savedResources list
+    // updatedUser = user.copyWith(savedResources: usersSavedResources);
 
     // update the user document in Firestore
-    await firestore
-        .collection('users')
-        .doc(user.userId)
-        .update(updatedUser.toMap());
+    await firestore.collection('users').doc(user.userId).update(user.toMap());
   }
 
   Future<FilePickerResult?> selectFiles() async {
@@ -139,6 +136,7 @@ class ResourceFirestoreClient {
     List<String> relevantFields,
     String semester,
     String year,
+    UserModel updatedUser,
   ) async {
     String timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -188,9 +186,15 @@ class ResourceFirestoreClient {
       isDeleted: false,
     );
 
-    await FirebaseFirestore.instance
+    await firestore
         .collection('resources')
         .doc('$resourceTitle-$timeStamp')
         .set(newResource.toMap());
+
+    // set the updated user in db
+    await firestore
+        .collection('users')
+        .doc(updatedUser.userId)
+        .update(updatedUser.toMap());
   }
 }

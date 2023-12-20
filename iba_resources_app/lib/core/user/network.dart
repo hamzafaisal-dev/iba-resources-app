@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iba_resources_app/models/user.dart';
 
 class UserFirestoreClient {
@@ -42,6 +43,10 @@ class UserFirestoreClient {
   void editProfile(UserModel user, String userName) async {
     // UserModel updatedUser = user.copyWith(name: userName);
     print(user.name);
+
+    // await FirebaseAuth.instance.currentUser!.updateDisplayName(user.name);
+
+    print(user.toMap());
 
     await firebaseFirestore
         .collection('users')

@@ -11,6 +11,15 @@ class AuthStateChangedEvent extends AuthEvent {
   List<Object?> get props => [user];
 }
 
+class AuthStateUpdatedEvent extends AuthEvent {
+  final UserModel? user;
+
+  AuthStateUpdatedEvent(this.user);
+
+  @override
+  List<Object?> get props => [user];
+}
+
 class SignOutRequestedEvent extends AuthEvent {
   @override
   List<Object?> get props => throw UnimplementedError();

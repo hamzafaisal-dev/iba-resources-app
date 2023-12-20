@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
@@ -21,7 +20,6 @@ class ViewResourceDetailsScreen extends StatefulWidget {
 
 class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
   bool _isBookmarked = false;
-  bool _isDownloading = false;
 
   void _downloadResource(List<dynamic> fileDownloadUrls) async {
     BlocProvider.of<ResourceBloc>(context)

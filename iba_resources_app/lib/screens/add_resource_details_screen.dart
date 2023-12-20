@@ -1,16 +1,13 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
 import 'package:iba_resources_app/constants/dropdown_items.dart';
-import 'package:iba_resources_app/services/navigation_service.dart';
+import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/widgets/dropdowns/custom_dropdown.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
 import 'package:iba_resources_app/widgets/add_resource_all_widgets/degree_chip.dart';
@@ -37,7 +34,9 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
   String _semester = '';
   String _year = '';
 
-  late FilePickerResult pickedFiles;
+  late FilePickerResult _pickedFiles;
+
+  late UserModel _authenticatedUser;
 
   final _createResourceFormKey = GlobalKey<FormState>();
 
@@ -62,10 +61,16 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
     );
   }
 
-  void _uploadResource() {
+  void _uploadResource(UserModel authenticatedUser) {
+    int currentUserPoints = _authenticatedUser.points;
+    int currentUserContributions = _authenticatedUser.postedResources!.length;
+
+    final updatedUser =
+        _authenticatedUser.copyWith(points: currentUserPoints + 10);
+
     BlocProvider.of<ResourceBloc>(context).add(
       UploadFilesEvent(
-        pickedFiles: pickedFiles,
+        pickedFiles: _pickedFiles,
         resourceTitle: _resourceTitle,
         resourceDescription: _resourceDescription,
         resourceType: _resourceType,
@@ -74,17 +79,31 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
         relevantFields: _relevantFields,
         semester: _semester,
         year: _year,
+        updatedUser: updatedUser,
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // access the auth blok using the context
+    final authBloc = BlocProvider.of<AuthBloc>(context);
+
+    super.initState();
+
+    if (authBloc.state is AuthStateAuthenticated) {
+      _authenticatedUser =
+          (authBloc.state as AuthStateAuthenticated).authenticatedUser;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     // get files from the previous screen
     if (widget.arguments != null) {
-      pickedFiles = widget.arguments!["pickedFiles"];
+      _pickedFiles = widget.arguments!["pickedFiles"];
 
-      print('picked files in add resource details screen: $pickedFiles');
+      print('picked files in add resource details screen: $_pickedFiles');
     }
 
     return Scaffold(
@@ -271,7 +290,7 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                         : () {
                             if (_createResourceFormKey.currentState!
                                 .validate()) {
-                              _uploadResource();
+                              _uploadResource(_authenticatedUser);
                             }
                           },
                     child: (state is ResourceFilesUploadLoading)

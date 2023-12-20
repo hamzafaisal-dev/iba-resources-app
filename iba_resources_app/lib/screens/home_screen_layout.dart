@@ -29,9 +29,20 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
     _resourceBloc.add(FetchSearchedResources(searchedName));
   }
 
+  void _clearSearch() {
+    if (_searchBarController.text.isEmpty) return;
+
+    _searchBarController.clear();
+
+    _resourceBloc.add(const FetchResources());
+  }
+
   @override
   void initState() {
-    _resourceBloc = ResourceBloc(resourceRepository: widget.resourceRepository);
+    _resourceBloc = ResourceBloc(
+      resourceRepository: widget.resourceRepository,
+      authBloc: BlocProvider.of<AuthBloc>(context),
+    );
 
     _resourceBloc.add(const FetchResources());
 
@@ -134,6 +145,9 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                           ),
                         ),
                         child: IconButton(
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           onPressed: () {
                             _searchByName(_searchBarController.text);
                           },
@@ -151,8 +165,18 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                           decoration: const InputDecoration(
                             hintText: 'Search by name',
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
+                            contentPadding: EdgeInsets.only(left: 4),
                           ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: _clearSearch,
+                        focusColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
                     ],

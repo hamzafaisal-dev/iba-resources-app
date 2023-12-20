@@ -20,6 +20,7 @@ import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/screens/settings_screen.dart';
 import 'package:iba_resources_app/screens/signup_screen.dart';
 import 'package:iba_resources_app/screens/user_profile_screen.dart';
+import 'package:iba_resources_app/screens/user_screen.dart';
 import 'package:iba_resources_app/screens/view_resource_details_screen.dart';
 
 class RouteGenerator {
@@ -72,7 +73,7 @@ class RouteGenerator {
 
       case '/profile':
         return MaterialPageRoute(
-          builder: (context) => const UserProfileScreen(),
+          builder: (context) => const UserScreen(),
         );
 
       case '/editProfile':
