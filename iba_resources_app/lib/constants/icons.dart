@@ -33,16 +33,24 @@ class ConstantIcons {
 
 class HomeScreenIcons {
   static Widget thumbsUp = const FaIcon(
-    FontAwesomeIcons.thumbsUp,
-    size: 18,
+    FontAwesomeIcons.heart,
+    color: Color(0XFFFF7B66),
+    size: 20,
   );
 
   static Widget thumbsDown = Transform(
     alignment: Alignment.center,
     transform: Matrix4.rotationY(3.14),
     child: const FaIcon(
-      FontAwesomeIcons.thumbsDown,
-      size: 18,
+      FontAwesomeIcons.heartCrack,
+      color: Color(0XFFFF7B66),
+      size: 20,
     ),
+  );
+
+  static Widget report = const FaIcon(
+    FontAwesomeIcons.flag,
+    color: Color(0XFFFF7B66),
+    size: 20,
   );
 }

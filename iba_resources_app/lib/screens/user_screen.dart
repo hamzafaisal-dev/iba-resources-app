@@ -167,13 +167,13 @@ class _UserScreenState extends State<UserScreen> {
                       UserProfileStat(
                         statisticValue:
                             authenticatedUser.likedResources!.length,
-                        statisticName: 'Upvotes',
+                        statisticName: 'Upvoted',
                       ),
 
                       UserProfileStat(
                         statisticValue:
                             authenticatedUser.dislikedResources!.length,
-                        statisticName: 'Downvotes',
+                        statisticName: 'Downvoted',
                       ),
 
                       UserProfileStat(

@@ -17,6 +17,13 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       await _getAllResources(emit);
     });
 
+    on<FetchResourcesStream>((event, emit) async {
+      emit(ResourcesLoading());
+      Stream<List<ResourceModel>> resourcesStream =
+          resourceRepository.getAllResourcesStream();
+      emit(ResourcesStreamLoaded(resources: resourcesStream));
+    });
+
     on<FetchSearchedResources>((event, emit) async {
       print('we here');
       await _getSearchedResources(event.searchedName, emit);
@@ -172,22 +179,23 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     try {
       emit(ResourceFilesUploadLoading());
 
-      await resourceRepository.uploadResource(
-          pickedFiles,
-          resourceTitle,
-          resourceDescription,
-          resourceType,
-          teacherName,
-          courseName,
-          relevantFields,
-          semester,
-          year,
-          updatedUser);
+      UserModel newUpdatedUser = await resourceRepository.uploadResource(
+        pickedFiles,
+        resourceTitle,
+        resourceDescription,
+        resourceType,
+        teacherName,
+        courseName,
+        relevantFields,
+        semester,
+        year,
+        updatedUser,
+      );
 
       emit(ResourceFilesUploadSuccess());
       print('updated user after resource upload');
       print(updatedUser);
-      authBloc.add(AuthStateUpdatedEvent(updatedUser));
+      authBloc.add(AuthStateUpdatedEvent(newUpdatedUser));
     } catch (error) {
       emit(ResourceError(errorMsg: error.toString()));
     }

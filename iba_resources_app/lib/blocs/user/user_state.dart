@@ -19,3 +19,9 @@ class UserLoaded extends UserState {
 
   UserLoaded(this.currentUser);
 }
+
+class ResourceLikedState extends UserState {
+  final List<int> resourceLikesAndDislikes;
+
+  ResourceLikedState({required this.resourceLikesAndDislikes});
+}

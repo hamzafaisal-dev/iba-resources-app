@@ -16,6 +16,12 @@ class ResourcesLoaded extends ResourceState {
   ResourcesLoaded({required this.resources}) : super([resources]);
 }
 
+class ResourcesStreamLoaded extends ResourceState {
+  final Stream<List<ResourceModel>> resources;
+
+  ResourcesStreamLoaded({required this.resources}) : super([resources]);
+}
+
 class ResourceBookmarkSuccess extends ResourceState {}
 
 class ResourceFilesSelectSuccess extends ResourceState {

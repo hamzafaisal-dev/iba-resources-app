@@ -12,6 +12,10 @@ class ResourceRepository {
     return await resourceFirestoreClient.getAllResources();
   }
 
+  Stream<List<ResourceModel>> getAllResourcesStream() {
+    return resourceFirestoreClient.getAllResourcesStream();
+  }
+
   Future<List<ResourceModel>> getSearchedResources(String searchedName) async {
     return await resourceFirestoreClient.getSearchedResources(searchedName);
   }
@@ -33,7 +37,7 @@ class ResourceRepository {
     return await resourceFirestoreClient.selectFiles();
   }
 
-  Future<void> uploadResource(
+  Future<UserModel> uploadResource(
     FilePickerResult pickedFiles,
     String resourceTitle,
     String resourceDescription,

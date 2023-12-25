@@ -32,9 +32,12 @@ class SavedResourceTile extends StatelessWidget {
               size: leadingIconSize ?? 32,
             ),
           ),
-          title: Text(
-            title,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          title: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
           onTap: onTap,
         ),

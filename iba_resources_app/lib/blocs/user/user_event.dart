@@ -20,3 +20,23 @@ class UserUpdateEvent extends UserEvent {
   @override
   List<Object?> get props => [user, name];
 }
+
+class UserToggleLikeEvent extends UserEvent {
+  final UserModel user;
+  final ResourceModel resource;
+
+  UserToggleLikeEvent(this.user, this.resource);
+
+  @override
+  List<Object?> get props => [user, resource];
+}
+
+class UserToggleDislikeEvent extends UserEvent {
+  final UserModel user;
+  final ResourceModel resource;
+
+  UserToggleDislikeEvent(this.user, this.resource);
+
+  @override
+  List<Object?> get props => [user, resource];
+}

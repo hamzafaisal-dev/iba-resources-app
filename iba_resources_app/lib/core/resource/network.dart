@@ -32,6 +32,20 @@ class ResourceFirestoreClient {
     return allFetchedResources;
   }
 
+  Stream<List<ResourceModel>> getAllResourcesStream() {
+    return firestore
+        .collection('resources')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (querySnapshot) => querySnapshot.docs
+              .map(
+                (docSnapshot) => ResourceModel.fromJson(docSnapshot.data()),
+              )
+              .toList(),
+        );
+  }
+
   Future<List<ResourceModel>> getSearchedResources(String searchedName) async {
     // fetches all documents in the resources collection
     final resources = await firestore
@@ -126,7 +140,7 @@ class ResourceFirestoreClient {
     return fileUrl;
   }
 
-  Future<void> uploadResource(
+  Future<UserModel> uploadResource(
     FilePickerResult pickedFiles,
     String resourceTitle,
     String resourceDescription,
@@ -191,10 +205,24 @@ class ResourceFirestoreClient {
         .doc('$resourceTitle-$timeStamp')
         .set(newResource.toMap());
 
+    List<ResourceModel> userPostedResources = updatedUser.postedResources!;
+
+    int currentUserPoints = updatedUser.points;
+
+    userPostedResources.add(newResource);
+    currentUserPoints += 10;
+
+    updatedUser = updatedUser.copyWith(
+      postedResources: userPostedResources,
+      points: currentUserPoints,
+    );
+
     // set the updated user in db
     await firestore
         .collection('users')
         .doc(updatedUser.userId)
         .update(updatedUser.toMap());
+
+    return updatedUser;
   }
 }

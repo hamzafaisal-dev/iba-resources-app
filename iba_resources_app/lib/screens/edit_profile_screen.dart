@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/user/user_bloc.dart';
 import 'package:iba_resources_app/models/user.dart';
-import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
 import 'package:iba_resources_app/widgets/textfields/auth_fields/name_form_field.dart';
 
@@ -76,6 +75,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               }
 
               if (state is UserUpdateSuccess) {
+                Navigator.of(context).pop();
+
                 showSnackbar('User details updated successfully');
               }
             },

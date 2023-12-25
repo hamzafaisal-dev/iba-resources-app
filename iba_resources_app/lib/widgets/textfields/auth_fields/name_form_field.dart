@@ -28,6 +28,8 @@ class _NameFormFieldState extends State<NameFormField> {
 
   @override
   Widget build(BuildContext context) {
+    _nameController.text = widget.helperLabel;
+
     return TextFormField(
       decoration: TextFormFieldStyles.textFormFieldDecoration(
         widget.helperLabel,
@@ -43,6 +45,7 @@ class _NameFormFieldState extends State<NameFormField> {
         }
 
         widget.setName(value);
+        _nameController.clear();
         return null;
       },
     );

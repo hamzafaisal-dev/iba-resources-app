@@ -6,6 +6,7 @@ import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.da
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
+import 'package:iba_resources_app/utils/functions.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/resource_type_chip.dart';
 
 class ViewResourceDetailsScreen extends StatefulWidget {
@@ -57,6 +58,9 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
       currentResource = widget.resourceMap!['resourceObject']!;
     }
 
+    String datePosted =
+        Utils.formatTimeAgo(currentResource.createdAt.toString());
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -84,209 +88,209 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
               }
             }
 
-            return WillPopScope(
-              onWillPop: () async {
-                Navigator.pop(context, currentResource);
-
-                return false;
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //
-
-                  // resource title + bookmark icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //
-                      // resource title
-                      Flexible(
-                        // will wrap text
-                        child: Text(
-                          currentResource.resourceTitle,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                          ),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // resource title + bookmark icon
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // resource title
+                    Flexible(
+                      // will wrap text
+                      child: Text(
+                        currentResource.resourceTitle,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
+                    ),
 
-                      // bookmark resource
-                      IconButton(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        onPressed: () {
-                          if (state is AuthStateAuthenticated) {
-                            _bookmarkResource(
-                              currentResource,
-                              state.authenticatedUser,
-                            );
+                    // bookmark resource
+                    IconButton(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      onPressed: () {
+                        if (state is AuthStateAuthenticated) {
+                          _bookmarkResource(
+                            currentResource,
+                            state.authenticatedUser,
+                          );
 
-                            setState(() {
-                              _isBookmarked = !_isBookmarked;
-                            });
-                          }
-                        },
-                        icon: _isBookmarked
-                            ? Icon(
-                                Icons.bookmark,
-                                size: 40,
-                                color: Theme.of(context).colorScheme.primary,
-                              )
-                            : Icon(
-                                Icons.bookmark_outline,
-                                size: 40,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // pfp + username
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // pfp + username
-                      Row(
-                        children: [
-                          // pfp
-                          const CircleAvatar(
-                            radius: 13,
-                            backgroundImage: AssetImage('assets/avatar.png'),
-                          ),
-
-                          const SizedBox(width: 6),
-
-                          // username
-                          Text(
-                            currentResource.uploader,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.tertiary,
+                          setState(() {
+                            _isBookmarked = !_isBookmarked;
+                          });
+                        }
+                      },
+                      icon: _isBookmarked
+                          ? Icon(
+                              Icons.bookmark,
+                              size: 40,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : Icon(
+                              Icons.bookmark_outline,
+                              size: 40,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                // pfp + username
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // pfp + username
+                    Row(
+                      children: [
+                        // pfp
+                        const CircleAvatar(
+                          radius: 13,
+                          backgroundImage: AssetImage('assets/avatar.png'),
+                        ),
+
+                        const SizedBox(width: 6),
+
+                        // username
+                        Text(
+                          currentResource.uploader,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).colorScheme.tertiary,
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+
+                    // date posted
+                    Text(
+                      datePosted,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).colorScheme.tertiary,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                ),
 
-                  const SizedBox(height: 12),
+                const SizedBox(height: 12),
 
-                  Wrap(
+                Wrap(
+                  children: [
+                    //
+                    ...currentResource.relevantFields!.map(
+                      (relevantField) => ResourceTypeChip(
+                        label: relevantField,
+                        fontSize: 15.5,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
+                        textColor: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+
+                    ResourceTypeChip(
+                        label: currentResource.resourceType, fontSize: 16),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                // teacher name
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     children: [
-                      //
-                      ...currentResource.relevantFields!.map(
-                        (relevantField) => ResourceTypeChip(
-                          label: relevantField,
-                          fontSize: 15.5,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primaryContainer,
-                          textColor: Theme.of(context).colorScheme.primary,
+                      const TextSpan(
+                        text: 'Teacher: ',
+                      ),
+                      TextSpan(
+                        text: currentResource.teacherName,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
-
-                      ResourceTypeChip(
-                          label: currentResource.resourceType, fontSize: 16),
                     ],
                   ),
+                ),
 
-                  const SizedBox(height: 12),
+                const SizedBox(height: 12),
 
-                  // teacher name
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      children: [
-                        const TextSpan(
-                          text: 'Teacher: ',
-                        ),
-                        TextSpan(
-                          text: currentResource.teacherName,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.tertiary,
-                          ),
-                        ),
-                      ],
+                // resource description
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // resource description
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.primary,
+                    children: [
+                      const TextSpan(
+                        text: 'Description: ',
                       ),
-                      children: [
-                        const TextSpan(
-                          text: 'Description: ',
+                      TextSpan(
+                        text: currentResource.resourceDescription,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
-                        TextSpan(
-                          text: currentResource.resourceDescription,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.tertiary,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
 
-                  const Spacer(),
+                const Spacer(),
 
-                  BlocConsumer<ResourceBloc, ResourceState>(
-                    listener: (context, state) {
-                      if (state is ResourceFilesDownloadSuccess) {
-                        showSnackbar('Resource downloaded succesfully');
-                      }
+                BlocConsumer<ResourceBloc, ResourceState>(
+                  listener: (context, state) {
+                    if (state is ResourceFilesDownloadSuccess) {
+                      showSnackbar('Resource downloaded succesfully');
+                    }
 
-                      if (state is ResourceError) {
-                        showSnackbar(state.errorMsg);
-                      }
-                    },
-                    builder: (context, state) {
-                      return Center(
-                        child: FilledButton(
-                          onPressed: (state is ResourceFilesDownloadLoading)
-                              ? null
-                              : () {
-                                  _downloadResource(
-                                      currentResource.resourceFiles!);
-                                },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //
-                              Icon(Icons.download_rounded, size: 28),
+                    if (state is ResourceError) {
+                      showSnackbar(state.errorMsg);
+                    }
+                  },
+                  builder: (context, state) {
+                    return Center(
+                      child: FilledButton(
+                        onPressed: (state is ResourceFilesDownloadLoading)
+                            ? null
+                            : () {
+                                _downloadResource(
+                                    currentResource.resourceFiles!);
+                              },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            //
+                            Icon(Icons.download_rounded, size: 28),
 
-                              SizedBox(width: 8),
+                            SizedBox(width: 8),
 
-                              Text(
-                                'Download Files',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          ),
+                            Text(
+                              'Download Files',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
+                ),
 
-                  const SizedBox(height: 30),
-                ],
-              ),
+                const SizedBox(height: 30),
+              ],
             );
           },
         ),

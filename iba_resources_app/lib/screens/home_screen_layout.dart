@@ -5,6 +5,7 @@ import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dar
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
+import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/screen_progress_indicator.dart';
@@ -44,8 +45,9 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
       authBloc: BlocProvider.of<AuthBloc>(context),
     );
 
-    _resourceBloc.add(const FetchResources());
+    // _resourceBloc.add(const FetchResources());
 
+    _resourceBloc.add(FetchResourcesStream());
     super.initState();
   }
 
@@ -272,29 +274,41 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                             'Could not find what you were looking for');
                       }
 
-                      if (state is ResourcesLoaded) {
+                      if (state is ResourcesStreamLoaded) {
                         return Expanded(
-                          child: ListView.builder(
-                            itemCount: state.resources.length,
-                            itemBuilder: (context, index) {
-                              var resourceObject = state.resources[index];
+                          child: StreamBuilder(
+                            stream: state.resources,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const ScreenProgressIndicator();
+                              }
 
-                              return InkWell(
-                                onTap: () => NavigationService.routeToNamed(
-                                  '/viewResourceDetails',
-                                  arguments: {'resourceObject': resourceObject},
-                                ),
-                                child: ResourceTile(
-                                  resourceId: resourceObject.resourceId,
-                                  resourceTitle: resourceObject.resourceTitle,
-                                  resourceDescription:
-                                      resourceObject.resourceDescription,
-                                  uploader: resourceObject.uploader,
-                                  resourceType: resourceObject.resourceType,
-                                  likes: resourceObject.likes,
-                                  dislikes: resourceObject.dislikes,
-                                ),
-                              );
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: (context, index) {
+                                    List<ResourceModel> resourceData =
+                                        snapshot.data!;
+                                    var resourceObject = resourceData[index];
+
+                                    return InkWell(
+                                      onTap: () =>
+                                          NavigationService.routeToNamed(
+                                        '/viewResourceDetails',
+                                        arguments: {
+                                          'resourceObject': resourceObject
+                                        },
+                                      ),
+                                      child: ResourceTile(
+                                        resource: resourceObject,
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+
+                              return const SizedBox();
                             },
                           ),
                         );

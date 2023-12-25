@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
-import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/saved_resource_tile.dart';
 import 'package:lottie/lottie.dart';
 

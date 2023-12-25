@@ -62,12 +62,6 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
   }
 
   void _uploadResource(UserModel authenticatedUser) {
-    int currentUserPoints = _authenticatedUser.points;
-    int currentUserContributions = _authenticatedUser.postedResources!.length;
-
-    final updatedUser =
-        _authenticatedUser.copyWith(points: currentUserPoints + 10);
-
     BlocProvider.of<ResourceBloc>(context).add(
       UploadFilesEvent(
         pickedFiles: _pickedFiles,
@@ -79,7 +73,7 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
         relevantFields: _relevantFields,
         semester: _semester,
         year: _year,
-        updatedUser: updatedUser,
+        updatedUser: authenticatedUser,
       ),
     );
   }

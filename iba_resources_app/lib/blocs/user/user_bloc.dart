@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/core/user/user_repository.dart';
+import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
 
 part 'user_event.dart';
@@ -15,6 +16,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       : super(UserInitial()) {
     on<UserUpdateEvent>((event, emit) {
       _updateUser(event.user, event.name, emit);
+    });
+
+    on<UserToggleLikeEvent>((event, emit) async {
+      await _toggleUserLikes(event.user, event.resource, emit);
+    });
+
+    on<UserToggleDislikeEvent>((event, emit) async {
+      await _toggleUserDislikes(event.user, event.resource, emit);
     });
 
     on<FetchUser>((event, emit) async {
@@ -35,8 +44,49 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   void _updateUser(UserModel user, String userName, Emitter<UserState> emit) {
     try {
       emit(UserLoadingState());
-      userRepository.editProfile(user, userName);
+      userRepository.editProfile(user);
       emit(UserUpdateSuccess());
+      authBloc.add(AuthStateUpdatedEvent(user));
+    } catch (error) {
+      emit(UserUpdateError(errorMessage: error.toString()));
+    }
+  }
+
+  Future<void> _toggleUserLikes(
+      UserModel user, ResourceModel resource, Emitter<UserState> emit) async {
+    try {
+      // emit(UserLoadingState());
+      List<int> resourceLikesAndDislikes =
+          await userRepository.toggleResourceLike(user, resource);
+
+      if (resourceLikesAndDislikes.isEmpty) {
+        return emit(UserUpdateError(errorMessage: 'Something went wrong'));
+      }
+
+      emit(ResourceLikedState(
+          resourceLikesAndDislikes: resourceLikesAndDislikes));
+
+      authBloc.add(AuthStateUpdatedEvent(user));
+    } catch (error) {
+      emit(UserUpdateError(errorMessage: error.toString()));
+    }
+  }
+
+  Future<void> _toggleUserDislikes(
+      UserModel user, ResourceModel resource, Emitter<UserState> emit) async {
+    try {
+      // emit(UserLoadingState());
+
+      List<int> resourceLikesAndDislikes =
+          await userRepository.toggleResourceDisLike(user, resource);
+
+      if (resourceLikesAndDislikes.isEmpty) {
+        emit(UserUpdateError(errorMessage: 'Something went wrong'));
+      }
+
+      emit(ResourceLikedState(
+          resourceLikesAndDislikes: resourceLikesAndDislikes));
+
       authBloc.add(AuthStateUpdatedEvent(user));
     } catch (error) {
       emit(UserUpdateError(errorMessage: error.toString()));
