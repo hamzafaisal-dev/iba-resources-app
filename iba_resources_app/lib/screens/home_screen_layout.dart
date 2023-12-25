@@ -8,7 +8,9 @@ import 'package:iba_resources_app/core/resource/resource_repository/resource_rep
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_skeleton.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/screen_progress_indicator.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/skeleton_text.dart';
 
 class HomeScreenLayout extends StatefulWidget {
   const HomeScreenLayout({super.key, required this.resourceRepository});
@@ -47,7 +49,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
 
     // _resourceBloc.add(const FetchResources());
 
-    _resourceBloc.add(FetchResourcesStream());
+    _resourceBloc.add(const FetchResourcesStream());
     super.initState();
   }
 
@@ -67,30 +69,34 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
           builder: (context, state) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Hey ',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).colorScheme.tertiary,
+              child: state is AuthStateAuthenticated
+                  ? RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Hey ',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ),
+                          TextSpan(
+                            text: state.authenticatedUser.name,
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
                       ),
+                    )
+                  : AnimatedSkeletonText(
+                      height: 40,
+                      width: MediaQuery.of(context).size.width / 1.8,
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    TextSpan(
-                      text: state is AuthStateAuthenticated
-                          ? state.authenticatedUser.name
-                          : '...',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             );
           },
         ),
@@ -261,7 +267,11 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                     bloc: _resourceBloc,
                     builder: (BuildContext context, ResourceState state) {
                       if (state is ResourcesLoading) {
-                        return const ScreenProgressIndicator();
+                        // return ListView.builder(
+                        //   itemCount: 10,
+                        //   itemBuilder: (context, index) =>
+                        //       const ResourceTileSkeleton(),
+                        // );
                       }
 
                       if (state is ResourceError) {
@@ -281,7 +291,11 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return const ScreenProgressIndicator();
+                                return ListView.builder(
+                                  itemCount: 10,
+                                  itemBuilder: (context, index) =>
+                                      const ResourceTileSkeleton(),
+                                );
                               }
 
                               if (snapshot.hasData) {

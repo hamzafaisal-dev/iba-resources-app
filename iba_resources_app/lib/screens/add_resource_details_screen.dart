@@ -119,6 +119,8 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
             listener: (context, state) {
               if (state is ResourceFilesUploadSuccess) {
                 showSnackbar('Resource uploaded successfully');
+
+                Navigator.of(context).pop();
               }
 
               if (state is ResourceError) {

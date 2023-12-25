@@ -4,11 +4,13 @@ import 'package:iba_resources_app/constants/styles.dart';
 class NameFormField extends StatefulWidget {
   const NameFormField({
     super.key,
+    this.toEdit,
     required this.helperLabel,
     required this.leadingIcon,
     required this.setName,
   });
 
+  final String? toEdit;
   final String helperLabel;
   final IconData leadingIcon;
   final void Function(String email) setName;
@@ -21,6 +23,16 @@ class _NameFormFieldState extends State<NameFormField> {
   final _nameController = TextEditingController();
 
   @override
+  void initState() {
+    if (widget.toEdit != null) {
+      _nameController.text = widget.toEdit!;
+    }
+
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     super.dispose();
@@ -28,8 +40,6 @@ class _NameFormFieldState extends State<NameFormField> {
 
   @override
   Widget build(BuildContext context) {
-    _nameController.text = widget.helperLabel;
-
     return TextFormField(
       decoration: TextFormFieldStyles.textFormFieldDecoration(
         widget.helperLabel,

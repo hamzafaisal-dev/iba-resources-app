@@ -86,7 +86,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   // userName input
                   if (_authenticatedUser != null)
                     NameFormField(
-                      helperLabel: _authenticatedUser!.name,
+                      toEdit: _authenticatedUser!.name,
+                      helperLabel: 'Enter name',
                       leadingIcon: Icons.person_outline_sharp,
                       setName: (enteredName) {
                         userName = enteredName;
