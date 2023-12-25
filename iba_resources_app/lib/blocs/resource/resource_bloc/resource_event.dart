@@ -30,6 +30,15 @@ class FetchSearchedResources extends ResourceEvent {
   List<Object?> get props => throw UnimplementedError();
 }
 
+class FetchFilteredResources extends ResourceEvent {
+  final Map<String, dynamic> filters;
+
+  const FetchFilteredResources(this.filters) : super();
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
 class DownloadResourceEvent extends ResourceEvent {
   final List<dynamic> fileDownloadUrls;
 

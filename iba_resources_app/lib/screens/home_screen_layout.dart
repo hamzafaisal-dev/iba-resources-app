@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
+import 'package:iba_resources_app/constants/dropdown_items.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/filter_chip.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_skeleton.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/screen_progress_indicator.dart';
@@ -24,6 +27,10 @@ class HomeScreenLayout extends StatefulWidget {
 class _HomeScreenLayoutState extends State<HomeScreenLayout> {
   final _searchBarController = TextEditingController();
 
+  late String? _filterYear = '';
+  late String? _filterResourceType = '';
+  late String? _filterSemester = '';
+
   late ResourceBloc _resourceBloc;
 
   void _searchByName(String searchedName) {
@@ -37,7 +44,180 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
 
     _searchBarController.clear();
 
-    _resourceBloc.add(const FetchResources());
+    _resourceBloc.add(const FetchResourcesStream());
+  }
+
+  void _filterResources() {
+    if (_filterYear == null &&
+        _filterResourceType == null &&
+        _filterSemester == null) {
+      return;
+    } else {
+      _resourceBloc.add(FetchFilteredResources({
+        "resourceType": _filterResourceType,
+        "semester": _filterSemester,
+        "year": _filterYear,
+      }));
+    }
+
+    Navigator.of(context).pop();
+  }
+
+  void _openFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog.fullscreen(
+          backgroundColor: const Color(0XFFF3F3F3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // close dialog icon
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(
+                      Icons.close,
+                      size: 30,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                ],
+              ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // "Filter Resources" text
+                    Text(
+                      'Filter Resources',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // "Semester"
+                    Text(
+                      'Semester',
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    // semester chips
+                    Wrap(
+                      children: [
+                        ...DropdownItems.semesterDropdownItems.map(
+                          (year) => CustomFilterChip(
+                            chipLabel: year,
+                            onPressed: (String selectedSemester) {
+                              _filterSemester = selectedSemester;
+
+                              print(_filterSemester);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // "Resource Type"
+                    Text(
+                      'Resource Type',
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    // resource type chips
+                    Wrap(
+                      children: [
+                        ...DropdownItems.resourceTypes.map(
+                          (resourceType) => CustomFilterChip(
+                            chipLabel: resourceType,
+                            onPressed: (String selectedResourceType) {
+                              _filterResourceType = selectedResourceType;
+
+                              print(_filterResourceType);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // "Year"
+                    Text(
+                      'Year',
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    // years chips
+                    Wrap(
+                      children: [
+                        ...DropdownItems.yearDropdownItems.map(
+                          (year) => CustomFilterChip(
+                            chipLabel: year,
+                            onPressed: (String selectedYear) {
+                              _filterYear = selectedYear;
+
+                              print(_filterYear);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 190),
+
+                    // apply filters button
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: FilledButton(
+                        onPressed: () {
+                          _filterResources();
+                        },
+                        child: Text(
+                          'Apply Filters',
+                          style: GoogleFonts.urbanist(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 23,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -220,6 +400,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                     // _resourceBloc.add(
                     //   FetchSearchedResources('Theory'),
                     // );
+                    _openFilterDialog();
                   },
                   icon: Icon(
                     Icons.filter_alt_sharp,
@@ -267,21 +448,14 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                     bloc: _resourceBloc,
                     builder: (BuildContext context, ResourceState state) {
                       if (state is ResourcesLoading) {
-                        // return ListView.builder(
-                        //   itemCount: 10,
-                        //   itemBuilder: (context, index) =>
-                        //       const ResourceTileSkeleton(),
-                        // );
+                        return const Center(
+                          child: ScreenProgressIndicator(),
+                        );
                       }
 
                       if (state is ResourceError) {
                         print(state.errorMsg);
                         return Text(state.errorMsg);
-                      }
-
-                      if (state is ResourceEmpty) {
-                        return const Text(
-                            'Could not find what you were looking for');
                       }
 
                       if (state is ResourcesStreamLoaded) {
@@ -299,6 +473,12 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                               }
 
                               if (snapshot.hasData) {
+                                if (snapshot.data!.isEmpty) {
+                                  return const Text(
+                                    'Could not find what you were looking for',
+                                  );
+                                }
+
                                 return ListView.builder(
                                   itemCount: snapshot.data!.length,
                                   itemBuilder: (context, index) {

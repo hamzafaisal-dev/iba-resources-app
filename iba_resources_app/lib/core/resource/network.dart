@@ -46,21 +46,45 @@ class ResourceFirestoreClient {
         );
   }
 
-  Future<List<ResourceModel>> getSearchedResources(String searchedName) async {
-    // fetches all documents in the resources collection
-    final resources = await firestore
+  Stream<List<ResourceModel>> getSearchedResources(String searchedName) {
+    Query query = firestore
         .collection('resources')
         .where('resourceTitle', isGreaterThanOrEqualTo: searchedName)
-        .where('resourceTitle', isLessThanOrEqualTo: '$searchedName\uf8ff')
-        .get();
+        .where('resourceTitle', isLessThanOrEqualTo: '$searchedName\uf8ff');
 
-    // resources.docs returns a list of QueryDocumentSnapshot
-    // maps over the list, converts each document into a Resource, returns list of Resources
-    List<ResourceModel> allFetchedResources = resources.docs.map((docSnapshot) {
-      return ResourceModel.fromJson(docSnapshot.data());
-    }).toList();
+    return query.snapshots().map((querySnapshot) {
+      // convert snapshots into a list of ResourceModel
+      return querySnapshot.docs.map((docSnapshot) {
+        return ResourceModel.fromJson(
+            docSnapshot.data() as Map<String, dynamic>);
+      }).toList();
+    });
+  }
 
-    return allFetchedResources;
+  Stream<List<ResourceModel>> getFilteredResources(
+      Map<String, dynamic> filters) {
+    Query query = firestore.collection('resources');
+
+    if (filters.containsKey('resourceType') && filters['resourceType'] != '') {
+      query = query.where('resourceType', isEqualTo: filters['resourceType']);
+    }
+
+    if (filters.containsKey('semester') && filters['semester'] != '') {
+      query = query.where('semester', isEqualTo: filters['semester']);
+    }
+
+    if (filters.containsKey('year') && filters['year'] != '') {
+      query = query.where('year', isEqualTo: filters['year']);
+    }
+
+    // return a stream of snapshots
+    return query.snapshots().map((querySnapshot) {
+      // convert snapshots into a list of ResourceModel
+      return querySnapshot.docs.map((docSnapshot) {
+        return ResourceModel.fromJson(
+            docSnapshot.data() as Map<String, dynamic>);
+      }).toList();
+    });
   }
 
   Future<void> downloadResource(List<dynamic> fileDownloadUrls) async {

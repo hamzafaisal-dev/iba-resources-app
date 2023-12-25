@@ -16,8 +16,13 @@ class ResourceRepository {
     return resourceFirestoreClient.getAllResourcesStream();
   }
 
-  Future<List<ResourceModel>> getSearchedResources(String searchedName) async {
-    return await resourceFirestoreClient.getSearchedResources(searchedName);
+  Stream<List<ResourceModel>> getSearchedResources(String searchedName) {
+    return resourceFirestoreClient.getSearchedResources(searchedName);
+  }
+
+  Stream<List<ResourceModel>> getFilteredResources(
+      Map<String, dynamic> filters) {
+    return resourceFirestoreClient.getFilteredResources(filters);
   }
 
   Future<void> downloadResource(List<dynamic> fileDownloadUrls) async {

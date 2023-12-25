@@ -25,8 +25,11 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     });
 
     on<FetchSearchedResources>((event, emit) async {
-      print('we here');
-      await _getSearchedResources(event.searchedName, emit);
+      _getSearchedResources(event.searchedName, emit);
+    });
+
+    on<FetchFilteredResources>((event, emit) async {
+      _getFilteredResources(event.filters, emit);
     });
 
     on<DownloadResourceEvent>((event, emit) async {
@@ -80,18 +83,27 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     }
   }
 
-  Future<void> _getSearchedResources(
-      String searchedName, Emitter<ResourceState> emit) async {
+  void _getSearchedResources(String searchedName, Emitter<ResourceState> emit) {
     emit(ResourcesLoading());
     try {
-      final List<ResourceModel> resources =
-          await resourceRepository.getSearchedResources(searchedName);
+      emit(ResourcesLoading());
+      Stream<List<ResourceModel>> resourcesStream =
+          resourceRepository.getSearchedResources(searchedName);
 
-      if (resources.isEmpty) {
-        return emit(ResourceEmpty());
-      }
+      emit(ResourcesStreamLoaded(resources: resourcesStream));
+    } catch (e) {
+      emit(ResourceError(errorMsg: e.toString()));
+    }
+  }
 
-      emit(ResourcesLoaded(resources: resources));
+  void _getFilteredResources(
+      Map<String, dynamic> filters, Emitter<ResourceState> emit) {
+    emit(ResourcesLoading());
+    try {
+      final Stream<List<ResourceModel>> resources =
+          resourceRepository.getFilteredResources(filters);
+
+      emit(ResourcesStreamLoaded(resources: resources));
     } catch (e) {
       emit(ResourceError(errorMsg: e.toString()));
     }
