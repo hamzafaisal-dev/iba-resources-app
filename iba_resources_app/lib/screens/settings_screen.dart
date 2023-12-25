@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iba_resources_app/cubits/brightness/brightness_cubit.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_tile.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -22,11 +24,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
-            const UserProfileTile(
+            // toggle brightness tile
+
+            UserProfileTile(
               leadingIcon: Icons.dark_mode,
               leadingIconSize: 30,
               title: 'Dark Mode',
-              // onTap: logOut,
+              onTap: () {
+                context.read<BrightnessCubit>().toggleBrightness();
+              },
             ),
 
             const SizedBox(height: 10),
@@ -41,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 10),
 
-            // edit profile tile
+            // delete account tile
             const UserProfileTile(
               leadingIcon: Icons.delete_forever,
               leadingIconSize: 30,

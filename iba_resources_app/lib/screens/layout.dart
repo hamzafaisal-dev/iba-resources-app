@@ -6,7 +6,6 @@ import 'package:iba_resources_app/core/resource/resource_repository/resource_rep
 import 'package:iba_resources_app/screens/add_resource_screen.dart';
 import 'package:iba_resources_app/screens/error_screen.dart';
 import 'package:iba_resources_app/screens/home_screen.dart';
-import 'package:iba_resources_app/screens/notifications_screen.dart';
 import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/constants/icons.dart' as constants;
 import 'package:iba_resources_app/screens/user_screen.dart';

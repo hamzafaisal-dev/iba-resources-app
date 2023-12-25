@@ -18,11 +18,14 @@ import 'package:iba_resources_app/core/resource/network.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 import 'package:iba_resources_app/core/user/network.dart';
 import 'package:iba_resources_app/core/user/user_repository.dart';
+import 'package:iba_resources_app/cubits/brightness/brightness_cubit.dart';
 
 import 'package:iba_resources_app/firebase_options.dart';
 import 'package:iba_resources_app/screens/landing_screen.dart';
 import 'package:iba_resources_app/route_generator.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +35,10 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: await getTemporaryDirectory(),
   );
 
   final AuthRepository authRepository = AuthRepository(
@@ -111,51 +118,99 @@ class MyApp extends StatelessWidget {
           },
         ),
       ],
-      child: MaterialApp(
-        title: 'IBARA',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0XFFFF7B66),
-            primary: const Color(0XFFFF7B66),
-            primaryContainer: const Color(0XFFFFF1F1),
-            secondary: const Color(0XFF01D2AF),
-            secondaryContainer: const Color(0XFFE6FAF8),
-            tertiary: Colors.grey,
-            error: const Color(0XFFB41528),
-          ),
-          appBarTheme: const AppBarTheme(
-            foregroundColor: Colors.black,
-            backgroundColor: Color(0XFFF2F6F7),
-            elevation: 0,
-          ),
-          filledButtonTheme: FilledButtonThemeData(
-            style: ButtonStyles.filledButtonStyle,
-          ),
-          dialogTheme: const DialogTheme(
-            backgroundColor: Color(0XFFF2F6F7),
-            titleTextStyle: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-            contentTextStyle: TextStyle(
-              color: Colors.black87,
-              fontSize: 16,
-            ),
-          ),
-          scaffoldBackgroundColor: const Color(0XFFF2F6F7),
-          textTheme: GoogleFonts.urbanistTextTheme(),
-          // bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          //   backgroundColor: Color(0XFFFF7B66),
-          //   // selectedItemColor: Colors.white,
-          //   // unselectedItemColor: Colors.white,
-          // ),
+      child: BlocProvider(
+        create: (context) => BrightnessCubit(),
+        child: BlocBuilder<BrightnessCubit, Brightness>(
+          builder: (context, state) {
+            return MaterialApp(
+              title: 'IBARA',
+              debugShowCheckedModeBanner: false,
+              themeMode: ThemeMode.system,
+              theme: (state.index == 0) ? lightTheme : darkTheme,
+              onGenerateRoute: RouteGenerator.generateRoutes,
+              navigatorKey: NavigationService.navigatorKey,
+              home: const LandingScreen(),
+            );
+          },
         ),
-        onGenerateRoute: RouteGenerator.generateRoutes,
-        navigatorKey: NavigationService.navigatorKey,
-        home: const LandingScreen(),
       ),
     );
   }
 }
+
+ThemeData lightTheme = ThemeData(
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: const Color(0XFFFF7B66),
+    primary: const Color(0XFFFF7B66),
+    primaryContainer: const Color(0XFFFFF1F1),
+    secondary: const Color(0XFF01D2AF),
+    secondaryContainer: const Color(0XFFE6FAF8),
+    tertiary: Colors.grey,
+    tertiaryContainer: const Color(0XFFF3F3F3),
+    error: const Color(0XFFB41528),
+  ),
+  appBarTheme: const AppBarTheme(
+    foregroundColor: Colors.black,
+    backgroundColor: Color(0XFFF2F6F7),
+    elevation: 0,
+  ),
+  filledButtonTheme: FilledButtonThemeData(
+    style: ButtonStyles.filledButtonStyle,
+  ),
+  dialogTheme: const DialogTheme(
+    backgroundColor: Color(0XFFF2F6F7),
+    titleTextStyle: TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: 18,
+    ),
+    contentTextStyle: TextStyle(
+      color: Colors.black87,
+      fontSize: 16,
+    ),
+  ),
+  scaffoldBackgroundColor: const Color(0XFFF2F6F7),
+  textTheme: GoogleFonts.urbanistTextTheme(),
+);
+
+ThemeData darkTheme = ThemeData(
+  // brightness: Brightness.dark,
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: const Color(0XFF4A4A4A),
+    primary: const Color(0XFF4A4A4A),
+    primaryContainer: const Color(0XFF333333),
+    secondary: const Color(0XFF01D2AF),
+    secondaryContainer: const Color(0XFF1A1A1A),
+    tertiary: const Color(0XFF4A4A4A),
+    tertiaryContainer: const Color.fromARGB(255, 63, 63, 63),
+    error: const Color(0XFFB41528),
+  ),
+  appBarTheme: const AppBarTheme(
+    foregroundColor: Colors.white,
+    backgroundColor: Color(0XFF333333),
+    elevation: 0,
+  ),
+  filledButtonTheme: FilledButtonThemeData(
+    style: ButtonStyles.filledButtonStyle.copyWith(
+      backgroundColor:
+          MaterialStateProperty.all<Color>(const Color(0XFF4A4A4A)),
+    ),
+  ),
+  dialogTheme: const DialogTheme(
+    backgroundColor: Color(0XFF333333),
+    titleTextStyle: TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: 18,
+    ),
+    contentTextStyle: TextStyle(
+      color: Colors.black,
+      fontSize: 16,
+    ),
+  ),
+  scaffoldBackgroundColor: const Color(0XFF1A1A1A),
+  textTheme: GoogleFonts.urbanistTextTheme().apply(
+    bodyColor: Colors.black,
+    displayColor: Colors.black,
+  ),
+);

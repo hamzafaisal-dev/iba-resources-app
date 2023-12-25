@@ -17,6 +17,8 @@ class FirebaseAuthExceptionErrors {
         errorStatement = 'Sign-In process cancelled';
       case 'missing_auth_details':
         errorStatement = 'Authentication details missing';
+      case 'firebase_auth/network-request-failed':
+        errorStatement = 'Error. Please check your internet connection';
       default:
         errorStatement = error.message.toString();
     }

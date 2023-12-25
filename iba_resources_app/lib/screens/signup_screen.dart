@@ -63,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0XFFF3F3F3),
+      backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(24),
