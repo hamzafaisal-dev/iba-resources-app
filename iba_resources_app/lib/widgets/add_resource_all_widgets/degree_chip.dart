@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
 class DegreeChip extends StatelessWidget {
-  const DegreeChip({super.key, required this.label});
+  const DegreeChip({
+    super.key,
+    required this.label,
+    required this.onRemove,
+  });
 
   final String label;
+  final void Function() onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class DegreeChip extends StatelessWidget {
                 padding: const EdgeInsets.all(2),
                 child: InkWell(
                   onTap: () {
-                    print('Potty');
+                    onRemove();
                   },
                   child: const Icon(
                     Icons.clear,

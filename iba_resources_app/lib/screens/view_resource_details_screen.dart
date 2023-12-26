@@ -196,7 +196,9 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
                     ),
 
                     ResourceTypeChip(
-                        label: currentResource.resourceType, fontSize: 16),
+                      label: currentResource.resourceType,
+                      fontSize: 16,
+                    ),
                   ],
                 ),
 
@@ -216,6 +218,31 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
                       ),
                       TextSpan(
                         text: currentResource.teacherName,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // semester
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: 'Semester: ',
+                      ),
+                      TextSpan(
+                        text:
+                            '${currentResource.semester} ${currentResource.year}',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.tertiary,
                         ),

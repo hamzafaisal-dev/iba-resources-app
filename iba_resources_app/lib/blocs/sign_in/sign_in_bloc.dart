@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';

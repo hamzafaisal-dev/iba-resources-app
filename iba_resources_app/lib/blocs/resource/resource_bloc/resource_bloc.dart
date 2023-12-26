@@ -12,7 +12,7 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
   final AuthBloc authBloc;
 
   ResourceBloc({required this.resourceRepository, required this.authBloc})
-      : super(ResourcesLoading()) {
+      : super(ResourceEmpty()) {
     on<FetchResources>((event, emit) async {
       await _getAllResources(emit);
     });

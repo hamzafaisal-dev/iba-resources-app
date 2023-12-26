@@ -229,7 +229,13 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
 
     // _resourceBloc.add(const FetchResources());
 
-    _resourceBloc.add(const FetchResourcesStream());
+    // fetch resources only if they haven't been loaded before
+
+    if (_resourceBloc.state is! ResourcesStreamLoaded) {
+      _resourceBloc.add(const FetchResourcesStream());
+    }
+
+    // _resourceBloc.add(const FetchResourcesStream());
     super.initState();
   }
 
@@ -428,7 +434,8 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
             width: MediaQuery.of(context).size.width,
             // height: MediaQuery.of(context).size.height,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+              padding: const EdgeInsets.fromLTRB(25, 25, 25, 18),
+              // padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -447,6 +454,8 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                   BlocBuilder(
                     bloc: _resourceBloc,
                     builder: (BuildContext context, ResourceState state) {
+                      print(state);
+
                       if (state is ResourcesLoading) {
                         return const Center(
                           child: ScreenProgressIndicator(),

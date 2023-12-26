@@ -22,11 +22,13 @@ class RewardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isUnlocked = userPoints >= rewardPoints;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Card(
         //
-        color: userPoints >= rewardPoints
+        color: isUnlocked
             ? Colors.white
             : const Color.fromARGB(255, 190, 189, 189),
 
@@ -40,14 +42,12 @@ class RewardTile extends StatelessWidget {
           contentPadding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
           leading: CircleAvatar(
             radius: 25,
-            backgroundColor: userPoints >= rewardPoints
+            backgroundColor: isUnlocked
                 ? Theme.of(context).colorScheme.primaryContainer
                 : const Color.fromARGB(255, 228, 228, 228),
             child: Icon(
-              userPoints >= rewardPoints
-                  ? Icons.card_giftcard_outlined
-                  : Icons.lock_rounded,
-              color: userPoints >= rewardPoints
+              isUnlocked ? Icons.card_giftcard_outlined : Icons.lock_rounded,
+              color: isUnlocked
                   ? Theme.of(context).colorScheme.primary
                   : const Color.fromARGB(255, 190, 189, 189),
               size: leadingIconSize ?? 32,
@@ -55,11 +55,11 @@ class RewardTile extends StatelessWidget {
           ),
           trailing: trailing,
           title: Text(
-            title,
+            isUnlocked ? title : 'Reward unlocks at ${rewardPoints}pts',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: userPoints >= rewardPoints
+              color: isUnlocked
                   ? Colors.black
                   : const Color.fromARGB(255, 255, 255, 255),
             ),

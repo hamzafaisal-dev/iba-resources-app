@@ -1,10 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
+import 'package:iba_resources_app/blocs/reward/rewards_bloc.dart';
+import 'package:iba_resources_app/models/reward.dart';
+import 'package:iba_resources_app/models/reward_level.dart';
+import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/widgets/profile/reward_tile.dart';
 
-class RewardsScreen extends StatelessWidget {
+class RewardsScreen extends StatefulWidget {
   const RewardsScreen({super.key});
+
+  @override
+  State<RewardsScreen> createState() => _RewardsScreenState();
+}
+
+class _RewardsScreenState extends State<RewardsScreen> {
+  late UserModel _authenticatedUser;
+
+  @override
+  void initState() {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
+
+    if (authBloc.state is AuthStateAuthenticated) {
+      _authenticatedUser =
+          (authBloc.state as AuthStateAuthenticated).authenticatedUser;
+    }
+
+    // fetch rewards only if they haven't been loaded before
+    final rewardsBloc = BlocProvider.of<RewardsBloc>(context);
+    if (rewardsBloc.state is! RewardsLoaded) {
+      rewardsBloc.add(FetchRewardsEvent());
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,20 +44,28 @@ class RewardsScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: BlocBuilder<AuthBloc, AuthState>(
+        child: BlocBuilder<RewardsBloc, RewardsState>(
           builder: (context, state) {
-            return ListView.builder(
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return RewardTile(
-                  title: 'Reward ${index + 1}',
-                  rewardPoints: (index + 1) * 50,
-                  userPoints: state is AuthStateAuthenticated
-                      ? state.authenticatedUser.points
-                      : 0,
-                );
-              },
-            );
+            print(state);
+
+            if (state is RewardsLoaded) {
+              return ListView.builder(
+                itemCount: state.rewards[0].rewardsList.length,
+                itemBuilder: (context, index) {
+                  List<RewardModel> rewardsList = state.rewards[0].rewardsList;
+
+                  RewardModel reward = rewardsList[index];
+
+                  return RewardTile(
+                    title: reward.rewardName,
+                    rewardPoints: reward.rewardPoints,
+                    userPoints: _authenticatedUser.points,
+                  );
+                },
+              );
+            }
+
+            return const SizedBox();
           },
         ),
       ),

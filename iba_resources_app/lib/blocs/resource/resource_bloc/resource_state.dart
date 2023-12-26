@@ -6,6 +6,8 @@ abstract class ResourceState {
 }
 
 // initial state
+class Resourceinitial extends ResourceState {}
+
 class ResourceEmpty extends ResourceState {}
 
 class ResourcesLoading extends ResourceState {}

@@ -50,7 +50,7 @@ class _ReportResourceChipState extends State<ReportResourceChip> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FaIcon(
-            FontAwesomeIcons.flag,
+            FontAwesomeIcons.share,
             color: Theme.of(context).colorScheme.tertiary,
             // color: Color(0XFFFF7B66),
             size: 20,

@@ -50,6 +50,16 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
     }
   }
 
+  void _removeRelevantDegree(String? relevantDegree) {
+    if (relevantDegree != null && relevantDegree.isNotEmpty) {
+      if (_relevantFields.contains(relevantDegree)) {
+        setState(() {
+          _relevantFields.remove(relevantDegree);
+        });
+      }
+    }
+  }
+
   void showSnackbar(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -185,34 +195,38 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                   Row(
                     children: [
                       // relevantFields dropdwon
-                      CustomDropdown(
-                        dropDownMenuItems: DropdownItems.degreePrograms,
-                        labelText: 'Select relevant fields',
-                        hintText: 'Eg. BSCS',
-                        width: MediaQuery.of(context).size.width / 1.35,
-                        setInput: (String relevantDegreeOption) {
-                          _selectedRelevantField = relevantDegreeOption;
-                        },
+                      Expanded(
+                        child: CustomDropdown(
+                          dropDownMenuItems: DropdownItems.degreePrograms,
+                          labelText: 'Select relevant fields',
+                          hintText: 'Eg. BSCS',
+                          width: MediaQuery.of(context).size.width / 1.35,
+                          setInput: (String relevantDegreeOption) {
+                            _selectedRelevantField = relevantDegreeOption;
+                          },
+                        ),
                       ),
 
-                      const Spacer(),
+                      // const Spacer(),
 
                       // add relevant degree button
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        height: 58,
-                        width: 58,
-                        child: IconButton(
-                          onPressed: () {
-                            _addRelevantDegree(_selectedRelevantField);
-                          },
-                          icon: const Icon(
-                            Icons.add,
-                            size: 32,
-                            color: Colors.white,
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          height: 58,
+                          width: 58,
+                          child: IconButton(
+                            onPressed: () {
+                              _addRelevantDegree(_selectedRelevantField);
+                            },
+                            icon: const Icon(
+                              Icons.add,
+                              size: 32,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       )
@@ -227,7 +241,11 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                     clipBehavior: Clip.none,
                     children: [
                       ..._relevantFields.map(
-                        (relevantField) => DegreeChip(label: relevantField),
+                        (relevantField) => DegreeChip(
+                          label: relevantField,
+                          onRemove: () {},
+                          // onRemove: () => _removeRelevantDegree(relevantField),
+                        ),
                       ),
                     ],
                   ),

@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
+import 'package:iba_resources_app/blocs/reward/rewards_bloc.dart';
 import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
 import 'package:iba_resources_app/blocs/sign_up/sign_up_bloc.dart';
 import 'package:iba_resources_app/blocs/user/user_bloc.dart';
@@ -16,6 +17,8 @@ import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart
 import 'package:iba_resources_app/core/auth/network.dart';
 import 'package:iba_resources_app/core/resource/network.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
+import 'package:iba_resources_app/core/rewards/rewards_network.dart';
+import 'package:iba_resources_app/core/rewards/rewards_repository.dart';
 import 'package:iba_resources_app/core/user/network.dart';
 import 'package:iba_resources_app/core/user/user_repository.dart';
 import 'package:iba_resources_app/cubits/brightness/brightness_cubit.dart';
@@ -61,11 +64,18 @@ void main() async {
     ),
   );
 
+  final RewardRepository rewardRepository = RewardRepository(
+    rewardsFirestoreClient: RewardFirestoreClient(
+      firestore: FirebaseFirestore.instance,
+    ),
+  );
+
   runApp(
     MyApp(
       authRepository: authRepository,
       resourceRepository: resourceRepository,
       userRepository: userRepository,
+      rewardRepository: rewardRepository,
     ),
   );
 }
@@ -76,11 +86,13 @@ class MyApp extends StatelessWidget {
     required this.authRepository,
     required this.resourceRepository,
     required this.userRepository,
+    required this.rewardRepository,
   });
 
   final AuthRepository authRepository;
   final ResourceRepository resourceRepository;
   final UserRepository userRepository;
+  final RewardRepository rewardRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +126,13 @@ class MyApp extends StatelessWidget {
             return UserBloc(
               userRepository: userRepository,
               authBloc: BlocProvider.of<AuthBloc>(context),
+            );
+          },
+        ),
+        BlocProvider<RewardsBloc>(
+          create: (BuildContext context) {
+            return RewardsBloc(
+              rewardRepository: rewardRepository,
             );
           },
         ),
