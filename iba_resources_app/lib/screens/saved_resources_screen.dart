@@ -43,38 +43,11 @@ class _SavedResourcesScreenState extends State<SavedResourcesScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    print('didChangeDependencies called');
-
-// this method is called every time the dependencies of the widget change,
-    // which includes when the screen is first created and every time it's displayed.
-
-    // can add any logic that needs to be executed when the screen is displayed here.
-
-    if (_authenticatedUser.savedResources != null) {
-      if (currentResource != null) {
-        print('ye hai bhai iss mein');
-      }
-
-      // print(currentResource!.resourceTitle);
-
-      // usersSavedResources = _authenticatedUser.savedResources!;
-    }
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          // if (state is AuthStateAuthenticated) {
-          //   if (state.authenticatedUser.savedResources != null) {
-          //     usersSavedResources = state.authenticatedUser.savedResources!;
-          //   }
-          // }
-
           if (usersSavedResources.isEmpty) {
             return Center(
               child: Column(

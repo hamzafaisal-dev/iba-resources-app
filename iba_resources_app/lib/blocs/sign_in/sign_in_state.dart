@@ -9,7 +9,7 @@ class SignInInitialState extends SignInState {
 }
 
 class SignInValidState extends SignInState {
-  final User authenticatedUser;
+  final UserModel authenticatedUser;
 
   SignInValidState(this.authenticatedUser);
 

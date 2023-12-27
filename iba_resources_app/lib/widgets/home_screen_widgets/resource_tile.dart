@@ -64,11 +64,11 @@ class _ResourceTileState extends State<ResourceTile> {
 
     datePosted = Utils.formatTimeAgo(widget.resource.createdAt.toString());
 
-    final authBloc = BlocProvider.of<AuthBloc>(context);
+    final signInBloc = BlocProvider.of<SignInBloc>(context);
 
-    if (authBloc.state is AuthStateAuthenticated) {
+    if (signInBloc.state is SignInValidState) {
       authenticatedUser =
-          (authBloc.state as AuthStateAuthenticated).authenticatedUser;
+          (signInBloc.state as SignInValidState).authenticatedUser;
 
       print('authenticatedUser is ${authenticatedUser.email}');
 

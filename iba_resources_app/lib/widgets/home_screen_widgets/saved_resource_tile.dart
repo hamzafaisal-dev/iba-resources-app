@@ -5,11 +5,14 @@ class SavedResourceTile extends StatelessWidget {
     super.key,
     required this.title,
     this.leadingIconSize,
+    this.trailing,
     this.onTap,
   });
 
   final double? leadingIconSize;
   final String title;
+  final Widget? trailing;
+
   final dynamic Function()? onTap;
 
   @override
@@ -22,7 +25,7 @@ class SavedResourceTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(15.0),
         ),
         child: ListTile(
-          contentPadding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+          contentPadding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
           leading: CircleAvatar(
             radius: 25,
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -39,6 +42,7 @@ class SavedResourceTile extends StatelessWidget {
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
+          trailing: trailing,
           onTap: onTap,
         ),
       ),

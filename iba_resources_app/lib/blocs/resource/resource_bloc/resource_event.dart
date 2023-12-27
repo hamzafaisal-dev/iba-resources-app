@@ -101,6 +101,16 @@ class UploadFilesEvent extends ResourceEvent {
   List<Object?> get props => throw UnimplementedError();
 }
 
+class DeleteResourceEvent extends ResourceEvent {
+  final String resourceId;
+  final UserModel user;
+
+  const DeleteResourceEvent({required this.resourceId, required this.user});
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
 class FetchMocNigga extends ResourceEvent {
   const FetchMocNigga() : super();
 

@@ -15,15 +15,15 @@ class AuthRepository {
     return userFirebaseClient.getCurrentUser(user);
   }
 
-  Future<UserCredential> handleLogin(String email, String password) async {
+  Future<UserModel> handleLogin(String email, String password) async {
     return await userFirebaseClient.handleLogin(email, password);
   }
 
-  Future<UserCredential> loginWithGoogle() async {
+  Future<UserModel> loginWithGoogle() async {
     return await userFirebaseClient.signInWithGoogle();
   }
 
-  Future<UserCredential> loginWithFacebook() async {
+  Future<UserModel> loginWithFacebook() async {
     return await userFirebaseClient.signInWithFacebook();
   }
 

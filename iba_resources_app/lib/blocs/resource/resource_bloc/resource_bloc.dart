@@ -61,6 +61,10 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       );
     });
 
+    on<DeleteResourceEvent>((event, emit) async {
+      await _deleteResource(event.resourceId, event.user, emit);
+    });
+
     on<FetchMocNigga>((event, emit) {
       print('Mock nigga');
       // return emit(ResourceEmpty());
@@ -208,6 +212,19 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       print('updated user after resource upload');
       print(updatedUser);
       authBloc.add(AuthStateUpdatedEvent(newUpdatedUser));
+    } catch (error) {
+      emit(ResourceError(errorMsg: error.toString()));
+    }
+  }
+
+  Future<void> _deleteResource(
+      String resourceId, UserModel user, Emitter<ResourceState> emit) async {
+    try {
+      emit(ResourcesLoading());
+      UserModel updatedUser =
+          await resourceRepository.deleteResource(resourceId, user);
+      emit(ResourceBookmarkSuccess());
+      authBloc.add(AuthStateUpdatedEvent(updatedUser));
     } catch (error) {
       emit(ResourceError(errorMsg: error.toString()));
     }

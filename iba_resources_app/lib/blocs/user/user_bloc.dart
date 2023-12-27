@@ -27,6 +27,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
 
     on<FetchUser>((event, emit) async {
+      print('idhar');
       await _fetchUser(event.userId, emit);
     });
   }

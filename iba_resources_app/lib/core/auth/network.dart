@@ -29,7 +29,7 @@ class UserFirebaseClient {
   }
 
   // email and pass login
-  Future<UserCredential> handleLogin(String email, String password) async {
+  Future<UserModel> handleLogin(String email, String password) async {
     try {
       UserCredential userCredential =
           await firebaseAuth.signInWithEmailAndPassword(
@@ -37,14 +37,22 @@ class UserFirebaseClient {
         password: password,
       );
 
-      return userCredential;
+      DocumentSnapshot userSnapshot = await firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      UserModel authenticatedUser =
+          UserModel.fromJson(userSnapshot.data() as Map<String, dynamic>);
+
+      return authenticatedUser;
     } catch (error) {
       throw Exception(error.toString());
     }
   }
 
   // google sign-in
-  Future<UserCredential> signInWithGoogle() async {
+  Future<UserModel> signInWithGoogle() async {
     print('we here g');
 
     try {
@@ -76,7 +84,18 @@ class UserFirebaseClient {
       );
 
       // Once signed in, return the UserCredential
-      return await firebaseAuth.signInWithCredential(credential);
+      UserCredential userCredential =
+          await firebaseAuth.signInWithCredential(credential);
+
+      DocumentSnapshot userSnapshot = await firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      UserModel authenticatedUser =
+          UserModel.fromJson(userSnapshot as Map<String, dynamic>);
+
+      return authenticatedUser;
 
       // if (user.user == null) return;
 
@@ -95,7 +114,7 @@ class UserFirebaseClient {
   }
 
   // facebook sign-in
-  Future<UserCredential> signInWithFacebook() async {
+  Future<UserModel> signInWithFacebook() async {
     print('we here f');
 
     // Trigger the sign-in flow
@@ -113,7 +132,16 @@ class UserFirebaseClient {
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
     // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithCredential(facebookAuthCredential);
+
+    DocumentSnapshot userSnapshot =
+        await firestore.collection('users').doc(userCredential.user!.uid).get();
+
+    UserModel authenticatedUser =
+        UserModel.fromJson(userSnapshot as Map<String, dynamic>);
+
+    return authenticatedUser;
   }
 
   // email and pass sign up

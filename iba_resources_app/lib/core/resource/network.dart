@@ -260,4 +260,32 @@ class ResourceFirestoreClient {
 
     return updatedUser;
   }
+
+  Future<UserModel> deleteResource(String resourceId, UserModel user) async {
+    DocumentSnapshot userSnapshot =
+        await firestore.collection('users').doc(user.userId).get();
+
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+
+    UserModel updatedUser = UserModel.fromJson(userData);
+
+    List<ResourceModel> postedResources = updatedUser.postedResources ?? [];
+
+    if (postedResources
+        .any((postedResource) => postedResource.resourceId == resourceId)) {
+      postedResources.removeWhere(
+          (postedResource) => postedResource.resourceId == resourceId);
+
+      updatedUser = updatedUser.copyWith(postedResources: postedResources);
+
+      await firestore
+          .collection('users')
+          .doc(user.userId)
+          .update(updatedUser.toMap());
+
+      await firestore.collection('resources').doc(resourceId).delete();
+    }
+
+    return updatedUser;
+  }
 }

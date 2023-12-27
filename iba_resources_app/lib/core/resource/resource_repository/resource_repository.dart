@@ -67,4 +67,8 @@ class ResourceRepository {
       updatedUser,
     );
   }
+
+  Future<UserModel> deleteResource(String resourceId, UserModel user) async {
+    return await resourceFirestoreClient.deleteResource(resourceId, user);
+  }
 }

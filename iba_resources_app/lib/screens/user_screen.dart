@@ -154,14 +154,16 @@ class _UserScreenState extends State<UserScreen> {
                     children: [
                       //
                       UserProfileStat(
-                        statisticValue:
-                            authenticatedUser.postedResources!.length,
-                        statisticName: 'Contributions',
+                        statisticValue: authenticatedUser.points,
+                        statisticName: 'Points',
                       ),
 
                       UserProfileStat(
-                        statisticValue: authenticatedUser.points,
-                        statisticName: 'Points',
+                        statisticValue:
+                            authenticatedUser.postedResources!.length,
+                        statisticName: 'Contributions',
+                        onTap: () =>
+                            NavigationService.routeToNamed('/user-resources'),
                       ),
 
                       UserProfileStat(

@@ -434,10 +434,8 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
               ),
             ),
             width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(25, 25, 25, 18),
-              // padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

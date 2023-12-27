@@ -20,6 +20,7 @@ import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/screens/settings_screen.dart';
 import 'package:iba_resources_app/screens/signup_screen.dart';
 import 'package:iba_resources_app/screens/user_profile_screen.dart';
+import 'package:iba_resources_app/screens/user_resources_screen.dart';
 import 'package:iba_resources_app/screens/user_screen.dart';
 import 'package:iba_resources_app/screens/view_resource_details_screen.dart';
 
@@ -94,6 +95,11 @@ class RouteGenerator {
       case '/resource':
         return MaterialPageRoute(
           builder: (context) => const AddResourceScreen(),
+        );
+
+      case '/user-resources':
+        return MaterialPageRoute(
+          builder: (context) => const UserResourcesScreen(),
         );
 
       case '/resourceDetails':
