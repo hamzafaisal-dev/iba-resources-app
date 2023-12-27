@@ -42,25 +42,25 @@ void main() {
       expect(signInBloc.state, equals(SignInInitialState()));
     });
 
-    // blocTest<SignInBloc, SignInState>(
-    //   'handleLogin emits [loading, success] states on successful sign-in',
-    //   build: () => SignInBloc(authRepository: authRepository),
-    //   act: (bloc) async {
-    //     // Configure the mock to return a Future<UserCredential> on handleLogin
-    //     when(
-    //       authRepository.handleLogin('umarkmemon@khi.iba.edu.pk', 'test123'),
-    //     ).thenAnswer((_) async => Future.value(MockUserCredential()));
+    blocTest<SignInBloc, SignInState>(
+      'handleLogin emits [loading, success] states on successful sign-in',
+      build: () => SignInBloc(authRepository: authRepository),
+      act: (bloc) async {
+        // Configure the mock to return a Future<UserCredential> on handleLogin
+        when(
+          authRepository.handleLogin('umarkmemon@khi.iba.edu.pk', 'test123'),
+        ).thenAnswer((_) async => Future.value(MockUserCredential()));
 
-    //     bloc.add(SignInSubmittedEvent('umarkmemon@khi.iba.edu.pk', 'test123'));
-    //   },
-    //   expect: () =>
-    //       [SignInLoadingState(), SignInValidState(MockUserCredential().user!)],
-    //   // verify: (_) {
-    //   //   verify(authRepository.handleLogin(
-    //   //     'umarkmemon@khi.iba.edu.pk',
-    //   //     'test123',
-    //   //   )).called(1);
-    //   // },
-    // );
+        bloc.add(SignInSubmittedEvent('umarkmemon@khi.iba.edu.pk', 'test123'));
+      },
+      expect: () =>
+          [SignInLoadingState(), SignInValidState(MockUserCredential().user!)],
+      // verify: (_) {
+      //   verify(authRepository.handleLogin(
+      //     'umarkmemon@khi.iba.edu.pk',
+      //     'test123',
+      //   )).called(1);
+      // },
+    );
   });
 }

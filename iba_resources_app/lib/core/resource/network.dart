@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
+import 'package:iba_resources_app/utils/functions.dart';
 import 'package:path/path.dart';
 
 class ResourceFirestoreClient {
@@ -144,20 +145,30 @@ class ResourceFirestoreClient {
 
   // returns the download URL of given file
   Future<String> uploadToFirebaseStorage(
-      File file, String resourceTitle) async {
+    File file,
+    String resourceTitle,
+  ) async {
     String currentTimeStamp = DateTime.now().millisecondsSinceEpoch.toString();
-
-    // get file name
     String fileName = basename(file.path);
 
-    // put file in documents collection, files stored in a folder whose name is given by user, individual filenames will be their own names+currentTimeStamp to avoid duplicity
+    print(file);
+
     final storageRef = firebaseStorage
         .ref()
         .child('documents')
         .child(resourceTitle)
         .child('$fileName-$currentTimeStamp');
 
-    await storageRef.putFile(file);
+    // will set metadata with the original file name
+    final metadata = SettableMetadata(
+      customMetadata: {'originalName': fileName},
+      contentType: Utils.getMimeType(file),
+    );
+
+    await storageRef.putFile(
+      file,
+      metadata,
+    );
 
     String fileUrl = await storageRef.getDownloadURL();
 

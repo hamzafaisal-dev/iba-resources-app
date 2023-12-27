@@ -22,27 +22,32 @@ class CustomDropdown extends StatefulWidget {
 }
 
 class _CustomDropdownState extends State<CustomDropdown> {
-  String? _selectedValue;
-
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      value: _selectedValue,
-      items: widget.dropDownMenuItems.map((dropdownItem) {
-        return DropdownMenuItem<String>(
-          value: dropdownItem,
-          child: Text(dropdownItem),
-        );
-      }).toList(),
-      onChanged: (value) {
-        setState(() {
-          _selectedValue = value;
-        });
-        widget.setInput(value!);
+    // if dropdownmenu list empty, return empty dropdwon menu
+    if (widget.dropDownMenuItems.isEmpty) {
+      return const DropdownMenu(dropdownMenuEntries: []);
+    }
+
+    return DropdownMenu(
+      //
+      width: widget.width,
+      hintText: widget.hintText,
+      dropdownMenuEntries: widget.dropDownMenuItems.map(
+        (dropdownItem) {
+          return DropdownMenuEntry(value: dropdownItem, label: dropdownItem);
+        },
+      ).toList(),
+
+      onSelected: (value) {
+        if (value != null) widget.setInput(value);
       },
-      decoration: InputDecoration(
-        labelText: widget.labelText,
-        hintText: widget.hintText,
+
+      menuHeight: MediaQuery.of(context).size.height / 4.5,
+
+      label: Text(widget.labelText),
+
+      inputDecorationTheme: const InputDecorationTheme(
         floatingLabelBehavior: FloatingLabelBehavior.always,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
@@ -50,27 +55,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             color: Colors.grey,
           ),
         ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 1.5,
-            color:
-                Colors.red, // Change to the color you want for the error border
-          ),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 1.5,
-            color: Colors
-                .red, // Change to the color you want for the focused error border
-          ),
-        ),
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please select a value';
-        }
-        return null; // Return null if the value is valid
-      },
     );
   }
 }

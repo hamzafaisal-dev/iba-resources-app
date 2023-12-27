@@ -11,24 +11,26 @@ import 'package:iba_resources_app/constants/icons.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
 
-class DisLikeResourceChip extends StatefulWidget {
-  DisLikeResourceChip({
+class DislikeResourceChip extends StatefulWidget {
+  DislikeResourceChip({
     super.key,
-    required this.resource,
-    required this.count,
+    // required this.resource,
+    // required this.count,
     required this.isDisliked,
+    required this.onDisliked,
   });
 
-  int count;
-  final ResourceModel resource;
+  // int count;
+  // final ResourceModel resource;
   final bool isDisliked;
+  final void Function() onDisliked;
 
   @override
-  State<DisLikeResourceChip> createState() => _DisLikeResourceChipState();
+  State<DislikeResourceChip> createState() => _DislikeResourceChipState();
 }
 
-class _DisLikeResourceChipState extends State<DisLikeResourceChip> {
-  late int resourceDisikes;
+class _DislikeResourceChipState extends State<DislikeResourceChip> {
+  // late int resourceLikes;
   late UserModel authenticatedUser;
 
   late bool _isDisliked;
@@ -40,48 +42,46 @@ class _DisLikeResourceChipState extends State<DisLikeResourceChip> {
     // ResourceModel updatedResource =
     //     widget.resource.copyWith(likes: widget.count);
 
-    final authBloc = BlocProvider.of<AuthBloc>(context);
-    final userBloc = BlocProvider.of<UserBloc>(context);
+    // final authBloc = BlocProvider.of<AuthBloc>(context);
+    // final userBloc = BlocProvider.of<UserBloc>(context);
 
-    if (authBloc.state is AuthStateAuthenticated) {
-      authenticatedUser =
-          (authBloc.state as AuthStateAuthenticated).authenticatedUser;
+    // if (authBloc.state is AuthStateAuthenticated) {
+    //   authenticatedUser =
+    //       (authBloc.state as AuthStateAuthenticated).authenticatedUser;
 
-      BlocProvider.of<UserBloc>(context).add(
-        UserToggleDislikeEvent(authenticatedUser, widget.resource),
-      );
+    //   BlocProvider.of<UserBloc>(context).add(
+    //     UserToggleLikeEvent(authenticatedUser, widget.resource),
+    //   );
 
-      bool isResourceMatch(ResourceModel dislikedResource) {
-        return dislikedResource.resourceId == widget.resource.resourceId;
-      }
+    //   bool isResourceMatch(ResourceModel likedResource) {
+    //     return likedResource.resourceId == widget.resource.resourceId;
+    //   }
 
-      // _isDisliked = authenticatedUser.dislikedResources!.any(isResourceMatch);
+    // _isDisliked = authenticatedUser.likedResources!.any(isResourceMatch);
 
+    setState(() {
       _isDisliked = !_isDisliked;
+    });
 
-      _isDisliked ? resourceDisikes += 1 : resourceDisikes -= 1;
-    }
-
-    if (userBloc.state is ResourceLikedState) {
-      List<int> resourceLikesAndDislikes =
-          (userBloc.state as ResourceLikedState).resourceLikesAndDislikes;
-
-      int newDislikesCount = resourceLikesAndDislikes[1];
-
-      newDislikesCount =
-          _isDisliked ? newDislikesCount - 1 : newDislikesCount + 1;
-
-      print(newDislikesCount);
-
-      // resourceDisikes = newDislikesCount;
-
-      // resourceDisikes = resourceLikesAndDislikes[1];
-    }
+    // _isDisliked ? resourceLikes += 1 : resourceLikes -= 1;
   }
+
+  // if (userBloc.state is ResourceLikedState) {
+  //   List<int> resourceLikesAndDislikes =
+  //       (userBloc.state as ResourceLikedState).resourceLikesAndDislikes;
+
+  //   int newLikesCount = resourceLikesAndDislikes[0];
+
+  //   newLikesCount = _isDisliked ? newLikesCount - 1 : newLikesCount + 1;
+
+  //   print(newLikesCount);
+
+  //   // resourceLikes = newLikesCount;
+  // }
 
   @override
   void initState() {
-    resourceDisikes = widget.resource.dislikes;
+    // resourceLikes = widget.resource.likes;
 
     _isDisliked = widget.isDisliked;
 
@@ -93,16 +93,19 @@ class _DisLikeResourceChipState extends State<DisLikeResourceChip> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        setState(() {
-          _toggleCount();
-        });
+        widget.onDisliked();
+        _toggleCount();
+        // setState(() {
+        //   _toggleCount();
+        // });
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // likes count
           Text(
-            resourceDisikes.toString(),
+            '0',
+            // resourceLikes.toString(),
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -114,16 +117,12 @@ class _DisLikeResourceChipState extends State<DisLikeResourceChip> {
 
           const SizedBox(width: 8),
 
-          Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.rotationY(3.14),
-            child: FaIcon(
-              FontAwesomeIcons.heartCrack,
-              color: _isDisliked
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.tertiary,
-              size: 20,
-            ),
+          FaIcon(
+            FontAwesomeIcons.heart,
+            color: _isDisliked
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.tertiary,
+            size: 20,
           ),
         ],
       ),

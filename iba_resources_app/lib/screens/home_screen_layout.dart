@@ -247,6 +247,8 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
 
   @override
   Widget build(BuildContext context) {
+    print('build1 was called');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

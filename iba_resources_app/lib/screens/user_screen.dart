@@ -16,7 +16,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  final int levelOnePoints = 100;
+  final int levelOnePoints = 250;
   late int pointsCount;
   late UserModel authenticatedUser;
 

@@ -84,7 +84,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserUpdateError(errorMessage: 'Something went wrong'));
       }
 
-      emit(ResourceLikedState(
+      emit(ResourceDisikedState(
           resourceLikesAndDislikes: resourceLikesAndDislikes));
 
       authBloc.add(AuthStateUpdatedEvent(user));

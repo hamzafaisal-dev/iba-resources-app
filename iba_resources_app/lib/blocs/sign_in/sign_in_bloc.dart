@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 
@@ -41,9 +42,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       }
 
       // else emit valid login state
-      emit(
-        SignInValidState(authenticatedUser.user!),
-      );
+      emit(SignInValidState(authenticatedUser.user!));
     } on FirebaseAuthException catch (error) {
       // get error statement from util and emit it
       String firebaseAuthError =

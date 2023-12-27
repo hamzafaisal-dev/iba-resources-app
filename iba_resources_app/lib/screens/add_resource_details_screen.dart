@@ -195,38 +195,34 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                   Row(
                     children: [
                       // relevantFields dropdwon
-                      Expanded(
-                        child: CustomDropdown(
-                          dropDownMenuItems: DropdownItems.degreePrograms,
-                          labelText: 'Select relevant fields',
-                          hintText: 'Eg. BSCS',
-                          width: MediaQuery.of(context).size.width / 1.35,
-                          setInput: (String relevantDegreeOption) {
-                            _selectedRelevantField = relevantDegreeOption;
-                          },
-                        ),
+                      CustomDropdown(
+                        dropDownMenuItems: DropdownItems.degreePrograms,
+                        labelText: 'Select relevant fields',
+                        hintText: 'Eg. BSCS',
+                        width: MediaQuery.of(context).size.width / 1.35,
+                        setInput: (String relevantDegreeOption) {
+                          _selectedRelevantField = relevantDegreeOption;
+                        },
                       ),
 
-                      // const Spacer(),
+                      const Spacer(),
 
                       // add relevant degree button
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          height: 58,
-                          width: 58,
-                          child: IconButton(
-                            onPressed: () {
-                              _addRelevantDegree(_selectedRelevantField);
-                            },
-                            icon: const Icon(
-                              Icons.add,
-                              size: 32,
-                              color: Colors.white,
-                            ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        height: 58,
+                        width: 58,
+                        child: IconButton(
+                          onPressed: () {
+                            _addRelevantDegree(_selectedRelevantField);
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            size: 32,
+                            color: Colors.white,
                           ),
                         ),
                       )

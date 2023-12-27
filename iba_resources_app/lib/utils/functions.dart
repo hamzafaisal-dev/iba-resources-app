@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Utils {
   static String truncateString(String input) {
     const int maxLength = 95;
@@ -28,5 +30,31 @@ class Utils {
 
   static String _pluralize(int value, String unit) {
     return value == 1 ? unit : '${unit}s';
+  }
+
+  static String getMimeType(File file) {
+    const Map<String, String> mimeTypes = {
+      'txt': 'text/plain',
+      'pdf': 'application/pdf',
+      'doc': 'application/msword',
+      'docx':
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'ppt': 'application/vnd.ms-powerpoint',
+      'pptx':
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'xls': 'application/vnd.ms-excel',
+      'xlsx':
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    };
+
+    // get the file extension
+    final List<String> parts = file.path.split('.');
+    final String extension = parts.isNotEmpty ? parts.last : '';
+
+    // wil find the MIME type using the file extension
+    final String mimeType =
+        mimeTypes[extension.toLowerCase()] ?? 'application/octet-stream';
+
+    return mimeType;
   }
 }

@@ -25,3 +25,9 @@ class ResourceLikedState extends UserState {
 
   ResourceLikedState({required this.resourceLikesAndDislikes});
 }
+
+class ResourceDisikedState extends UserState {
+  final List<int> resourceLikesAndDislikes;
+
+  ResourceDisikedState({required this.resourceLikesAndDislikes});
+}

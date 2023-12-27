@@ -50,8 +50,6 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('isBookMarked? $_isBookmarked');
-
     late ResourceModel currentResource;
 
     if (widget.resourceMap != null) {
@@ -92,51 +90,62 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // resource title + bookmark icon
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // resource title
-                    Flexible(
-                      // will wrap text
-                      child: Text(
-                        currentResource.resourceTitle,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
+                BlocListener<ResourceBloc, ResourceState>(
+                  listener: (context, state) {
+                    if (state is ResourceBookmarkSuccess &&
+                        _isBookmarked == true) {
+                      showSnackbar('Resource bookmarked successfully!');
+                    } else if (state is ResourceBookmarkSuccess &&
+                        _isBookmarked == false) {
+                      showSnackbar('Resource unbookmarked successfully!');
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // resource title
+                      Flexible(
+                        // will wrap text
+                        child: Text(
+                          currentResource.resourceTitle,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
-                    ),
 
-                    // bookmark resource
-                    IconButton(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      onPressed: () {
-                        if (state is AuthStateAuthenticated) {
-                          _bookmarkResource(
-                            currentResource,
-                            state.authenticatedUser,
-                          );
+                      // bookmark resource
+                      IconButton(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onPressed: () {
+                          if (state is AuthStateAuthenticated) {
+                            _bookmarkResource(
+                              currentResource,
+                              state.authenticatedUser,
+                            );
 
-                          setState(() {
-                            _isBookmarked = !_isBookmarked;
-                          });
-                        }
-                      },
-                      icon: _isBookmarked
-                          ? Icon(
-                              Icons.bookmark,
-                              size: 40,
-                              color: Theme.of(context).colorScheme.primary,
-                            )
-                          : Icon(
-                              Icons.bookmark_outline,
-                              size: 40,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                    ),
-                  ],
+                            setState(() {
+                              _isBookmarked = !_isBookmarked;
+                            });
+                          }
+                        },
+                        icon: _isBookmarked
+                            ? Icon(
+                                Icons.bookmark,
+                                size: 40,
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : Icon(
+                                Icons.bookmark_outline,
+                                size: 40,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: 12),

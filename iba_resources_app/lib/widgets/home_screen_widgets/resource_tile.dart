@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
+import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
+import 'package:iba_resources_app/blocs/user/user_bloc.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/utils/functions.dart';
@@ -30,8 +33,35 @@ class _ResourceTileState extends State<ResourceTile> {
 
   late String datePosted;
 
+  void _handleLike() {
+    BlocProvider.of<UserBloc>(context).add(
+      UserToggleLikeEvent(authenticatedUser, widget.resource),
+    );
+
+    _isLiked = !_isLiked;
+
+    // if F=F but disliked=F then no run; dislike stays same
+    if (_isLiked == _isDisiked && _isDisiked) {
+      _isDisiked = !_isDisiked;
+    }
+  }
+
+  void _handleDislike() {
+    BlocProvider.of<UserBloc>(context).add(
+      UserToggleDislikeEvent(authenticatedUser, widget.resource),
+    );
+
+    _isDisiked = !_isDisiked;
+
+    if (_isDisiked == _isLiked && _isLiked) {
+      _isLiked = !_isLiked;
+    }
+  }
+
   @override
   void initState() {
+    super.initState();
+
     datePosted = Utils.formatTimeAgo(widget.resource.createdAt.toString());
 
     final authBloc = BlocProvider.of<AuthBloc>(context);
@@ -39,6 +69,8 @@ class _ResourceTileState extends State<ResourceTile> {
     if (authBloc.state is AuthStateAuthenticated) {
       authenticatedUser =
           (authBloc.state as AuthStateAuthenticated).authenticatedUser;
+
+      print('authenticatedUser is ${authenticatedUser.email}');
 
       userLikedResources = authenticatedUser.likedResources!;
       userDislikedResources = authenticatedUser.dislikedResources!;
@@ -61,9 +93,6 @@ class _ResourceTileState extends State<ResourceTile> {
         return false;
       });
     }
-
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
@@ -156,6 +185,7 @@ class _ResourceTileState extends State<ResourceTile> {
           ),
         ),
 
+        // likes + dislikes
         Container(
           margin: const EdgeInsets.only(bottom: 14),
           height: 50,
@@ -178,23 +208,45 @@ class _ResourceTileState extends State<ResourceTile> {
             ),
             child: Row(
               children: [
-                //
-
                 // like resource
                 Expanded(
                   child: Container(
                     height: 80,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: const BoxDecoration(
-                      // color: Colors.lightBlueAccent,
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(8),
                       ),
                     ),
-                    child: LikeResourceChip(
-                      resource: widget.resource,
-                      count: widget.resource.likes,
-                      isLiked: _isLiked,
+                    child: InkWell(
+                      onTap: _handleLike,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // likes count
+                          Text(
+                            widget.resource.likes.toString(),
+                            // resourceLikes.toString(),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: _isLiked
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ),
+
+                          const SizedBox(width: 8),
+
+                          FaIcon(
+                            FontAwesomeIcons.heart,
+                            color: _isLiked
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.tertiary,
+                            size: 20,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -215,10 +267,34 @@ class _ResourceTileState extends State<ResourceTile> {
                         ),
                       ),
                     ),
-                    child: DisLikeResourceChip(
-                      resource: widget.resource,
-                      count: widget.resource.likes,
-                      isDisliked: _isDisiked,
+                    child: InkWell(
+                      onTap: _handleDislike,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // likes count
+                          Text(
+                            widget.resource.dislikes.toString(),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: _isDisiked
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ),
+
+                          const SizedBox(width: 8),
+
+                          FaIcon(
+                            FontAwesomeIcons.heart,
+                            color: _isDisiked
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.tertiary,
+                            size: 20,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

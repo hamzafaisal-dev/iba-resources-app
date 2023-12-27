@@ -130,7 +130,7 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     Emitter<ResourceState> emit,
   ) async {
     try {
-// final userUpdatedSavedResources = user.savedResources!.add(savedResource);
+      // final userUpdatedSavedResources = user.savedResources!.add(savedResource);
 
       List<ResourceModel>? usersSavedResources = user.savedResources ?? [];
 

@@ -145,7 +145,7 @@ class MyApp extends StatelessWidget {
               title: 'IBARA',
               debugShowCheckedModeBanner: false,
               themeMode: ThemeMode.system,
-              theme: (state.index == 0) ? lightTheme : darkTheme,
+              theme: (state.index == 0) ? darkTheme : lightTheme,
               onGenerateRoute: RouteGenerator.generateRoutes,
               navigatorKey: NavigationService.navigatorKey,
               home: const LandingScreen(),

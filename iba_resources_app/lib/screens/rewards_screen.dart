@@ -5,6 +5,7 @@ import 'package:iba_resources_app/blocs/reward/rewards_bloc.dart';
 import 'package:iba_resources_app/models/reward.dart';
 import 'package:iba_resources_app/models/reward_level.dart';
 import 'package:iba_resources_app/models/user.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/skeleton_text.dart';
 import 'package:iba_resources_app/widgets/profile/reward_tile.dart';
 
 class RewardsScreen extends StatefulWidget {
@@ -47,6 +48,22 @@ class _RewardsScreenState extends State<RewardsScreen> {
         child: BlocBuilder<RewardsBloc, RewardsState>(
           builder: (context, state) {
             print(state);
+
+            if (state is RewardsLoading) {
+              return ListView.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: AnimatedSkeletonText(
+                      height: 70,
+                      width: MediaQuery.of(context).size.width - 20,
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  );
+                },
+              );
+            }
 
             if (state is RewardsLoaded) {
               return ListView.builder(
