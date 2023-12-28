@@ -9,6 +9,7 @@ class ResourceModel {
     required this.resourceDescription,
     required this.resourceType,
     required this.uploader,
+    required this.uploaderAvatar,
     required this.courseName,
     required this.teacherName,
     required this.relevantFields,
@@ -27,6 +28,8 @@ class ResourceModel {
 
   final String resourceTitle;
   final String uploader;
+  final String uploaderAvatar;
+
   final String teacherName;
   final String courseName;
 
@@ -56,6 +59,7 @@ class ResourceModel {
       resourceDescription: resourceData['resourceDescription'],
       resourceType: resourceData['resourceType'],
       uploader: resourceData['uploader'],
+      uploaderAvatar: resourceData['uploaderAvatar'],
       teacherName: resourceData['teacherName'],
       courseName: resourceData['courseName'],
       relevantFields: resourceData['relevantFields'],
@@ -80,6 +84,7 @@ class ResourceModel {
       'resourceId': resourceId,
       'resourceTitle': resourceTitle,
       'uploader': uploader,
+      'uploaderAvatar': uploaderAvatar,
       'teacherName': teacherName,
       'courseName': courseName,
       'resourceDescription': resourceDescription,
@@ -102,6 +107,7 @@ class ResourceModel {
     String? resourceId,
     String? resourceTitle,
     String? uploader,
+    String? uploaderAvatar,
     String? teacherName,
     String? courseName,
     String? resourceDescription,
@@ -122,6 +128,7 @@ class ResourceModel {
       resourceId: resourceId ?? this.resourceId,
       resourceTitle: resourceTitle ?? this.resourceTitle,
       uploader: uploader ?? this.uploader,
+      uploaderAvatar: uploaderAvatar ?? this.uploaderAvatar,
       teacherName: teacherName ?? this.teacherName,
       courseName: courseName ?? this.courseName,
       resourceDescription: resourceDescription ?? this.resourceDescription,

@@ -186,6 +186,7 @@ class ResourceFirestoreClient {
     String semester,
     String year,
     UserModel updatedUser,
+    String uploaderAvatar,
   ) async {
     String timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -221,6 +222,7 @@ class ResourceFirestoreClient {
       resourceDescription: resourceDescription,
       resourceType: resourceType,
       uploader: username,
+      uploaderAvatar: uploaderAvatar,
       courseName: courseName,
       teacherName: teacherName,
       relevantFields: relevantFields,

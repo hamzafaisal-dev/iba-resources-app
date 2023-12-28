@@ -42,6 +42,8 @@ dependencies:
   path_provider: ^2.1.1
   bloc_test: ^9.1.5
   mockito: ^5.4.4
+  dice_bear: ^0.1.6
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:

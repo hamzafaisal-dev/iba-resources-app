@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
@@ -158,9 +159,22 @@ class _ViewResourceDetailsScreenState extends State<ViewResourceDetailsScreen> {
                     Row(
                       children: [
                         // pfp
-                        const CircleAvatar(
-                          radius: 13,
-                          backgroundImage: AssetImage('assets/avatar.png'),
+                        CircleAvatar(
+                          radius: 15,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          child: ClipOval(
+                            child: SvgPicture.network(
+                              currentResource.uploaderAvatar,
+                              placeholderBuilder: (BuildContext context) =>
+                                  const Icon(Icons.person),
+                              height: 28,
+                              width: 28,
+                              alignment: Alignment.center,
+                              fit: BoxFit.contain,
+                              clipBehavior: Clip.hardEdge,
+                            ),
+                          ),
                         ),
 
                         const SizedBox(width: 6),

@@ -150,8 +150,12 @@ class _AddResourceScreenState extends State<AddResourceScreen> {
 
               // selected files list
               if (state is ResourceFilesSelectSuccess)
-                ...state.filePickerResult!.files
-                    .map((file) => FileNameTile(fileName: file.name))
+                ...state.filePickerResult!.files.map(
+                  (file) => FileNameTile(
+                    fileName: file.name,
+                    fileType: file.extension,
+                  ),
+                )
             ],
           );
         },

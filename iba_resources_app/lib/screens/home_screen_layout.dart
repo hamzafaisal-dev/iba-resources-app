@@ -481,6 +481,12 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                                 );
                               }
 
+                              if (snapshot.hasError) {
+                                return const Text(
+                                  'Cannot not fetch data at this time',
+                                );
+                              }
+
                               if (snapshot.hasData) {
                                 if (snapshot.data!.isEmpty) {
                                   return const Text(

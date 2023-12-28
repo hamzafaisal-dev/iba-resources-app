@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dice_bear/dice_bear.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -44,6 +45,8 @@ class UserFirebaseClient {
 
       UserModel authenticatedUser =
           UserModel.fromJson(userSnapshot.data() as Map<String, dynamic>);
+
+      print(authenticatedUser);
 
       return authenticatedUser;
     } catch (error) {
@@ -154,11 +157,15 @@ class UserFirebaseClient {
 
     String userId = newUserCredentials.user!.uid;
 
+    Avatar avatar = DiceBearBuilder.withRandomSeed().build();
+    Uri uri = avatar.svgUri;
+
     UserModel newUser = UserModel(
       userId: userId,
       role: 'user',
       name: name,
       email: email,
+      avatar: uri.toString(),
       postedResources: [],
       savedResources: [],
       likedResources: [],
@@ -235,11 +242,15 @@ class UserFirebaseClient {
 
       String userId = userCredential.user!.uid;
 
+      Avatar avatar = DiceBearBuilder.withRandomSeed().build();
+      Uri uri = avatar.svgUri;
+
       UserModel newGoogleUser = UserModel(
         userId: userId,
         role: 'user',
         name: userCredential.user!.displayName ?? 'User',
         email: userCredential.user!.email!,
+        avatar: uri.toString(),
         postedResources: [],
         savedResources: [],
         likedResources: [],
@@ -306,11 +317,15 @@ class UserFirebaseClient {
 
     String userId = userCredential.user!.uid;
 
+    Avatar avatar = DiceBearBuilder.withRandomSeed().build();
+    Uri uri = avatar.svgUri;
+
     UserModel newGoogleUser = UserModel(
       userId: userId,
       role: 'user',
       name: userCredential.user!.displayName ?? 'User',
       email: userCredential.user!.email!,
+      avatar: uri.toString(),
       postedResources: [],
       savedResources: [],
       likedResources: [],

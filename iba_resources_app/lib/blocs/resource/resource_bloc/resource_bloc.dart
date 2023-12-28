@@ -57,6 +57,7 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
         event.semester,
         event.year,
         event.updatedUser,
+        event.uploaderAvatar,
         emit,
       );
     });
@@ -190,23 +191,24 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     String semester,
     String year,
     UserModel updatedUser,
+    String uploaderAvatar,
     Emitter<ResourceState> emit,
   ) async {
     try {
       emit(ResourceFilesUploadLoading());
 
       UserModel newUpdatedUser = await resourceRepository.uploadResource(
-        pickedFiles,
-        resourceTitle,
-        resourceDescription,
-        resourceType,
-        teacherName,
-        courseName,
-        relevantFields,
-        semester,
-        year,
-        updatedUser,
-      );
+          pickedFiles,
+          resourceTitle,
+          resourceDescription,
+          resourceType,
+          teacherName,
+          courseName,
+          relevantFields,
+          semester,
+          year,
+          updatedUser,
+          uploaderAvatar);
 
       emit(ResourceFilesUploadSuccess());
       print('updated user after resource upload');

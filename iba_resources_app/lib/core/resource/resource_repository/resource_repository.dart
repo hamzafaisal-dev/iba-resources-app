@@ -53,19 +53,20 @@ class ResourceRepository {
     String semester,
     String year,
     UserModel updatedUser,
+    String uploaderAvatar,
   ) {
     return resourceFirestoreClient.uploadResource(
-      pickedFiles,
-      resourceTitle,
-      resourceDescription,
-      resourceType,
-      teacherName,
-      courseName,
-      relevantFields,
-      semester,
-      year,
-      updatedUser,
-    );
+        pickedFiles,
+        resourceTitle,
+        resourceDescription,
+        resourceType,
+        teacherName,
+        courseName,
+        relevantFields,
+        semester,
+        year,
+        updatedUser,
+        uploaderAvatar);
   }
 
   Future<UserModel> deleteResource(String resourceId, UserModel user) async {

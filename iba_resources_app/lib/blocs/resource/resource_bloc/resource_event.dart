@@ -83,6 +83,7 @@ class UploadFilesEvent extends ResourceEvent {
   final String semester;
   final String year;
   final UserModel updatedUser;
+  final String uploaderAvatar;
 
   const UploadFilesEvent({
     required this.pickedFiles,
@@ -95,6 +96,7 @@ class UploadFilesEvent extends ResourceEvent {
     required this.semester,
     required this.year,
     required this.updatedUser,
+    required this.uploaderAvatar,
   });
 
   @override

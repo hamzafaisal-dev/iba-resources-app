@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+
 class Utils {
   static String truncateString(String input) {
     const int maxLength = 95;
@@ -56,5 +58,43 @@ class Utils {
         mimeTypes[extension.toLowerCase()] ?? 'application/octet-stream';
 
     return mimeType;
+  }
+
+  static String formatFileSize(int fileSizeInBytes) {
+    const int bytesInOneKB = 1024;
+    const int bytesInOneMB = 1024 * 1024;
+
+    if (fileSizeInBytes >= bytesInOneMB) {
+      double fileSizeInMB = fileSizeInBytes / bytesInOneMB;
+      return '${fileSizeInMB.toStringAsFixed(2)} MB';
+    } else if (fileSizeInBytes >= bytesInOneKB) {
+      double fileSizeInKB = fileSizeInBytes / bytesInOneKB;
+      return '${fileSizeInKB.toStringAsFixed(2)} KB';
+    } else {
+      return '$fileSizeInBytes bytes';
+    }
+  }
+
+  static Widget getFileTypeImage(String fileType) {
+    switch (fileType.toLowerCase()) {
+      case 'docx':
+        return Image.asset('assets/doc.png', scale: 12);
+      case 'pptx':
+        return Image.asset('assets/ppt.png', scale: 12);
+      case 'pdf':
+        return Image.asset('assets/pdf.png', scale: 12);
+      case 'zip':
+        return Image.asset('assets/zip.png', scale: 12);
+      case 'txt':
+        return Image.asset('assets/txt-file.png', scale: 12);
+      case 'png':
+        return Image.asset('assets/png.png', scale: 12);
+      case 'jpeg':
+        return Image.asset('assets/jpeg.png', scale: 12);
+      case 'jpg':
+        return Image.asset('assets/jpg.png', scale: 12);
+      default:
+        return Image.asset('assets/folder.png', scale: 12);
+    }
   }
 }

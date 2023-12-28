@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
@@ -127,9 +128,21 @@ class _ResourceTileState extends State<ResourceTile> {
                   Row(
                     children: [
                       // pfp
-                      const CircleAvatar(
-                        radius: 13,
-                        backgroundImage: AssetImage('assets/avatar.png'),
+                      CircleAvatar(
+                        radius: 15,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                        child: ClipOval(
+                          child: SvgPicture.network(
+                            widget.resource.uploaderAvatar,
+                            placeholderBuilder: (BuildContext context) =>
+                                const Icon(Icons.person),
+                            height: 30,
+                            width: 30,
+                            alignment: Alignment.center,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                       ),
 
                       const SizedBox(width: 6),

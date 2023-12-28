@@ -74,17 +74,17 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
   void _uploadResource(UserModel authenticatedUser) {
     BlocProvider.of<ResourceBloc>(context).add(
       UploadFilesEvent(
-        pickedFiles: _pickedFiles,
-        resourceTitle: _resourceTitle,
-        resourceDescription: _resourceDescription,
-        resourceType: _resourceType,
-        teacherName: _teacherName,
-        courseName: _courseName,
-        relevantFields: _relevantFields,
-        semester: _semester,
-        year: _year,
-        updatedUser: authenticatedUser,
-      ),
+          pickedFiles: _pickedFiles,
+          resourceTitle: _resourceTitle,
+          resourceDescription: _resourceDescription,
+          resourceType: _resourceType,
+          teacherName: _teacherName,
+          courseName: _courseName,
+          relevantFields: _relevantFields,
+          semester: _semester,
+          year: _year,
+          updatedUser: authenticatedUser,
+          uploaderAvatar: authenticatedUser.avatar),
     );
   }
 

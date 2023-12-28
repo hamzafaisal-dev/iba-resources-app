@@ -7,6 +7,7 @@ class UserModel {
     required this.role,
     required this.name,
     required this.email,
+    required this.avatar,
     required this.postedResources,
     required this.savedResources,
     required this.likedResources,
@@ -24,6 +25,7 @@ class UserModel {
   final String role;
   final String name;
   final String email;
+  final String avatar;
 
   final List<ResourceModel>? postedResources;
   final List<ResourceModel>? savedResources;
@@ -43,6 +45,7 @@ class UserModel {
       role: userData['role'],
       name: userData['name'],
       email: userData['email'],
+      avatar: userData['avatar'],
       postedResources: (userData['postedResources'] as List<dynamic>?)
           ?.map((resourceData) => ResourceModel.fromJson(resourceData))
           .toList(),
@@ -71,6 +74,7 @@ class UserModel {
       'role': role,
       'name': name,
       'email': email,
+      'avatar': avatar,
       'postedResources':
           postedResources?.map((resource) => resource.toMap()).toList(),
       'savedResources':
@@ -94,6 +98,7 @@ class UserModel {
     String? role,
     String? name,
     String? email,
+    String? avatar,
     List<ResourceModel>? postedResources,
     List<ResourceModel>? savedResources,
     List<ResourceModel>? likedResources,
@@ -111,6 +116,7 @@ class UserModel {
       role: role ?? this.role,
       name: name ?? this.name,
       email: email ?? this.email,
+      avatar: avatar ?? this.avatar,
       postedResources: postedResources ?? this.postedResources,
       savedResources: savedResources ?? this.savedResources,
       likedResources: likedResources ?? this.likedResources,
