@@ -9,6 +9,7 @@ class CustomTextFormField extends StatefulWidget {
     this.leadingIcon,
     this.maxInputLength,
     this.maxInputLines,
+    this.decoration,
     required this.setInput,
   });
 
@@ -17,6 +18,7 @@ class CustomTextFormField extends StatefulWidget {
   final IconData? leadingIcon;
   final int? maxInputLength;
   final int? maxInputLines;
+  final InputDecoration? decoration;
 
   final void Function(String input) setInput;
 
@@ -37,15 +39,16 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget build(BuildContext context) {
     return TextFormField(
       //
-      decoration: TextFormFieldStyles.textFormFieldDecoration(
-        widget.labelText,
-        Icon(widget.leadingIcon),
-        null,
-        context,
-      ).copyWith(
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        hintText: widget.hintText,
-      ),
+      decoration: widget.decoration ??
+          TextFormFieldStyles.textFormFieldDecoration(
+            widget.labelText,
+            Icon(widget.leadingIcon),
+            null,
+            context,
+          ).copyWith(
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            hintText: widget.hintText,
+          ),
       cursorColor: Theme.of(context).colorScheme.primary,
       controller: _inputTextController,
 

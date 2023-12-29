@@ -55,7 +55,7 @@ class _NameFormFieldState extends State<NameFormField> {
         }
 
         widget.setName(value);
-        _nameController.clear();
+        // _nameController.clear();
         return null;
       },
     );

@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iba_resources_app/core/auth/auth_repository/auth_repository.dart';
+import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/utils/firebase_auth_exception_utils.dart';
 
 part 'sign_up_event.dart';
@@ -35,9 +37,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     try {
       emit(SignUpLoadingState());
 
-      await authRepository.handleSignUp(name, email, password);
+      UserModel newUser =
+          await authRepository.handleSignUp(name, email, password);
 
-      emit(SignUpValidState());
+      emit(SignUpValidState(newUser));
     } on FirebaseAuthException catch (error) {
       // get error statement from util and emit it
       String firebaseAuthError =
@@ -52,9 +55,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   Future<void> _signUpWithGoogle(Emitter emit) async {
     //
     try {
-      await authRepository.signUpWithGoogle();
+      UserModel newGoogleUser = await authRepository.signUpWithGoogle();
 
-      emit(SignUpValidState());
+      emit(SignUpValidState(newGoogleUser));
     } on FirebaseAuthException catch (error) {
       // get error statement from util and emit it
       String firebaseAuthError =
@@ -69,9 +72,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   Future<void> _signUpWithFacebook(Emitter emit) async {
     //
     try {
-      await authRepository.signUpWithFacebook();
+      UserModel newFacebookUser = await authRepository.signUpWithFacebook();
 
-      emit(SignUpValidState());
+      emit(SignUpValidState(newFacebookUser));
     } on FirebaseAuthException catch (error) {
       // get error statement from util and emit it
       String firebaseAuthError =

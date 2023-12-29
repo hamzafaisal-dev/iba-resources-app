@@ -44,6 +44,7 @@ dependencies:
   mockito: ^5.4.4
   dice_bear: ^0.1.6
   flutter_svg: ^1.1.6
+  golden_toolkit: ^0.15.0
 
 dev_dependencies:
   flutter_test:

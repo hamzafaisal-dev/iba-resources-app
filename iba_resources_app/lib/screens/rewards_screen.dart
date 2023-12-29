@@ -47,8 +47,6 @@ class _RewardsScreenState extends State<RewardsScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: BlocBuilder<RewardsBloc, RewardsState>(
           builder: (context, state) {
-            print(state);
-
             if (state is RewardsLoading) {
               return ListView.builder(
                 itemCount: 5,

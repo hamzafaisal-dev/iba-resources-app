@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:iba_resources_app/core/rewards/rewards_repository.dart';
 import 'package:iba_resources_app/models/reward_level.dart';
 
@@ -14,7 +15,7 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
         emit(RewardsLoading());
         List<RewardLevelModel> rewardsList =
             await rewardRepository.getAllRewards();
-        emit(RewardsLoaded(rewards: rewardsList));
+        return emit(RewardsLoaded(rewards: rewardsList));
       } catch (error) {
         emit(RewardsError(errorMsg: error.toString()));
       }

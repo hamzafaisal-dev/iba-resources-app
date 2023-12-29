@@ -5,9 +5,11 @@ import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
+import 'package:iba_resources_app/blocs/sign_up/sign_up_bloc.dart';
 import 'package:iba_resources_app/constants/dropdown_items.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
 import 'package:iba_resources_app/models/resource.dart';
+import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/filter_chip.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile.dart';
@@ -32,6 +34,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
   late String? _filterSemester = '';
 
   late ResourceBloc _resourceBloc;
+  late UserModel? _authenticedUser;
 
   void _searchByName(String searchedName) {
     if (searchedName == '') return;
@@ -227,7 +230,16 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
       authBloc: BlocProvider.of<AuthBloc>(context),
     );
 
-    // _resourceBloc.add(const FetchResources());
+    final authBlocBloc = BlocProvider.of<AuthBloc>(context);
+
+    final signUpBloc = BlocProvider.of<SignUpBloc>(context);
+
+    if (authBlocBloc.state is AuthStateAuthenticated) {
+      _authenticedUser =
+          (authBlocBloc.state as AuthStateAuthenticated).authenticatedUser;
+    } else if (signUpBloc.state is SignUpValidState) {
+      _authenticedUser = (signUpBloc.state as SignUpValidState).newUser;
+    }
 
     // fetch resources only if they haven't been loaded before
 
@@ -257,7 +269,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
           builder: (context, state) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: state is AuthStateAuthenticated
+              child: _authenticedUser != null
                   ? RichText(
                       text: TextSpan(
                         children: [
@@ -270,7 +282,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                             ),
                           ),
                           TextSpan(
-                            text: state.authenticatedUser.name,
+                            text: _authenticedUser!.name,
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.w800,

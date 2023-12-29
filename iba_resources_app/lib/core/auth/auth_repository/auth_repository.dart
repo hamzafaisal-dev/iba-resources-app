@@ -27,15 +27,16 @@ class AuthRepository {
     return await userFirebaseClient.signInWithFacebook();
   }
 
-  Future<void> handleSignUp(String name, String email, String password) async {
+  Future<UserModel> handleSignUp(
+      String name, String email, String password) async {
     return await userFirebaseClient.handleSignUp(name, email, password);
   }
 
-  Future<void> signUpWithGoogle() async {
+  Future<UserModel> signUpWithGoogle() async {
     return await userFirebaseClient.signUpWithGoogle();
   }
 
-  Future<void> signUpWithFacebook() async {
+  Future<UserModel> signUpWithFacebook() async {
     return await userFirebaseClient.signUpWithFacebook();
   }
 

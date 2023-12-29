@@ -7,6 +7,7 @@ import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dar
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
 import 'package:iba_resources_app/constants/dropdown_items.dart';
+import 'package:iba_resources_app/constants/styles.dart';
 import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/widgets/dropdowns/custom_dropdown.dart';
 import 'package:iba_resources_app/widgets/progress_indicators/button_progress_indicator.dart';
@@ -239,8 +240,7 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                       ..._relevantFields.map(
                         (relevantField) => DegreeChip(
                           label: relevantField,
-                          onRemove: () {},
-                          // onRemove: () => _removeRelevantDegree(relevantField),
+                          onRemove: () => _removeRelevantDegree(relevantField),
                         ),
                       ),
                     ],
@@ -253,42 +253,47 @@ class _AddResourceDetailsScreenState extends State<AddResourceDetailsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       // semester dropdwon
-                      CustomDropdown(
-                        dropDownMenuItems: DropdownItems.semesterDropdownItems,
-                        labelText: 'Select semester',
-                        hintText: 'Fall',
-                        width: MediaQuery.of(context).size.width / 3.6,
-                        setInput: (String semesterOption) {
-                          _semester = semesterOption;
-                        },
+                      Expanded(
+                        child: CustomDropdown(
+                          dropDownMenuItems:
+                              DropdownItems.semesterDropdownItems,
+                          labelText: 'Select semester',
+                          hintText: 'Fall',
+                          width: 1,
+                          setInput: (String semesterOption) {
+                            _semester = semesterOption;
+                          },
+                        ),
                       ),
 
-                      const SizedBox(width: 18),
+                      const SizedBox(width: 16),
 
                       // year dropdown
-                      CustomDropdown(
-                        dropDownMenuItems: DropdownItems.yearDropdownItems,
-                        labelText: 'Select year',
-                        hintText: '2010',
-                        width: MediaQuery.of(context).size.width / 3.6,
-                        setInput: (String yearOption) {
-                          _year = yearOption;
-                        },
-                      ),
-
-                      const SizedBox(width: 18),
-
-                      // resource type dropdown
-                      CustomDropdown(
-                        dropDownMenuItems: DropdownItems.resourceTypes,
-                        labelText: 'Select type',
-                        hintText: 'Quiz',
-                        width: MediaQuery.of(context).size.width / 3.6,
-                        setInput: (String typeOption) {
-                          _resourceType = typeOption;
-                        },
+                      Expanded(
+                        child: CustomDropdown(
+                          dropDownMenuItems: DropdownItems.yearDropdownItems,
+                          labelText: 'Select year',
+                          hintText: '2010',
+                          width: 1,
+                          setInput: (String yearOption) {
+                            _year = yearOption;
+                          },
+                        ),
                       ),
                     ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // resource type dropdown
+                  CustomDropdown(
+                    dropDownMenuItems: DropdownItems.resourceTypes,
+                    labelText: 'Select type',
+                    hintText: 'Quiz',
+                    width: 1,
+                    setInput: (String typeOption) {
+                      _resourceType = typeOption;
+                    },
                   ),
 
                   const SizedBox(height: 24),

@@ -148,7 +148,8 @@ class UserFirebaseClient {
   }
 
   // email and pass sign up
-  Future<void> handleSignUp(String name, String email, String password) async {
+  Future<UserModel> handleSignUp(
+      String name, String email, String password) async {
     final newUserCredentials =
         await firebaseAuth.createUserWithEmailAndPassword(
       email: email,
@@ -183,10 +184,12 @@ class UserFirebaseClient {
         .collection('users')
         .doc(newUserCredentials.user!.uid)
         .set(newUser.toMap());
+
+    return newUser;
   }
 
   // google sign-up
-  Future<void> signUpWithGoogle() async {
+  Future<UserModel> signUpWithGoogle() async {
     print('we here g2');
 
     try {
@@ -268,6 +271,8 @@ class UserFirebaseClient {
           .collection('users')
           .doc(userCredential.user!.uid)
           .set(newGoogleUser.toMap());
+
+      return newGoogleUser;
     } catch (error) {
       // throws OG error if error not related to cancellation
       rethrow;
@@ -275,7 +280,7 @@ class UserFirebaseClient {
   }
 
   // facebook sign-up
-  Future<void> signUpWithFacebook() async {
+  Future<UserModel> signUpWithFacebook() async {
     print('we here f2');
 
     // Trigger the sign-in flow
@@ -320,7 +325,7 @@ class UserFirebaseClient {
     Avatar avatar = DiceBearBuilder.withRandomSeed().build();
     Uri uri = avatar.svgUri;
 
-    UserModel newGoogleUser = UserModel(
+    UserModel newFacebookUser = UserModel(
       userId: userId,
       role: 'user',
       name: userCredential.user!.displayName ?? 'User',
@@ -342,7 +347,9 @@ class UserFirebaseClient {
     await firestore
         .collection('users')
         .doc(userCredential.user!.uid)
-        .set(newGoogleUser.toMap());
+        .set(newFacebookUser.toMap());
+
+    return newFacebookUser;
   }
 
   // sign out

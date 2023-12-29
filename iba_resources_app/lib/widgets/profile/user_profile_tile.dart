@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/skeleton_text.dart';
 
 class UserProfileTile extends StatelessWidget {
   const UserProfileTile({
@@ -37,7 +38,10 @@ class UserProfileTile extends StatelessWidget {
                   child: SvgPicture.network(
                     avatarLink!,
                     placeholderBuilder: (BuildContext context) =>
-                        const Icon(Icons.person),
+                        const AnimatedSkeletonText(
+                      height: 80,
+                      width: 80,
+                    ),
                     height: 47,
                     width: 47,
                     alignment: Alignment.center,

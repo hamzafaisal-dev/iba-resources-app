@@ -7,6 +7,8 @@ class FirebaseAuthExceptionErrors {
     switch (error.code) {
       case 'INVALID_LOGIN_CREDENTIALS':
         errorStatement = 'Invalid login credentials';
+      case 'invalid-credentials':
+        errorStatement = 'Invalid login credentials';
       case 'invalid-email':
         errorStatement = 'Invalid email';
       case 'wrong-password':
@@ -19,6 +21,7 @@ class FirebaseAuthExceptionErrors {
         errorStatement = 'Authentication details missing';
       case 'firebase_auth/network-request-failed':
         errorStatement = 'Error. Please check your internet connection';
+
       default:
         errorStatement = error.message.toString();
     }

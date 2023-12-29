@@ -48,12 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
     BlocProvider.of<SignInBloc>(context).add(SignInWithFacebookEvent());
   }
 
-  // @override
-  // void dispose() {
-  //   BlocProvider.of<SignInBloc>(context).close();
-  //   super.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // buttons
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           RichText(
                             text: TextSpan(
@@ -195,6 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ],
                             ),
                           ),
+                          const Spacer(),
                           InkWell(
                             onTap: () =>
                                 NavigationService.routeToNamed("/resetpass"),

@@ -11,6 +11,7 @@ import 'package:iba_resources_app/utils/functions.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/dislike_resource_chip.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/like_resource_chip.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/report_resource.dart';
+import 'package:iba_resources_app/widgets/home_screen_widgets/skeleton_text.dart';
 
 class ResourceTile extends StatefulWidget {
   const ResourceTile({
@@ -136,7 +137,10 @@ class _ResourceTileState extends State<ResourceTile> {
                           child: SvgPicture.network(
                             widget.resource.uploaderAvatar,
                             placeholderBuilder: (BuildContext context) =>
-                                const Icon(Icons.person),
+                                const AnimatedSkeletonText(
+                              height: 80,
+                              width: 80,
+                            ),
                             height: 30,
                             width: 30,
                             alignment: Alignment.center,
@@ -300,7 +304,7 @@ class _ResourceTileState extends State<ResourceTile> {
                           const SizedBox(width: 8),
 
                           FaIcon(
-                            FontAwesomeIcons.heart,
+                            FontAwesomeIcons.heartCrack,
                             color: _isDisiked
                                 ? Theme.of(context).colorScheme.primary
                                 : Theme.of(context).colorScheme.tertiary,
