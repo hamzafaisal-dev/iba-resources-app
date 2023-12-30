@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iba_resources_app/cubits/brightness/brightness_cubit.dart';
 import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_tile.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

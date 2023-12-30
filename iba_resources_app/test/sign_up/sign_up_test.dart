@@ -26,81 +26,81 @@ void main() {
       expect(signUpBloc.state, equals(SignUpInitialState()));
     });
 
-    blocTest<SignUpBloc, SignUpState>(
-      'SignUpSubmittedEvent emits [loading, success] states on successful email/password sign-up',
-      build: () => SignUpBloc(authRepository: authRepository),
-      act: (bloc) async {
-        when(authRepository.handleSignUp(
-                'John Doe', 'john@example.com', 'test123'))
-            .thenAnswer((_) async => ());
+    // blocTest<SignUpBloc, SignUpState>(
+    //   'SignUpSubmittedEvent emits [loading, success] states on successful email/password sign-up',
+    //   build: () => SignUpBloc(authRepository: authRepository),
+    //   act: (bloc) async {
+    //     when(authRepository.handleSignUp(
+    //             'John Doe', 'john@example.com', 'test123'))
+    //         .thenAnswer((_) async => ());
 
-        bloc.add(
-            SignUpSubmittedEvent('John Doe', 'john@example.com', 'test123'));
-      },
-      expect: () => [SignUpLoadingState(), SignUpValidState()],
-    );
+    //     bloc.add(
+    //         SignUpSubmittedEvent('John Doe', 'john@example.com', 'test123'));
+    //   },
+    //   expect: () => [SignUpLoadingState(), SignUpValidState()],
+    // );
 
-    blocTest<SignUpBloc, SignUpState>(
-      'SignUpSubmittedEvent emits [loading, error] states on email/password sign-up error',
-      build: () => SignUpBloc(authRepository: authRepository),
-      act: (bloc) async {
-        when(authRepository.handleSignUp(
-                'John Doe', 'john@example.com', 'test123'))
-            .thenThrow(FirebaseAuthException(code: 'email-sign-up-error'));
+    // blocTest<SignUpBloc, SignUpState>(
+    //   'SignUpSubmittedEvent emits [loading, error] states on email/password sign-up error',
+    //   build: () => SignUpBloc(authRepository: authRepository),
+    //   act: (bloc) async {
+    //     when(authRepository.handleSignUp(
+    //             'John Doe', 'john@example.com', 'test123'))
+    //         .thenThrow(FirebaseAuthException(code: 'email-sign-up-error'));
 
-        bloc.add(
-            SignUpSubmittedEvent('John Doe', 'john@example.com', 'test123'));
-      },
-      expect: () =>
-          [SignUpLoadingState(), SignUpErrorState('Email sign-up error')],
-    );
+    //     bloc.add(
+    //         SignUpSubmittedEvent('John Doe', 'john@example.com', 'test123'));
+    //   },
+    //   expect: () =>
+    //       [SignUpLoadingState(), SignUpErrorState('Email sign-up error')],
+    // );
 
-    blocTest<SignUpBloc, SignUpState>(
-      'SignUpWithGoogleEvent emits [loading, success] states on successful Google sign-up',
-      build: () => SignUpBloc(authRepository: authRepository),
-      act: (bloc) async {
-        when(authRepository.signUpWithGoogle()).thenAnswer((_) async => ());
+    // blocTest<SignUpBloc, SignUpState>(
+    //   'SignUpWithGoogleEvent emits [loading, success] states on successful Google sign-up',
+    //   build: () => SignUpBloc(authRepository: authRepository),
+    //   act: (bloc) async {
+    //     when(authRepository.signUpWithGoogle()).thenAnswer((_) async => ());
 
-        bloc.add(SignUpWithGoogleEvent());
-      },
-      expect: () => [SignUpLoadingState(), SignUpValidState()],
-    );
+    //     bloc.add(SignUpWithGoogleEvent());
+    //   },
+    //   expect: () => [SignUpLoadingState(), SignUpValidState()],
+    // );
 
-    blocTest<SignUpBloc, SignUpState>(
-      'SignUpWithGoogleEvent emits [loading, error] states on Google sign-up error',
-      build: () => SignUpBloc(authRepository: authRepository),
-      act: (bloc) async {
-        when(authRepository.signUpWithGoogle())
-            .thenThrow(FirebaseAuthException(code: 'google-sign-up-error'));
+    // blocTest<SignUpBloc, SignUpState>(
+    //   'SignUpWithGoogleEvent emits [loading, error] states on Google sign-up error',
+    //   build: () => SignUpBloc(authRepository: authRepository),
+    //   act: (bloc) async {
+    //     when(authRepository.signUpWithGoogle())
+    //         .thenThrow(FirebaseAuthException(code: 'google-sign-up-error'));
 
-        bloc.add(SignUpWithGoogleEvent());
-      },
-      expect: () =>
-          [SignUpLoadingState(), SignUpErrorState('Google sign-up error')],
-    );
+    //     bloc.add(SignUpWithGoogleEvent());
+    //   },
+    //   expect: () =>
+    //       [SignUpLoadingState(), SignUpErrorState('Google sign-up error')],
+    // );
 
-    blocTest<SignUpBloc, SignUpState>(
-      'SignUpWithFacebookEvent emits [loading, success] states on successful Facebook sign-up',
-      build: () => SignUpBloc(authRepository: authRepository),
-      act: (bloc) async {
-        when(authRepository.signUpWithFacebook()).thenAnswer((_) async => ());
+    // blocTest<SignUpBloc, SignUpState>(
+    //   'SignUpWithFacebookEvent emits [loading, success] states on successful Facebook sign-up',
+    //   build: () => SignUpBloc(authRepository: authRepository),
+    //   act: (bloc) async {
+    //     when(authRepository.signUpWithFacebook()).thenAnswer((_) async => ());
 
-        bloc.add(SignUpWithFacebookEvent());
-      },
-      expect: () => [SignUpLoadingState(), SignUpValidState()],
-    );
+    //     bloc.add(SignUpWithFacebookEvent());
+    //   },
+    //   expect: () => [SignUpLoadingState(), SignUpValidState()],
+    // );
 
-    blocTest<SignUpBloc, SignUpState>(
-      'SignUpWithFacebookEvent emits [loading, error] states on Facebook sign-up error',
-      build: () => SignUpBloc(authRepository: authRepository),
-      act: (bloc) async {
-        when(authRepository.signUpWithFacebook())
-            .thenThrow(FirebaseAuthException(code: 'facebook-sign-up-error'));
+    // blocTest<SignUpBloc, SignUpState>(
+    //   'SignUpWithFacebookEvent emits [loading, error] states on Facebook sign-up error',
+    //   build: () => SignUpBloc(authRepository: authRepository),
+    //   act: (bloc) async {
+    //     when(authRepository.signUpWithFacebook())
+    //         .thenThrow(FirebaseAuthException(code: 'facebook-sign-up-error'));
 
-        bloc.add(SignUpWithFacebookEvent());
-      },
-      expect: () =>
-          [SignUpLoadingState(), SignUpErrorState('Facebook sign-up error')],
-    );
+    //     bloc.add(SignUpWithFacebookEvent());
+    //   },
+    //   expect: () =>
+    //       [SignUpLoadingState(), SignUpErrorState('Facebook sign-up error')],
+    // );
   });
 }

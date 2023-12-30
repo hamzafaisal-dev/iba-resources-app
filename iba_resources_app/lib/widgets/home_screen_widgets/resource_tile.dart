@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
 import 'package:iba_resources_app/blocs/user/user_bloc.dart';
 import 'package:iba_resources_app/models/resource.dart';
 import 'package:iba_resources_app/models/user.dart';
 import 'package:iba_resources_app/utils/functions.dart';
-import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/dislike_resource_chip.dart';
-import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/like_resource_chip.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/resource_tile_widgets/report_resource.dart';
 import 'package:iba_resources_app/widgets/home_screen_widgets/skeleton_text.dart';
 

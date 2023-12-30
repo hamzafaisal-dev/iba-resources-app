@@ -13,13 +13,11 @@ import 'package:iba_resources_app/screens/landing_screen.dart';
 import 'package:iba_resources_app/screens/layout.dart';
 import 'package:iba_resources_app/screens/login_screen.dart';
 import 'package:iba_resources_app/screens/notifications_screen.dart';
-import 'package:iba_resources_app/screens/otp_screen.dart';
 import 'package:iba_resources_app/screens/reset_password_screen.dart';
 import 'package:iba_resources_app/screens/rewards_screen.dart';
 import 'package:iba_resources_app/screens/saved_resources_screen.dart';
 import 'package:iba_resources_app/screens/settings_screen.dart';
 import 'package:iba_resources_app/screens/signup_screen.dart';
-import 'package:iba_resources_app/screens/user_profile_screen.dart';
 import 'package:iba_resources_app/screens/user_resources_screen.dart';
 import 'package:iba_resources_app/screens/user_screen.dart';
 import 'package:iba_resources_app/screens/view_resource_details_screen.dart';
@@ -67,10 +65,10 @@ class RouteGenerator {
           builder: (context) => const ResetPasswordScreen(),
         );
 
-      case '/otp':
-        return MaterialPageRoute(
-          builder: (context) => const OTPScreen(),
-        );
+      // case '/otp':
+      //   return MaterialPageRoute(
+      //     builder: (context) => const OTPScreen(),
+      //   );
 
       case '/profile':
         return MaterialPageRoute(

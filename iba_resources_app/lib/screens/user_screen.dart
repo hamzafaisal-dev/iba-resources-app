@@ -7,7 +7,6 @@ import 'package:iba_resources_app/services/navigation_service.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_stat.dart';
 import 'package:iba_resources_app/widgets/profile/user_profile_tile.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
