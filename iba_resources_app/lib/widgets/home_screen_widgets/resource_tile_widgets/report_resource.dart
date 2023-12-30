@@ -27,8 +27,6 @@ class _ReportResourceChipState extends State<ReportResourceChip> {
     _isLiked ? widget.count -= 1 : widget.count += 1;
     _isLiked = !_isLiked;
 
-    BlocProvider.of<ResourceBloc>(context).add(const FetchMocNigga());
-
     // // get the relevant document by it's id
     // DocumentReference<Map<String, dynamic>> resourceRef = FirebaseFirestore
     //     .instance

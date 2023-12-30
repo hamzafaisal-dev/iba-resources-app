@@ -65,11 +65,6 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
     on<DeleteResourceEvent>((event, emit) async {
       await _deleteResource(event.resourceId, event.user, emit);
     });
-
-    on<FetchMocNigga>((event, emit) {
-      print('Mock nigga');
-      // return emit(ResourceEmpty());
-    });
   }
 
   Future<void> _getAllResources(Emitter<ResourceState> emit) async {

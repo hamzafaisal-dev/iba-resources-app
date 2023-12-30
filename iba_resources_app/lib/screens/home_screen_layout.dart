@@ -242,12 +242,10 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
     }
 
     // fetch resources only if they haven't been loaded before
-
     if (_resourceBloc.state is! ResourcesStreamLoaded) {
       _resourceBloc.add(const FetchResourcesStream());
     }
 
-    // _resourceBloc.add(const FetchResourcesStream());
     super.initState();
   }
 
@@ -282,7 +280,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
                             ),
                           ),
                           TextSpan(
-                            text: _authenticedUser!.name,
+                            text: _authenticedUser?.name,
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.w800,

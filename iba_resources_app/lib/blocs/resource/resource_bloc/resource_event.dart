@@ -112,10 +112,3 @@ class DeleteResourceEvent extends ResourceEvent {
   @override
   List<Object?> get props => throw UnimplementedError();
 }
-
-class FetchMocNigga extends ResourceEvent {
-  const FetchMocNigga() : super();
-
-  @override
-  List<Object?> get props => throw UnimplementedError();
-}
