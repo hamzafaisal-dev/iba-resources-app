@@ -313,7 +313,7 @@ class _ResourceTileState extends State<ResourceTile> {
                   ),
                 ),
 
-                // share resource
+                // comment resource
                 Expanded(
                   child: Container(
                     width: MediaQuery.of(context).size.width / 3,

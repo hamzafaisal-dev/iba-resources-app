@@ -26,31 +26,22 @@ class _ReportResourceChipState extends State<ReportResourceChip> {
   void _toggleCount() {
     _isLiked ? widget.count -= 1 : widget.count += 1;
     _isLiked = !_isLiked;
-
-    // // get the relevant document by it's id
-    // DocumentReference<Map<String, dynamic>> resourceRef = FirebaseFirestore
-    //     .instance
-    //     .collection('/resources')
-    //     .doc(widget.resourceId);
-
-    // resourceRef.update({'reportCount': widget.count});
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        setState(() {
-          _toggleCount();
-        });
+        // setState(() {
+        //   _toggleCount();
+        // });
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FaIcon(
-            FontAwesomeIcons.share,
+            FontAwesomeIcons.comment,
             color: Theme.of(context).colorScheme.tertiary,
-            // color: Color(0XFFFF7B66),
             size: 20,
           ),
         ],

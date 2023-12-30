@@ -5,6 +5,7 @@ import 'package:iba_resources_app/blocs/auth/auth_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_bloc.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_event.dart';
 import 'package:iba_resources_app/blocs/resource/resource_bloc/resource_state.dart';
+import 'package:iba_resources_app/blocs/sign_in/sign_in_bloc.dart';
 import 'package:iba_resources_app/blocs/sign_up/sign_up_bloc.dart';
 import 'package:iba_resources_app/constants/dropdown_items.dart';
 import 'package:iba_resources_app/core/resource/resource_repository/resource_repository.dart';
@@ -233,12 +234,16 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
     final authBlocBloc = BlocProvider.of<AuthBloc>(context);
 
     final signUpBloc = BlocProvider.of<SignUpBloc>(context);
+    final signInBloc = BlocProvider.of<SignInBloc>(context);
 
     if (authBlocBloc.state is AuthStateAuthenticated) {
       _authenticedUser =
           (authBlocBloc.state as AuthStateAuthenticated).authenticatedUser;
     } else if (signUpBloc.state is SignUpValidState) {
       _authenticedUser = (signUpBloc.state as SignUpValidState).newUser;
+    } else if (signInBloc.state is SignInValidState) {
+      _authenticedUser =
+          (signInBloc.state as SignInValidState).authenticatedUser;
     }
 
     // fetch resources only if they haven't been loaded before
